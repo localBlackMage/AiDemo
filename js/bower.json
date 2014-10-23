@@ -1,0 +1,17 @@
+{
+  "name": "AiDemo",
+  "version": "1.0.0",
+  "description": "Various AI demos in AngularJS and javascript.",
+  "main": "index.html",
+  "authors": [
+    "Holden Profit"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular-route": "~1.2.25",
+    "angular": "~1.2.25",
+    "jasmine": "~2.0.4",
+    "threejs": "*",
+    "bootstrap": "~3.2.0"
+  }
+}

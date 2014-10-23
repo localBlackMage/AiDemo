@@ -1,0 +1,40 @@
+<!doctype html>
+    <html ng-app="DemoApp">
+        <head>
+            <script type="text/javascript" src="../js/bower_components/angular/angular.min.js"></script>
+            <script type="text/javascript" src="../js/bower_components/jquery/dist/jquery.min.js"></script>
+            <script type="text/javascript" src="../js/dist/aidemo.min.js"></script>
+
+            <link rel="stylesheet" type="text/css" href="../js/bower_components/bootstrap/dist/css/bootstrap.css">
+            <link rel="stylesheet" type="text/css" href="../css/dist/app.min.css">
+
+            <title>A*</title>
+        </head>
+        <body>
+            <div ng-controller="AstarCtrl">
+                <span class="left canvas-span">
+                    <canvas ng-canvas-ai class="canvas down" id="astarCanvas" width="800" height="800"></canvas>
+                    <div>
+                    </div>
+                </span>
+                <!--
+                <span class="left down">
+                    <span class="left down">
+                        <form name="amountForm" role="form" class="flock-form" width="40%">
+                            <div class="form-group">
+                                <label for="stepAmt" class="form-label">Time Step (in seconds):</label>
+                                <input class="form-control"
+                                       type="text" id="stepAmt"
+                                       ng-model="step"
+                                       ng-model-options="{ getterSetter: true }" />
+                            </div>
+                            <div class="form-group">
+                            </div>
+                        </form>
+                    </span>
+                </span>
+                -->
+            </div>
+        </body>
+    </html>
+</doctype>
