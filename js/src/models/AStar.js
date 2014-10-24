@@ -173,7 +173,7 @@ var DFS = function (start, max) {
 
 var heuristic_cost_estimate = function(a, b) {
     var heuristic_multiplier = 0.9;
-    return parseInt((a.pos.subNew(b.pos)).length() * heuristic_multiplier);
+    return parseInt(parseFloat((a.pos.subNew(b.pos)).length()) * heuristic_multiplier);
 };
 
 // Dictionary<Node, Node> came_from, Node current_node, Node start_node, Queue<Node> path
@@ -214,6 +214,9 @@ var A_Star = function(startNode, endNode, nodeMap) {
         var current = openSet.ExtractMinimum();
         if (current.id === endNode.id) {
             ResetDistances(nodeMap);
+            console.log(came_from);
+            console.log(endNode);
+            console.log(startNode);
             var results = ReconstructPath(came_from, endNode, startNode, New (Queue, {}));
             return results.map;
 //            return ReconstructPath(came_from, endNode, startNode, New (Queue, {})).map;
@@ -223,7 +226,7 @@ var A_Star = function(startNode, endNode, nodeMap) {
 
         for(var idx = 0; idx < neighbors.length; idx++) {
             var neighbor = neighbors[idx];
-            var tentative_g_score = g_score[current.id] + 1.0;
+            var tentative_g_score = parseFloat(g_score[current.id]) + 1.0;
 
             var g_score_neighbor = heuristic_cost_estimate(neighbor, startNode);
             if (closedSet.indexOf(neighbor) > -1 && tentative_g_score >= g_score_neighbor)
@@ -231,8 +234,8 @@ var A_Star = function(startNode, endNode, nodeMap) {
 
             if (!openSet.NodeInHeap(neighbor) || tentative_g_score < g_score_neighbor) {
                 came_from[neighbor.id] = current;
-                g_score[neighbor.id] = tentative_g_score;
-                neighbor.distance = g_score[neighbor.id] + heuristic_cost_estimate(neighbor, endNode);
+                g_score[neighbor.id] = parseFloat(tentative_g_score);
+                neighbor.distance = parseFloat(g_score[neighbor.id]) + heuristic_cost_estimate(neighbor, endNode);
                 if (!openSet.NodeInHeap(neighbor) )
                     openSet.Insert(neighbor);
             }

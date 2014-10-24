@@ -14,7 +14,17 @@ var css = ['../../css/*.css'];
 var libs = ['../bower_components/angular/angular.js',
     '../bower_components/angular-route/angular-route.js',
     '../bower_components/jquery/dist/jquery.js',
-    '../bower_components/bootstrap/dist/js/bootstrap.js'];
+    '../bower_components/bootstrap/dist/js/bootstrap.js',
+    '../bower_components/threejs/build/three.js',
+    '../bower_components/libs/*.js'];
+var tests = ['../../tests/spec/*.js'];
+
+// Concatenate JS - TESTS
+gulp.task('tests', function () {
+    return gulp.src(tests)
+        .pipe(concat('tests-all.js'))
+        .pipe(gulp.dest('../../tests/dist'))
+});
 
 gulp.task('styles', function () {
     return gulp.src(scss)
@@ -61,7 +71,8 @@ gulp.task('watch', function () {
     gulp.watch(scripts, ['lint', 'appscripts']);
     gulp.watch(scss, ['styles']);
     gulp.watch(css, ['cssmin']);
+    gulp.watch(tests, ['tests']);
 });
 
 // Default Task
-gulp.task('default', ['lint', 'libs', 'appscripts', 'styles', 'cssmin']);
+gulp.task('default', ['lint', 'libs', 'appscripts', 'styles', 'cssmin', 'tests']);

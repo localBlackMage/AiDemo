@@ -212,7 +212,6 @@ var Entity = {
             DrawUtils.drawExclamation(ctx, this.pos.x, this.pos.y - 10, EXC_COLOR);
         }
         DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
-//            drawUtils.drawRing(ctx, this.pos.x, this.pos.y, 50, this.color);
         DrawUtils.drawLine(ctx, this.pos.x, this.pos.y, this.nose.x, this.nose.y, this.color);
     }
 };

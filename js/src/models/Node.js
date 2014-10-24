@@ -60,7 +60,7 @@ var Node = {
         var self = this;
         this.neighbors.forEach(function(neighbor) {
             if (neighbor.pos)
-                DrawUtils.drawLine(ctx, self.pos.x, self.pos.y, neighbor.pos.x, neighbor.pos.y, (neighbor.path || neighbor.special) && (this.path || this.special) ? PATH_COLOR : RENDER_COLOR);
+                DrawUtils.drawLine(ctx, self.pos.x, self.pos.y, neighbor.pos.x, neighbor.pos.y, ((neighbor.path || neighbor.special) && (this.path || this.special)) ? PATH_COLOR : RENDER_COLOR);
         });
     },
 
