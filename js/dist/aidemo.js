@@ -1,6 +1,16 @@
 var New = function (obj, options) {
     return $.extend(true, {}, obj).constructor(options);
 };
+var IsNotNullOrUndefined = function (obj) {
+    return obj === undefined || obj === null ? false : true;
+};
+var IsGreaterThanOrNaN = function (obj, min) {
+    if (parseInt(obj) > min || isNaN(parseInt(obj)))
+        return true;
+    else
+        return false;
+};
+
 var Vector = {
     x: 0, y: 0,
     options: { x: 0, y: 0 },
@@ -13,6 +23,7 @@ var Vector = {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     },
     normalize: function (scalar) {
+        if(scalar === null ) scalar = 1;
         var length = this.length();
         return New(Vector, {x: (this.x / length) * scalar, y: (this.y / length) * scalar});
     },
@@ -49,15 +60,6 @@ var Vector = {
     }
 };
 
-var IsNotNullOrUndefined = function (obj) {
-   return obj === undefined || obj === null ? false : true;
-};
-var IsGreaterThanOrNaN = function (obj, min) {
-    if (parseInt(obj) > min || isNaN(parseInt(obj)))
-        return true;
-    else
-        return false;
-};
 var DrawUtils = {
     defaultFont: "12px Verdana",
     clearCanvas: function (canvas) {
@@ -135,6 +137,7 @@ var DrawUtils = {
         return color.join('');
     }
 };
+
 var MathUtils = {
     getRand: function (min, max) {
         return Math.random() * (max - min) + min;
@@ -210,6 +213,7 @@ var getNeighbors = function(x, y, xLen, yLen, grid, udlr) {
 
     return neighbors.filter(IsNotNullOrUndefined);
 };
+
 var fillNeighbors = function(grid, udlr) {
     udlr = udlr === true || udlr === false ? udlr : false;
     var yLen = grid.length,
@@ -223,6 +227,7 @@ var fillNeighbors = function(grid, udlr) {
     }
     return grid;
 };
+
 var deepCopyGrid = function(grid, udlr) {
     udlr = udlr === true || udlr === false ? udlr : false;
     var gridCopy = [];

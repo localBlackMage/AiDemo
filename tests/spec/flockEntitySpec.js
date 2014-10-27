@@ -80,7 +80,7 @@ describe("Flock Entity Tests", function () {
         expect(res.y).toEqual(target.y);
     });
 
-    it("should apply align itself", function () {
+    it("should align itself", function () {
         var entObj = New (Entity, defaultOptionsPrey), target = New(Vector, {}), res;
         herd.forEach(function (other) { target.add(other.vel); });
         target = target.divNew(herd.length).normalize(1);
@@ -102,9 +102,21 @@ describe("Flock Entity Tests", function () {
         expect(res.y).toEqual(target.y);
     });
 
-//    it("should update as a PREDATOR", function () {
-//
-//    });
+    it("should update as a PREDATOR", function () {
+        var entObj = New (Entity, defaultOptionsPred);
+        entObj.vel = New (Vector, {x: 1});
+        spyOn(entObj, 'cohesion').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObj, 'separation').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObj, 'alignment').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObj, 'wander').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObj, 'avoidWalls').and.callFake(function(){ return New(Vector, {x:1}); });
+
+        entObj.updatePredator(defaultOptionsUpdate);
+
+        expect(entObj.exc).toBe(false);
+        expect(entObj.vel.x).toBe(2.5);
+        expect(entObj.vel.y).toBe(0);
+    });
 
     it("should update as a PREY", function () {
         var entObj = New (Entity, defaultOptionsPrey);
@@ -120,12 +132,17 @@ describe("Flock Entity Tests", function () {
         var entObjTwo = New (Entity, defaultOptionsPrey);
         entObjTwo.vel = New (Vector, {x: 1});
         spyOn(entObjTwo, 'avoidPredators').and.callFake(function(){ return New(Vector, {}); });
+        spyOn(entObjTwo, 'cohesion').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObjTwo, 'separation').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObjTwo, 'alignment').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObjTwo, 'wander').and.callFake(function(){ return New(Vector, {x:1}); });
+        spyOn(entObjTwo, 'avoidWalls').and.callFake(function(){ return New(Vector, {x:1}); });
 
-        entObj.updatePrey(defaultOptionsUpdate);
+        entObjTwo.updatePrey(defaultOptionsUpdate);
 
         expect(entObjTwo.exc).toBe(false);
-//        expect(entObjTwo.vel.x).toBe(2);
-//        expect(entObjTwo.vel.y).toBe(0);
+        expect(entObjTwo.vel.x).toBe(2.7);
+        expect(entObjTwo.vel.y).toBe(0);
     });
 
     it("should wander", function () {
