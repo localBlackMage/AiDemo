@@ -582,6 +582,231 @@ describe("Life Entity Tests", function () {
         }
     });
 });
+describe("MathUtils Tests", function () {
+    beforeEach(module("DemoApp"));
+
+    it("should generate a random number", function () {
+        var min = 0, max = 10, expected = 5, res;
+        spyOn(Math, 'random').and.callFake(function() { return .5; });
+
+        res = MathUtils.getRand(min, max);
+
+        expect(Math.random.calls.count()).toEqual(1);
+        expect(res).toEqual(expected);
+    });
+
+    it("should calculate the distance between two vectors", function () {
+        var vecOne = New(Vector, {x: 10, y: 5}),
+            vecTwo = New(Vector, {x: 5, y: 10}),
+            expected = vecOne.subNew(vecTwo).length(), res;
+
+        res = MathUtils.distance(vecOne, vecTwo);
+
+        expect(res).toEqual(expected);
+    });
+
+    it("should get the nearest items to a given point", function () {
+        var array = [
+                {pos:New (Vector, {x:10,y:0})},
+                {pos:New (Vector, {x:30,y:30})},
+                {pos:New (Vector, {x:70,y:70})}
+            ],
+            origin = {pos:New (Vector, {x:40,y:40})},
+            tolerance = 20, res;
+
+        res = MathUtils.getNearest(array, origin, tolerance);
+
+        expect(res).not.toContain(array[0]);
+        expect(res).toContain(array[1]);
+        expect(res).not.toContain(array[2]);
+    });
+
+    it("should calculate a vector from a given angle", function () {
+        var angle = 90, res,
+            expected = New(Vector, {x: parseFloat(Math.sin(angle)), y: -parseFloat(Math.cos(angle))});
+
+        res = MathUtils.angleToVector(angle);
+
+        expect(res.x).toEqual(expected.x);
+        expect(res.y).toEqual(expected.y);
+    });
+
+    it("should calculate an angle from a given vector", function () {
+        var vec = New(Vector, {x:10,y:10}), res,
+            expected = parseFloat(Math.atan2(vec.x, -vec.y));
+
+        res = MathUtils.vectorToAngle(vec);
+
+        expect(res).toEqual(expected);
+    });
+});
+describe("Queue Tests", function () {
+    beforeEach(module("DemoApp"));
+
+    it("should instantiate properly", function () {
+        var queue = New (Queue, {});
+
+        expect(queue.queue).toBeDefined();
+        expect(queue.queue.length).toBe(0);
+        expect(queue.head).toBeDefined();
+        expect(queue.head).toBe(0);
+    });
+
+    it("should return the length of the queue", function () {
+        var queue = New (Queue, {}), res;
+        queue.queue = [{}, {}];
+        queue.head = 1;
+
+        res = queue.count();
+
+        expect(res).toBe(1);
+    });
+
+    it("should know if the queue is empty", function () {
+        var queue = New (Queue, {}), res;
+
+        res = queue.isEmpty();
+
+        expect(res).toBe(true);
+
+        queue.queue = [{}];
+
+        res = queue.isEmpty();
+
+        expect(res).toBe(false);
+    });
+
+    it("should push an item into the queue when enqueue is called", function () {
+        var queue = New (Queue, {}), res;
+
+        queue.enqueue({id: 0});
+
+        expect(queue.queue.length).toBe(1);
+        expect(queue.queue).toContain({id:0});
+    });
+
+    it("should remove an item from the queue when dequeue is called", function () {
+        var queue = New (Queue, {}), res;
+        queue.queue = [{id: 0},{id:1}];
+        queue.head = 1;
+
+
+    });
+
+    it("should peek at the last element in the queue", function () {
+        var queue = New (Queue, {}), res;
+        queue.queue = [{id: 0},{id:1}];
+        queue.head = 1;
+
+        res = queue.peek();
+
+        expect(res).toBe(queue.queue[1]);
+
+        queue.queue = [];
+
+        res = queue.peek();
+
+        expect(res).toBe(undefined);
+    });
+});
+describe("Utils Tests", function () {
+    var grid = [
+        [{id:0}, {id:1}, {id:2}],
+        [{id:3}, {id:4}, {id:5}],
+        [{id:6}, {id:7}, {id:8}]
+    ];
+    beforeEach(module("DemoApp"));
+
+    it("should determine if an object is null or undefined", function () {
+        var objA = {field:0}, objB = null, objC = undefined,
+            resA, resB, resC;
+
+        resA = IsNotNullOrUndefined(objA);
+        resB = IsNotNullOrUndefined(objB);
+        resC = IsNotNullOrUndefined(objC);
+
+        expect(resA).toEqual(true);
+        expect(resB).toEqual(false);
+        expect(resC).toEqual(false);
+    });
+
+    it("should determine if an object is greater than a minimum or NaN", function () {
+        var min = 5, objA = 6, objB = NaN, objC = 4,
+            resA, resB, resC;
+
+        resA = IsGreaterThanOrNaN(objA, min);
+        resB = IsGreaterThanOrNaN(objB, min);
+        resC = IsGreaterThanOrNaN(objC, min);
+
+        expect(resA).toEqual(true);
+        expect(resB).toEqual(true);
+        expect(resC).toEqual(false);
+    });
+
+    it("should return an array of neighboring nodes on a grid including diagonals", function () {
+        var x = 1, y = 1, xLen = 3, yLen = 3, res;
+
+        res = getNeighbors(x, y, xLen, yLen, grid, false);
+
+        expect(res).toContain(grid[0][0]);
+        expect(res).toContain(grid[0][1]);
+        expect(res).toContain(grid[0][2]);
+        expect(res).toContain(grid[1][0]);
+        expect(res).not.toContain(grid[1][1]);
+        expect(res).toContain(grid[1][2]);
+        expect(res).toContain(grid[2][0]);
+        expect(res).toContain(grid[2][1]);
+        expect(res).toContain(grid[2][2]);
+    });
+
+    it("should return an array of neighboring nodes on a grid excluding diagonals", function () {
+        var x = 1, y = 1, xLen = 3, yLen = 3, res;
+
+        res = getNeighbors(x, y, xLen, yLen, grid, true);
+
+        expect(res).not.toContain(grid[0][0]);
+        expect(res).toContain(grid[0][1]);
+        expect(res).not.toContain(grid[0][2]);
+        expect(res).toContain(grid[1][0]);
+        expect(res).not.toContain(grid[1][1]);
+        expect(res).toContain(grid[1][2]);
+        expect(res).not.toContain(grid[2][0]);
+        expect(res).toContain(grid[2][1]);
+        expect(res).not.toContain(grid[2][2]);
+    });
+
+    it("should fill the neighbors of each node in a given grid", function () {
+        var cellGrid = [
+                [New (Cell, {}), New (Cell, {}), New (Cell, {})],
+                [New (Cell, {}), New (Cell, {}), New (Cell, {})],
+                [New (Cell, {}), New (Cell, {}), New (Cell, {})]
+            ],
+            res;
+        spyOn(cellGrid[0][0], "fillNeighbors");
+        spyOn(cellGrid[0][1], "fillNeighbors");
+        spyOn(cellGrid[0][2], "fillNeighbors");
+        spyOn(cellGrid[1][0], "fillNeighbors");
+        spyOn(cellGrid[1][1], "fillNeighbors");
+        spyOn(cellGrid[1][2], "fillNeighbors");
+        spyOn(cellGrid[2][0], "fillNeighbors");
+        spyOn(cellGrid[2][1], "fillNeighbors");
+        spyOn(cellGrid[2][2], "fillNeighbors");
+
+        res = fillNeighbors(cellGrid, false);
+
+        expect(cellGrid[0][0].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[0][1].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[0][2].fillNeighbors.calls.count()).toEqual(1);
+
+        expect(cellGrid[1][0].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[1][1].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[1][2].fillNeighbors.calls.count()).toEqual(1);
+
+        expect(cellGrid[2][0].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[2][1].fillNeighbors.calls.count()).toEqual(1);
+        expect(cellGrid[2][2].fillNeighbors.calls.count()).toEqual(1);
+    });
+});
 describe("Vector Tests", function () {
     var defVec = {x: 1, y: 1};
     beforeEach(module("DemoApp"));

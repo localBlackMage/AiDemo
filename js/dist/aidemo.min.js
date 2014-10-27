@@ -166,12 +166,12 @@ var MathUtils = {
 //code.stephenmorley.org
 var Queue = {
     queue: [],
-    offset: 0,
+    head: 0,
     constructor: function () {
         return this;
     },
     count: function () {
-        return this.queue.length - this.offset;
+        return this.queue.length - this.head;
     },
     isEmpty: function () {
         return this.queue.length === 0;
@@ -181,29 +181,29 @@ var Queue = {
     },
     dequeue: function () {
         if (this.queue.length === 0) return undefined;
-        var item = this.queue[this.offset];
-        if (++ this.offset * 2 >= this.queue.length){
-            this.queue  = this.queue.slice(this.offset);
-            this.offset = 0;
+        var item = this.queue[this.head];
+        if (++ this.head * 2 >= this.queue.length){
+            this.queue  = this.queue.slice(this.head);
+            this.head = 0;
         }
         // return the dequeued item
         return item;
     },
     peek: function () {
-        return (this.queue.length > 0 ? this.queue[this.offset] : undefined);
+        return (this.queue.length > 0 ? this.queue[this.head] : undefined);
     }
 };
 //code.stephenmorley.org
 
-var getNeighbors = function(x, y, xLen, yLen, grid, udlr) {
-    udlr = udlr === true || udlr === false ? udlr : false;
+var getNeighbors = function(x, y, xLen, yLen, grid, udlrOnly) {
+    udlrOnly = udlrOnly === true || udlrOnly === false ? udlrOnly : false;
     var neighbors = [];
     neighbors.push(x-1 >= 0     ? grid[y][x-1]   : null); // 0, -1
     neighbors.push(x+1 < xLen   ? grid[y][x+1]   : null); // 0, 1
     neighbors.push(y-1 >= 0     ? grid[y-1][x]   : null); // -1, 0
     neighbors.push(y+1 < yLen   ? grid[y+1][x]   : null); // 1, 0
 
-    if (!udlr) {
+    if (!udlrOnly) {
         neighbors.push(x-1 >= 0 && y-1 >= 0     ? grid[y-1][x-1] : null); // -1, -1
         neighbors.push(x-1 >= 0 && y+1 < yLen   ? grid[y+1][x-1] : null); // 1, -1
         neighbors.push(x+1 < xLen && y-1 >= 0   ? grid[y-1][x+1] : null); // -1, 1
@@ -214,14 +214,14 @@ var getNeighbors = function(x, y, xLen, yLen, grid, udlr) {
     return neighbors.filter(IsNotNullOrUndefined);
 };
 
-var fillNeighbors = function(grid, udlr) {
-    udlr = udlr === true || udlr === false ? udlr : false;
+var fillNeighbors = function(grid, udlrOnly) {
+    udlrOnly = udlrOnly === true || udlrOnly === false ? udlrOnly : false;
     var yLen = grid.length,
         xLen = grid[0].length;
     for(var y = 0; y < grid.length; y++) {
         for(var x = 0; x < grid[y].length; x++) {
             if (grid[y][x]) {
-                grid[y][x].fillNeighbors(getNeighbors(x, y, xLen, yLen, grid, udlr));
+                grid[y][x].fillNeighbors(getNeighbors(x, y, xLen, yLen, grid, udlrOnly));
             }
         }
     }
