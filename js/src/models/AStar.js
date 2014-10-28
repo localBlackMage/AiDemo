@@ -60,21 +60,21 @@ var MinHeapNodes = {
         this._index++;
     },
     HeapifyUp: function(element){
-        var parentIndex, parent,
-            parentRes = this.GetParent(element);
-        parentIndex = parentRes.index;
-        parent = parentRes.other;
+        var parentRes = this.GetParent(element),
+            parentIndex = parentRes.index,
+            parent = parentRes.other;
 
-        if ((this._collection[element] !== null && parent !== null) && (this._collection[element].distance < parent.distance)) {
+        if (this._collection[element] === null)
+            return;
+
+        if (parent !== null && this._collection[element].distance < parent.distance) {
             this.Swap(parentIndex, element);
         }
-        else if ( this._collection[element] !== null && parent === null && parentIndex >= 0) {
+        else if ( parent === null && parentIndex >= 0) {
             this.Swap(parentIndex, element);
         }
         else
             return;
-        // Swapped, current element is at parentIndex now, and _index is the parent of the element
-        //		HeapifyUp(parentIndex);
     },
     Swap: function(a, b){
         var tmp = this._collection[a];
@@ -82,7 +82,7 @@ var MinHeapNodes = {
         this._collection[b] = tmp;
     },
     ExtractMinimum: function(){
-        var minimum = this._collection[0];
+        var minimum = this.Minimum();
         this._collection[0] = this._collection[--this._index];
         this._collection[this._index] = null;
         this.HeapifyResetCurIndex();
@@ -217,27 +217,26 @@ var A_Star = function(startNode, endNode, nodeMap) {
             console.log(came_from);
             console.log(endNode);
             console.log(startNode);
-            var results = ReconstructPath(came_from, endNode, startNode, New (Queue, {}));
-            return results.map;
-//            return ReconstructPath(came_from, endNode, startNode, New (Queue, {})).map;
+//            var results = ReconstructPath(came_from, endNode, startNode, New (Queue, {}));
+//            return results.map;
+            return ReconstructPath(came_from, endNode, startNode, New (Queue, {})).map;
         }
         closedSet.push(current);
         var neighbors = current.getNeighbors();
 
         for(var idx = 0; idx < neighbors.length; idx++) {
-            var neighbor = neighbors[idx];
             var tentative_g_score = parseFloat(g_score[current.id]) + 1.0;
+            var g_score_neighbor = heuristic_cost_estimate(neighbors[idx], startNode);
 
-            var g_score_neighbor = heuristic_cost_estimate(neighbor, startNode);
-            if (closedSet.indexOf(neighbor) > -1 && tentative_g_score >= g_score_neighbor)
+            if (closedSet.indexOf(neighbors[idx]) > -1 && tentative_g_score >= g_score_neighbor)
                 continue;
 
-            if (!openSet.NodeInHeap(neighbor) || tentative_g_score < g_score_neighbor) {
-                came_from[neighbor.id] = current;
-                g_score[neighbor.id] = parseFloat(tentative_g_score);
-                neighbor.distance = parseFloat(g_score[neighbor.id]) + heuristic_cost_estimate(neighbor, endNode);
-                if (!openSet.NodeInHeap(neighbor) )
-                    openSet.Insert(neighbor);
+            if (!openSet.NodeInHeap(neighbors[idx]) || tentative_g_score < g_score_neighbor) {
+                came_from[neighbors[idx].id] = current;
+                g_score[neighbors[idx].id] = parseFloat(tentative_g_score);
+                neighbors[idx].distance = parseFloat(g_score[neighbors[idx].id]) + heuristic_cost_estimate(neighbors[idx], endNode);
+                if (!openSet.NodeInHeap(neighbors[idx]) )
+                    openSet.Insert(neighbors[idx]);
             }
         }
     }

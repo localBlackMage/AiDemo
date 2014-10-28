@@ -166,31 +166,30 @@ var MathUtils = {
 //code.stephenmorley.org
 var Queue = {
     queue: [],
-    head: 0,
+    offset: 0,
     constructor: function () {
         return this;
     },
-    count: function () {
-        return this.queue.length - this.head;
+    count: function(){
+        return (this.queue.length - this.offset);
     },
-    isEmpty: function () {
-        return this.queue.length === 0;
+    isEmpty: function(){
+        return (this.queue.length === 0);
     },
-    enqueue: function (item) {
+    enqueue: function(item){
         this.queue.push(item);
     },
-    dequeue: function () {
+    dequeue: function(){
         if (this.queue.length === 0) return undefined;
-        var item = this.queue[this.head];
-        if (++ this.head * 2 >= this.queue.length){
-            this.queue  = this.queue.slice(this.head);
-            this.head = 0;
+        var item = this.queue[this.offset];
+        if (++ this.offset * 2 >= this.queue.length){
+            this.queue  = this.queue.slice(this.offset);
+            this.offset = 0;
         }
-        // return the dequeued item
         return item;
     },
-    peek: function () {
-        return (this.queue.length > 0 ? this.queue[this.head] : undefined);
+    peek: function(){
+        return (this.queue.length > 0 ? this.queue[this.offset] : undefined);
     }
 };
 //code.stephenmorley.org
