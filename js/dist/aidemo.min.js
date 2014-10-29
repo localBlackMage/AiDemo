@@ -336,6 +336,13 @@ var MinHeapNodes = {
         this._currentIndex = 0;
         this.Heapify(this._currentIndex);
     },
+    GetIndexOfSmallest: function(left, right, lidx, ridx) {
+        if (left < right)
+            return lidx;
+        else if (left > right)
+            return ridx;
+        return lidx;
+    },
     Heapify: function(index){
         var leftRes = this.GetLeftChild(index),
             rightRes = this.GetRightChild(index),
@@ -344,16 +351,10 @@ var MinHeapNodes = {
 
         if((leftChild !== null && rightChild !== null) && (leftChild.distance === 0 && rightChild.distance === 0))
             return;
-        var replacingElement = 0;
+        var replacingElement;
 
         if (leftChild !== null && rightChild !== null) {
-            if (leftChild.distance < rightChild.distance)
-                replacingElement = leftChildIndex;
-            if (leftChild.distance > rightChild.distance)
-                replacingElement = rightChildIndex;
-
-            if (leftChild.distance == rightChild.distance)
-                replacingElement = leftChildIndex;
+            replacingElement = this.GetIndexOfSmallest(leftChild.distance, rightChild.distance, leftChildIndex, rightChildIndex);
 
             this.Swap(index, replacingElement);
 
