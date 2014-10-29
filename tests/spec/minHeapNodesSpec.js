@@ -235,6 +235,19 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap._currentIndex).toBe(0);
     });
 
+    it("should ", function () {
+        var minHeap = New (MinHeapNodes, {capacity:5});
+        minHeap._currentIndex = 5;
+
+        spyOn(minHeap, "Heapify").and.callFake(function(index) {
+            expect(index).toBe(0);
+        });
+
+        minHeap.HeapifyResetCurIndex();
+
+        expect(minHeap._currentIndex).toBe(0);
+    });
+
     it("should know if a node is in the heap", function () {
         var minHeap = New (MinHeapNodes, {capacity:5}), res;
         minHeap._collection[0] = itemOne;
