@@ -1,3 +1,12 @@
+describe("AStar Tests", function () {
+    beforeEach(module("DemoApp"));
+
+    it("should instantiate a ReconRetValue properly", function () {
+        var recRetValueObj = New(ReconRetValue, {});
+
+        expect(recRetValueObj.constructor).toBeDefined();
+    });
+});
 describe("DrawUtils Tests", function () {
     var canvas, context, letters = '0123456789ABCDEF';
     beforeEach(module("DemoApp"));
@@ -56,7 +65,7 @@ describe("DrawUtils Tests", function () {
         spyOn(context, 'stroke');
         spyOn(context, 'closePath');
 
-        DrawUtils.drawCircle(context, x, y, radius, color);
+        DrawUtils.drawRing(context, x, y, radius, color);
 
         expect(context.strokeStyle.toLowerCase()).toEqual(color.toLowerCase());
         expect(context.beginPath.calls.count()).toEqual(1);
@@ -247,6 +256,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.cohesion([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should apply separation", function () {
@@ -258,6 +272,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.separation([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should align itself", function () {
@@ -269,6 +288,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.alignment([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should avoid predators", function () {
@@ -280,6 +304,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.avoidPredators([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should update as a PREDATOR", function () {
@@ -487,10 +516,6 @@ describe("Flock Entity Tests", function () {
         entObj.render(context);
     });
 });
-
-
-//  it("", function () {
-//  });
 describe("Life Entity Tests", function () {
     var box = {
             width: 10, height: 10,
@@ -791,8 +816,8 @@ describe("MinHeapNodes Tests", function () {
 
         expect(minHeap.GetParent.calls.count()).toBe(1);
         expect(minHeap.Swap.calls.count()).toBe(1);
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should swap the parent and the child if the parent is null and the parentIndex is greater than or equal to 0 in HeapifyUp", function () {
@@ -837,15 +862,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(0);
     });
 
-    it("should swap nodes at two given indecies", function () {
+    it("should swap nodes at two given indices", function () {
         var minHeap = New (MinHeapNodes, {capacity:2});
         minHeap._collection[0] = itemOne;
         minHeap._collection[1] = itemTwo;
 
         minHeap.Swap(0, 1);
 
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should extract the minimum node and call HeapifyResetCurIndex", function () {
@@ -937,9 +962,9 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(2);
 
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
-        expect(minHeap._collection[2]).toBe(itemThree);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
+        expect(minHeap._collection[2].id).toBe(itemThree.id);
     });
 
     it("should swap the right child and the parent if the right child has the shortest distance and call itself with the child index", function () {
@@ -963,15 +988,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(2);
 
-        expect(minHeap._collection[0]).toBe(itemThree);
-        expect(minHeap._collection[1]).toBe(itemTwo);
-        expect(minHeap._collection[2]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemThree.id);
+        expect(minHeap._collection[1].id).toBe(itemTwo.id);
+        expect(minHeap._collection[2].id).toBe(itemOne.id);
     });
 
     it("should swap the left child and the parent if the right child is null", function () {
         var minHeap = New (MinHeapNodes, {capacity:3});
-        minHeap.Insert(itemOne);
-        minHeap.Insert(itemTwo);
+        minHeap._collection[0] = itemOne;
+        minHeap._collection[1] = itemTwo;
 
         spyOn(minHeap, "GetLeftChild").and.callThrough();
         spyOn(minHeap, "GetRightChild").and.callThrough();
@@ -985,16 +1010,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(1);
 
-        console.log(minHeap._collection[0]);
-        console.log(itemTwo);
-        expect(minHeap._collection[0]).toBe(itemTwo);
-//        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should swap the right child and the parent if the left child is null", function () {
         var minHeap = New (MinHeapNodes, {capacity:3});
-        minHeap.Insert(itemOne);
-        minHeap.Insert(itemTwo);
+        minHeap._collection[0] = itemOne;
+        minHeap._collection[2] = itemTwo;
+        minHeap._index = 2;
 
         spyOn(minHeap, "GetLeftChild").and.callThrough();
         spyOn(minHeap, "GetRightChild").and.callThrough();
@@ -1008,8 +1032,8 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(1);
 
-//        expect(minHeap._collection[0]).toBe(itemTwo);
-//        expect(minHeap._collection[2]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[2].id).toBe(itemOne.id);
     });
 
     it("should know if a node is in the heap", function () {
@@ -1041,6 +1065,200 @@ describe("MinHeapNodes Tests", function () {
 
         expect(res).toBe(false);
     });
+});
+describe("Neuron Tests", function () {
+    beforeEach(module("DemoApp"));
+
+    it("should instantiate properly", function () {
+        var neuron = New (Neuron, {});
+
+        expect(neuron.constructor).toBeDefined();
+    });
+
+//    it("should update accordingly", function() {
+//
+//    });
+
+//    it("should render", function() {
+//
+//    });
+});
+describe("Node Tests", function () {
+    var box = {
+            width: 10, height: 10,
+            center: New(Vector, {x: 10, y: 10})
+        },
+        defaultOptions = {
+            id: 1, box: box, distance: 10, pos: New(Vector, {x:1, y:-1}),
+            neighbors: [New (Node, {id:2})],
+            selected: false, special: false, path: false
+        };
+    beforeEach(module("DemoApp"));
+
+    it("should instantiate properly", function () {
+        var node = New(Node, defaultOptions);
+
+
+        expect(node.id).toEqual(defaultOptions.id);
+        expect(node.box).toEqual(box);
+        expect(node.distance).toEqual(defaultOptions.distance);
+        expect(node.neighbors).toEqual(defaultOptions.neighbors);
+        expect(node.pos).toEqual(defaultOptions.pos);
+        expect(node.selected).toEqual(defaultOptions.selected);
+        expect(node.special).toEqual(defaultOptions.special);
+        expect(node.path).toEqual(defaultOptions.path);
+    });
+
+    it("should return it's neighbors", function () {
+        var node = New(Node, defaultOptions),
+            neighbors = [New(Node, {id: 3}), New(Node, {id: 4})],
+            res;
+        node.neighbors = neighbors;
+
+        res = node.getNeighbors();
+
+        expect(res).toEqual(neighbors);
+    });
+
+    it("should fill out neighbors", function () {
+        var node = New(Node, defaultOptions),
+            neighbors = [New(Node, {id: 3}), New(Node, {id: 4})];
+
+        node.fillNeighbors(neighbors);
+
+        expect(node.neighbors).toEqual(neighbors);
+    });
+
+    it("should reset selected", function () {
+        var node = New(Node, defaultOptions);
+        node.selected = true;
+
+        node.resetSelect();
+
+        expect(node.selected).toBe(false);
+    });
+
+    it("should know if it is selected", function () {
+        var node = New(Node, defaultOptions);
+        node.pos = New(Vector, {});
+
+        node.select(New (Vector,{x:RANGE+1}));
+
+        expect(node.selected).toBe(false);
+
+        node.select(New (Vector,{x:RANGE}));
+
+        expect(node.selected).toBe(true);
+    });
+
+    it("should know if it is specially selected", function () {
+        var node = New(Node, defaultOptions), res;
+        node.pos = New(Vector, {});
+
+        res = node.specialSelect(New (Vector,{x:RANGE+1}));
+
+        expect(res).toBe(false);
+        expect(node.special).toBe(false);
+
+        res = node.specialSelect(New (Vector,{x:RANGE}));
+
+        expect(res).toBe(true);
+        expect(node.special).toBe(true);
+    });
+
+    it("should know if it is path selected", function () {
+        var node = New(Node, defaultOptions), res;
+        node.special = true;
+
+        node.pathSelect();
+
+        expect(node.path).toBe(false);
+
+        node.special = false;
+
+        node.pathSelect();
+
+        expect(node.path).toBe(true);
+    });
+
+//    it("should update accordingly", function () {
+//        var node = New(Node, defaultOptions);
+//        node.update();
+//    });
+
+    it("should render it's paths", function () {
+        var node = New(Node, defaultOptions),
+            context = document.createElement("canvas").getContext('2d'),
+            neighbors = [];
+
+        spyOn(DrawUtils, 'drawLine').and.callFake(function (ctx, x, y, color, str) {
+            expect(ctx).toBe(context);
+            expect(x).toBe(node.pos.x+10);
+            expect(y).toBe(node.pos.y-10);
+            expect(color).toBe(SELECTED_COLOR);
+            expect(str).toBe(node.id.toString());
+        });
+        spyOn(DrawUtils, 'drawCircle').and.callFake(function(ctx, x, y, radius, color){
+            expect(ctx).toBe(context);
+            expect(x).toBe(node.pos.x);
+            expect(y).toBe(node.pos.y);
+            expect(radius).toBe(5);
+            expect(color).toBe(expectedColor);
+        });
+        expectedColor = RENDER_COLOR;
+        node.render(context);
+        expect(DrawUtils.drawText.calls.count()).toBe(1);
+        expect(DrawUtils.drawCircle.calls.count()).toBe(1);
+        expect(node.getColor.calls.count()).toBe(1);
+    });
+
+    it("should return the correct color", function() {
+        var node = New(Node, defaultOptions), res;
+
+        res = node.getColor();
+        expect(res).toBe(RENDER_COLOR);
+
+        node.selected = true;
+        res = node.getColor();
+        expect(res).toBe(SELECTED_COLOR);
+
+        node.path = true;
+        res = node.getColor();
+        expect(res).toBe(PATH_COLOR);
+
+        node.special = true;
+        res = node.getColor();
+        expect(res).toBe(SPECIAL_COLOR);
+    });
+
+    it("should render", function () {
+        var node = New(Node, defaultOptions),
+            context = document.createElement("canvas").getContext('2d'),
+            expectedColor;
+        spyOn(node, 'getColor').and.callFake(function(){
+            return RENDER_COLOR;
+        });
+        spyOn(DrawUtils, 'drawText').and.callFake(function (ctx, x, y, color, str) {
+            expect(ctx).toBe(context);
+            expect(x).toBe(node.pos.x+10);
+            expect(y).toBe(node.pos.y-10);
+            expect(color).toBe(SELECTED_COLOR);
+            expect(str).toBe(node.id.toString());
+        });
+        spyOn(DrawUtils, 'drawCircle').and.callFake(function(ctx, x, y, radius, color){
+            expect(ctx).toBe(context);
+            expect(x).toBe(node.pos.x);
+            expect(y).toBe(node.pos.y);
+            expect(radius).toBe(5);
+            expect(color).toBe(expectedColor);
+        });
+        expectedColor = RENDER_COLOR;
+        node.render(context);
+        expect(DrawUtils.drawText.calls.count()).toBe(1);
+        expect(DrawUtils.drawCircle.calls.count()).toBe(1);
+        expect(node.getColor.calls.count()).toBe(1);
+    });
+
 });
 describe("Queue Tests", function () {
     beforeEach(module("DemoApp"));
@@ -1120,8 +1338,44 @@ describe("Utils Tests", function () {
         [{id:0}, {id:1}, {id:2}],
         [{id:3}, {id:4}, {id:5}],
         [{id:6}, {id:7}, {id:8}]
-    ];
+        ],
+        obj = {
+            x: null, other: null,
+            constructor: function(options) {
+                this.x = options.x ? options.x : null;
+                this.other = options.other ? options.other : null;
+                return this;
+            }
+}       ;
     beforeEach(module("DemoApp"));
+
+    it("should instantiate a new object", function () {
+        var newInstance = New(obj, {x: 5});
+
+        expect(newInstance.x).toBeDefined();
+        expect(newInstance.x).toBe(5);
+        expect(newInstance.constructor).toBeDefined();
+    });
+
+    it("should clone an object", function () {
+        var other = New(obj, {x: 3}),
+            original = New(obj, {x: 5, other: other}),
+            clone;
+
+        clone = Clone(original, obj);
+
+        expect(clone.x).toBeDefined();
+        expect(clone.x).toBe(5);
+        expect(clone.other).toBeDefined();
+        expect(clone.other).toBe(other);
+        expect(clone.other.x).toBeDefined();
+        expect(clone.other.x).toBe(3);
+        clone.x = 10;
+        expect(original.x).toBe(5);
+        expect(clone.x).toBe(10);
+
+        expect(clone.constructor).toBeDefined();
+    });
 
     it("should determine if an object is null or undefined", function () {
         var objA = {field:0}, objB = null, objC = undefined,

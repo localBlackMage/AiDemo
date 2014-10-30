@@ -3,8 +3,44 @@ describe("Utils Tests", function () {
         [{id:0}, {id:1}, {id:2}],
         [{id:3}, {id:4}, {id:5}],
         [{id:6}, {id:7}, {id:8}]
-    ];
+        ],
+        obj = {
+            x: null, other: null,
+            constructor: function(options) {
+                this.x = options.x ? options.x : null;
+                this.other = options.other ? options.other : null;
+                return this;
+            }
+}       ;
     beforeEach(module("DemoApp"));
+
+    it("should instantiate a new object", function () {
+        var newInstance = New(obj, {x: 5});
+
+        expect(newInstance.x).toBeDefined();
+        expect(newInstance.x).toBe(5);
+        expect(newInstance.constructor).toBeDefined();
+    });
+
+    it("should clone an object", function () {
+        var other = New(obj, {x: 3}),
+            original = New(obj, {x: 5, other: other}),
+            clone;
+
+        clone = Clone(original, obj);
+
+        expect(clone.x).toBeDefined();
+        expect(clone.x).toBe(5);
+        expect(clone.other).toBeDefined();
+        expect(clone.other).toBe(other);
+        expect(clone.other.x).toBeDefined();
+        expect(clone.other.x).toBe(3);
+        clone.x = 10;
+        expect(original.x).toBe(5);
+        expect(clone.x).toBe(10);
+
+        expect(clone.constructor).toBeDefined();
+    });
 
     it("should determine if an object is null or undefined", function () {
         var objA = {field:0}, objB = null, objC = undefined,

@@ -77,7 +77,7 @@ var MinHeapNodes = {
             return;
     },
     Swap: function(a, b){
-        var tmp = this._collection[a];
+        var tmp = Clone(this._collection[a], Node);
         this._collection[a] = this._collection[b];
         this._collection[b] = tmp;
     },

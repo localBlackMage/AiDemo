@@ -1,6 +1,14 @@
 var New = function (obj, options) {
     return $.extend(true, {}, obj).constructor(options);
 };
+var Clone = function (obj, type) {
+    if (null === obj || "object" != typeof obj) return obj;
+    var copy = New (type, {});
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+};
 var IsNotNullOrUndefined = function (obj) {
     return obj === undefined || obj === null ? false : true;
 };

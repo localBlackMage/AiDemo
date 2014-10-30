@@ -56,7 +56,7 @@ describe("DrawUtils Tests", function () {
         spyOn(context, 'stroke');
         spyOn(context, 'closePath');
 
-        DrawUtils.drawCircle(context, x, y, radius, color);
+        DrawUtils.drawRing(context, x, y, radius, color);
 
         expect(context.strokeStyle.toLowerCase()).toEqual(color.toLowerCase());
         expect(context.beginPath.calls.count()).toEqual(1);

@@ -149,8 +149,8 @@ describe("MinHeapNodes Tests", function () {
 
         expect(minHeap.GetParent.calls.count()).toBe(1);
         expect(minHeap.Swap.calls.count()).toBe(1);
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should swap the parent and the child if the parent is null and the parentIndex is greater than or equal to 0 in HeapifyUp", function () {
@@ -195,15 +195,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(0);
     });
 
-    it("should swap nodes at two given indecies", function () {
+    it("should swap nodes at two given indices", function () {
         var minHeap = New (MinHeapNodes, {capacity:2});
         minHeap._collection[0] = itemOne;
         minHeap._collection[1] = itemTwo;
 
         minHeap.Swap(0, 1);
 
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should extract the minimum node and call HeapifyResetCurIndex", function () {
@@ -295,9 +295,9 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(2);
 
-        expect(minHeap._collection[0]).toBe(itemTwo);
-        expect(minHeap._collection[1]).toBe(itemOne);
-        expect(minHeap._collection[2]).toBe(itemThree);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
+        expect(minHeap._collection[2].id).toBe(itemThree.id);
     });
 
     it("should swap the right child and the parent if the right child has the shortest distance and call itself with the child index", function () {
@@ -321,15 +321,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(2);
 
-        expect(minHeap._collection[0]).toBe(itemThree);
-        expect(minHeap._collection[1]).toBe(itemTwo);
-        expect(minHeap._collection[2]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemThree.id);
+        expect(minHeap._collection[1].id).toBe(itemTwo.id);
+        expect(minHeap._collection[2].id).toBe(itemOne.id);
     });
 
     it("should swap the left child and the parent if the right child is null", function () {
         var minHeap = New (MinHeapNodes, {capacity:3});
-        minHeap.Insert(itemOne);
-        minHeap.Insert(itemTwo);
+        minHeap._collection[0] = itemOne;
+        minHeap._collection[1] = itemTwo;
 
         spyOn(minHeap, "GetLeftChild").and.callThrough();
         spyOn(minHeap, "GetRightChild").and.callThrough();
@@ -343,16 +343,15 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(1);
 
-        console.log(minHeap._collection[0]);
-        console.log(itemTwo);
-        expect(minHeap._collection[0]).toBe(itemTwo);
-//        expect(minHeap._collection[1]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[1].id).toBe(itemOne.id);
     });
 
     it("should swap the right child and the parent if the left child is null", function () {
         var minHeap = New (MinHeapNodes, {capacity:3});
-        minHeap.Insert(itemOne);
-        minHeap.Insert(itemTwo);
+        minHeap._collection[0] = itemOne;
+        minHeap._collection[2] = itemTwo;
+        minHeap._index = 2;
 
         spyOn(minHeap, "GetLeftChild").and.callThrough();
         spyOn(minHeap, "GetRightChild").and.callThrough();
@@ -366,8 +365,8 @@ describe("MinHeapNodes Tests", function () {
         expect(minHeap.Swap.calls.count()).toBe(1);
         expect(minHeap.Heapify.calls.count()).toBe(1);
 
-//        expect(minHeap._collection[0]).toBe(itemTwo);
-//        expect(minHeap._collection[2]).toBe(itemOne);
+        expect(minHeap._collection[0].id).toBe(itemTwo.id);
+        expect(minHeap._collection[2].id).toBe(itemOne.id);
     });
 
     it("should know if a node is in the heap", function () {

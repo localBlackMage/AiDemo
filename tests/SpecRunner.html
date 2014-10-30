@@ -12,9 +12,26 @@
     <script type="text/javascript" src="../js/bower_components/jasmine/lib/jasmine-core/boot.js"></script>
 
     <!-- include source files here... -->
+    <script type="text/javascript" src="blanket/blanket.min.js"> </script>
+    <script type="text/javascript" src="blanket/jasmine-adapter.js"></script>
     <script src="../js/dist/libs-all.min.js"></script>
     <script src="../js/bower_components/angular-mocks/angular-mocks.js"></script>
-    <script type="text/javascript" src="../js/dist/aidemo.min.js"></script>
+
+
+    <!--script type="text/javascript" src="../js/dist/aidemo.min.js" data-cover></script-->
+
+    <script type="text/javascript" src="../js/src/controller/astarCtrl.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/controller/flockCtrl.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/controller/lifeCtrl.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/controller/threeCtrl.js" data-cover></script>
+
+    <script type="text/javascript" src="../js/src/models/AStar.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/models/FlockEntity.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/models/LifeEntity.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/models/Neuron.js" data-cover></script>
+    <script type="text/javascript" src="../js/src/models/Node.js" data-cover></script>
+
+    <script type="text/javascript" src="../js/src/utils/Utils.js" data-cover></script>
 
     <!-- include spec files here... -->
     <script type="text/javascript" src="dist/tests-all.js"></script>

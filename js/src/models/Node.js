@@ -11,10 +11,9 @@ var Node = {
     distance: null,
     selected: false, special: false, path: false,
     options: {
-        id: null,
-        pos: New(Vector, {}),
-        distance: 0,
-        box: {}
+        id: null, pos: New(Vector, {}),
+        distance: 0, box: {}, neighbors: [],
+        selected: false, special: false, path: false
     },
 
     constructor: function (options) {
@@ -22,6 +21,11 @@ var Node = {
         this.pos = IsNotNullOrUndefined(options.pos) ? options.pos : this.options.pos;
         this.distance = IsNotNullOrUndefined(options.distance) ? options.distance : this.options.distance;
         this.box = IsNotNullOrUndefined(options.box) ? options.box : this.options.box;
+
+        this.neighbors = IsNotNullOrUndefined(options.neighbors) ? options.neighbors : this.options.neighbors;
+        this.selected = IsNotNullOrUndefined(options.selected) ? options.selected : this.options.selected;
+        this.special = IsNotNullOrUndefined(options.special) ? options.special : this.options.special;
+        this.path = IsNotNullOrUndefined(options.path) ? options.path : this.options.path;
         return this;
     },
 
@@ -64,13 +68,19 @@ var Node = {
         });
     },
 
+    getColor: function () {
+        if (this.special)
+            return SPECIAL_COLOR;
+        else if (this.path)
+            return PATH_COLOR;
+        else if (this.selected)
+            return SELECTED_COLOR;
+        else
+            return RENDER_COLOR;
+    },
+
     render: function (ctx) {
         DrawUtils.drawText(ctx, this.pos.x+10, this.pos.y-10, SELECTED_COLOR, this.id.toString());
-        if (this.special)
-            DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, SPECIAL_COLOR);
-        else if (this.path)
-            DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, PATH_COLOR);
-        else
-            DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, this.selected ? SELECTED_COLOR : RENDER_COLOR);
+        DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, this.getColor());
     }
 };

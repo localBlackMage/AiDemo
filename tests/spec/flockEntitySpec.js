@@ -67,6 +67,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.cohesion([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should apply separation", function () {
@@ -78,6 +83,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.separation([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should align itself", function () {
@@ -89,6 +99,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.alignment([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should avoid predators", function () {
@@ -100,6 +115,11 @@ describe("Flock Entity Tests", function () {
 
         expect(res.x).toEqual(target.x);
         expect(res.y).toEqual(target.y);
+
+        res = entObj.avoidPredators([]);
+
+        expect(res.x).toEqual(0);
+        expect(res.y).toEqual(0);
     });
 
     it("should update as a PREDATOR", function () {
@@ -307,7 +327,3 @@ describe("Flock Entity Tests", function () {
         entObj.render(context);
     });
 });
-
-
-//  it("", function () {
-//  });
