@@ -5,7 +5,7 @@ describe("Node Tests", function () {
         },
         defaultOptions = {
             id: 1, box: box, distance: 10, pos: New(Vector, {x:1, y:-1}),
-            neighbors: [New (Node, {id:2})],
+            neighbors: [New (Node, {id:2, pos: New(Vector, {x:1, y:0})})],
             selected: false, special: false, path: false
         };
     beforeEach(module("DemoApp"));
@@ -103,28 +103,18 @@ describe("Node Tests", function () {
 
     it("should render it's paths", function () {
         var node = New(Node, defaultOptions),
-            context = document.createElement("canvas").getContext('2d'),
-            neighbors = [];
+            context = document.createElement("canvas").getContext('2d');
 
-        spyOn(DrawUtils, 'drawLine').and.callFake(function (ctx, x, y, color, str) {
+        spyOn(DrawUtils, 'drawLine').and.callFake(function (ctx, sX, sY, eX, eY, color) {
             expect(ctx).toBe(context);
-            expect(x).toBe(node.pos.x+10);
-            expect(y).toBe(node.pos.y-10);
-            expect(color).toBe(SELECTED_COLOR);
-            expect(str).toBe(node.id.toString());
+            expect(sX).toBe(node.pos.x);
+            expect(sY).toBe(node.pos.y);
+            expect(eX).toBe(node.neighbors[0].pos.x);
+            expect(eY).toBe(node.neighbors[0].pos.y);
+            expect(color).toBe(RENDER_COLOR);
         });
-        spyOn(DrawUtils, 'drawCircle').and.callFake(function(ctx, x, y, radius, color){
-            expect(ctx).toBe(context);
-            expect(x).toBe(node.pos.x);
-            expect(y).toBe(node.pos.y);
-            expect(radius).toBe(5);
-            expect(color).toBe(expectedColor);
-        });
-        expectedColor = RENDER_COLOR;
-        node.render(context);
-        expect(DrawUtils.drawText.calls.count()).toBe(1);
-        expect(DrawUtils.drawCircle.calls.count()).toBe(1);
-        expect(node.getColor.calls.count()).toBe(1);
+        node.renderPaths(context);
+        expect(DrawUtils.drawLine.calls.count()).toBe(1);
     });
 
     it("should return the correct color", function() {
