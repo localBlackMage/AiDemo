@@ -1,0 +1,43 @@
+{
+  "name": "aidemo",
+  "version": "1.0.0",
+  "description": "A collection of various AI done through JavaScript presented in an Angular app.",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "gulp-cssmin": "^0.1.7",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^1.8.6",
+    "gulp-less": "^3.0.3",
+    "gulp-rename": "^1.2.2",
+    "gulp-minify-css": "^0.3.13",
+    "gulp-uglify": "^0.3.2",
+    "http-server": "^0.7.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hprofit/AiDemo.git"
+  },
+  "keywords": [
+    "ai",
+    "demo",
+    "javascript",
+    "artificial",
+    "intelligence",
+    "computer",
+    "learning"
+  ],
+  "author": "Holden Profit <holdenprofit@gmail.com> (https://github.com/hprofit/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hprofit/AiDemo/issues"
+  },
+  "homepage": "https://github.com/hprofit/AiDemo"
+}

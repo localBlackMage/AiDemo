@@ -3,7 +3,7 @@ var New = function (obj, options) {
 };
 var Clone = function (obj, type) {
     if (null === obj || "object" != typeof obj) return obj;
-    var copy = New (type, {});
+    var copy = New(type, {});
     for (var attr in obj) {
         if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
     }
@@ -21,7 +21,7 @@ var IsGreaterThanOrNaN = function (obj, min) {
 
 var Vector = {
     x: 0, y: 0,
-    options: { x: 0, y: 0 },
+    options: {x: 0, y: 0},
     constructor: function (options) {
         this.x = options.x ? options.x : this.options.x;
         this.y = options.y ? options.y : this.options.y;
@@ -31,7 +31,7 @@ var Vector = {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     },
     normalize: function (scalar) {
-        if(scalar === null ) scalar = 1;
+        if (scalar === null) scalar = 1;
         var length = this.length();
         return New(Vector, {x: (this.x / length) * scalar, y: (this.y / length) * scalar});
     },
@@ -93,7 +93,7 @@ var DrawUtils = {
         ctx.stroke();
         ctx.closePath();
     },
-    drawSquare: function(ctx, box, color) {
+    drawSquare: function (ctx, box, color) {
         ctx.fillStyle = color;
         ctx.fillRect(box.x, box.y, box.width, box.height);
     },
@@ -178,55 +178,55 @@ var Queue = {
     constructor: function () {
         return this;
     },
-    count: function(){
+    count: function () {
         return (this.queue.length - this.offset);
     },
-    isEmpty: function(){
+    isEmpty: function () {
         return (this.queue.length === 0);
     },
-    enqueue: function(item){
+    enqueue: function (item) {
         this.queue.push(item);
     },
-    dequeue: function(){
+    dequeue: function () {
         if (this.queue.length === 0) return undefined;
         var item = this.queue[this.offset];
-        if (++ this.offset * 2 >= this.queue.length){
-            this.queue  = this.queue.slice(this.offset);
+        if (++this.offset * 2 >= this.queue.length) {
+            this.queue = this.queue.slice(this.offset);
             this.offset = 0;
         }
         return item;
     },
-    peek: function(){
+    peek: function () {
         return (this.queue.length > 0 ? this.queue[this.offset] : undefined);
     }
 };
 //code.stephenmorley.org
 
-var getNeighbors = function(x, y, xLen, yLen, grid, udlrOnly) {
+var getNeighbors = function (x, y, xLen, yLen, grid, udlrOnly) {
     udlrOnly = udlrOnly === true || udlrOnly === false ? udlrOnly : false;
     var neighbors = [];
-    neighbors.push(x-1 >= 0     ? grid[y][x-1]   : null); // 0, -1
-    neighbors.push(x+1 < xLen   ? grid[y][x+1]   : null); // 0, 1
-    neighbors.push(y-1 >= 0     ? grid[y-1][x]   : null); // -1, 0
-    neighbors.push(y+1 < yLen   ? grid[y+1][x]   : null); // 1, 0
+    neighbors.push(x - 1 >= 0 ? grid[y][x - 1] : null); // 0, -1
+    neighbors.push(x + 1 < xLen ? grid[y][x + 1] : null); // 0, 1
+    neighbors.push(y - 1 >= 0 ? grid[y - 1][x] : null); // -1, 0
+    neighbors.push(y + 1 < yLen ? grid[y + 1][x] : null); // 1, 0
 
     if (!udlrOnly) {
-        neighbors.push(x-1 >= 0 && y-1 >= 0     ? grid[y-1][x-1] : null); // -1, -1
-        neighbors.push(x-1 >= 0 && y+1 < yLen   ? grid[y+1][x-1] : null); // 1, -1
-        neighbors.push(x+1 < xLen && y-1 >= 0   ? grid[y-1][x+1] : null); // -1, 1
-        neighbors.push(x+1 < xLen && y+1 < yLen ? grid[y+1][x+1] : null); // 1, 1
+        neighbors.push(x - 1 >= 0 && y - 1 >= 0 ? grid[y - 1][x - 1] : null); // -1, -1
+        neighbors.push(x - 1 >= 0 && y + 1 < yLen ? grid[y + 1][x - 1] : null); // 1, -1
+        neighbors.push(x + 1 < xLen && y - 1 >= 0 ? grid[y - 1][x + 1] : null); // -1, 1
+        neighbors.push(x + 1 < xLen && y + 1 < yLen ? grid[y + 1][x + 1] : null); // 1, 1
     }
 
 
     return neighbors.filter(IsNotNullOrUndefined);
 };
 
-var fillNeighbors = function(grid, udlrOnly) {
+var fillNeighbors = function (grid, udlrOnly) {
     udlrOnly = udlrOnly === true || udlrOnly === false ? udlrOnly : false;
     var yLen = grid.length,
         xLen = grid[0].length;
-    for(var y = 0; y < grid.length; y++) {
-        for(var x = 0; x < grid[y].length; x++) {
+    for (var y = 0; y < grid.length; y++) {
+        for (var x = 0; x < grid[y].length; x++) {
             if (grid[y][x]) {
                 grid[y][x].fillNeighbors(getNeighbors(x, y, xLen, yLen, grid, udlrOnly));
             }
@@ -235,12 +235,12 @@ var fillNeighbors = function(grid, udlrOnly) {
     return grid;
 };
 
-var deepCopyGrid = function(grid, udlr) {
+var deepCopyGrid = function (grid, udlr) {
     udlr = udlr === true || udlr === false ? udlr : false;
     var gridCopy = [];
-    for(var y = 0; y < grid.length; y++) {
+    for (var y = 0; y < grid.length; y++) {
         var row = [];
-        for(var x = 0; x < grid[y].length; x++) {
+        for (var x = 0; x < grid[y].length; x++) {
             row.push(New(Cell, {
                 box: grid[y][x].box,
                 status: grid[y][x].status
