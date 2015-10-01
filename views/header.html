@@ -1,0 +1,7 @@
+<div class="app-header-container">
+    <ul>
+        <li ng-repeat="link in links">
+            <button class="btn-default" ui-sref="{{link.state}}" ng-disabled="link.inactive">{{link.name}}</button>
+        </li>
+    </ul>
+</div>

@@ -1,24 +1,3 @@
-var New = function (obj, options) {
-    return $.extend(true, {}, obj).constructor(options);
-};
-var Clone = function (obj, type) {
-    if (null === obj || "object" != typeof obj) return obj;
-    var copy = New(type, {});
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-};
-var IsNotNullOrUndefined = function (obj) {
-    return obj === undefined || obj === null ? false : true;
-};
-var IsGreaterThanOrNaN = function (obj, min) {
-    if (parseInt(obj) > min || isNaN(parseInt(obj)))
-        return true;
-    else
-        return false;
-};
-
 var Vector = {
     x: 0, y: 0,
     options: {x: 0, y: 0},
@@ -250,3 +229,36 @@ var deepCopyGrid = function (grid, udlr) {
     }
     return fillNeighbors(gridCopy, udlr);
 };
+
+(function (ng) {
+    'use strict';
+    ng.module('service.utils', [])
+        .factory('Utils', [
+            function () {
+                //var New = function (obj, options) {
+                //    return $.extend(true, {}, obj).constructor(options);
+                //};
+                //var Clone = function (obj, type) {
+                //    if (null === obj || "object" != typeof obj) return obj;
+                //    var copy = New(type, {});
+                //    for (var attr in obj) {
+                //        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+                //    }
+                //    return copy;
+                //};
+                //var IsNotNullOrUndefined = function (obj) {
+                //    return obj === undefined || obj === null ? false : true;
+                //};
+                //var IsGreaterThanOrNaN = function (obj, min) {
+                //    return parseInt(obj) > min || isNaN(parseInt(obj));
+                //};
+
+                return {
+                    //New: New,
+                    //Clone: Clone,
+                    //IsNotNullOrUndefined: IsNotNullOrUndefined,
+                    //IsGreaterThanOrNaN: IsGreaterThanOrNaN
+                };
+            }
+        ]);
+})(angular);
