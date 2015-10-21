@@ -1,61 +1,90 @@
-var DEAD_COLOR = "#222", ALIVE_COLOR = "#0F0";
-var DEAD = "DEAD", ALIVE = "ALIVE";
-var Cell = {
-    box: null,
-    status: "",
-    color: "",
-    neighbors: [],
+(function (ng) {
+    'use strict';
 
-    options: {
-        box: {}, status: DEAD
-    },
+    ng.module('aidemo.models.lifeCell', [
+        'aidemo.service.utils',
+        'aidemo.service.drawUtils'
+    ])
+        .factory('LifeCell', ['Utils', 'DrawUtils',
+            function (Utils, DrawUtils) {
+                /**
+                 * Constructor, with class name
+                 */
+                function LifeCell(params) {
+                    this.neighbors = [];
+                    this.box = Utils.isNotNullOrUndefined(params.box) ? params.box : {};
+                    this.status = params.status === this.DEAD || params.status === this.ALIVE ? params.status : this.DEAD;
+                    this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
+                }
 
-    constructor: function (options) {
-        this.box = IsNotNullOrUndefined(options.box) ? options.box : this.options.box;
-        this.status = options.status === DEAD || options.status === ALIVE ? options.status : this.options.status;
-        this.color = this.status == DEAD ? DEAD_COLOR : ALIVE_COLOR;
-        return this;
-    },
+                LifeCell.build = function (data) {
+                    return new LifeCell(data);
+                };
 
-    fillNeighbors: function (neighbors) {
-        this.neighbors = IsNotNullOrUndefined(neighbors) ? neighbors : [];
-    },
+                LifeCell.prototype.DEAD_COLOR = "#222222";
+                LifeCell.prototype.ALIVE_COLOR = "#00FF00";
+                LifeCell.prototype.DEAD = "DEAD";
+                LifeCell.prototype.ALIVE = "ALIVE";
 
-    rules: function(alive) {
-        if (this.status == DEAD) {
-            if (alive == 3){
-                return ALIVE;
+                LifeCell.prototype.fillNeighbors = function (neighbors) {
+                    this.neighbors = Utils.isNotNullOrUndefined(neighbors) ? neighbors : [];
+                };
+
+                LifeCell.prototype.rules = function (alive) {
+                    if (this.status == this.DEAD) {
+                        if (alive == 3) {
+                            return this.ALIVE;
+                        }
+                        else {
+                            return this.DEAD;
+                        }
+                    }
+                    else {
+                        if (alive == 2 || alive == 3) {
+                            return this.ALIVE;
+                        }
+                        else if (alive < 2 || alive > 3) {
+                            return this.DEAD;
+                        }
+                    }
+                };
+
+                LifeCell.prototype.setStatus = function (status) {
+                    this.status = status == this.DEAD || status == this.ALIVE ? status : this.DEAD;
+                    this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
+                };
+
+                LifeCell.prototype.update = function () {
+                    var alive = 0;
+                    this.neighbors.forEach(function (n) {
+                        if (n.status == this.ALIVE) {
+                            alive++;
+                        }
+                    });
+                    return this.rules(alive);
+                };
+
+                LifeCell.prototype.render = function (ctx) {
+                    DrawUtils.drawSquare(ctx, this.box, this.color);
+                };
+
+                LifeCell.prototype.deepCopyGrid = function (grid, udlr) {
+                    udlr = udlr === true || udlr === false ? udlr : false;
+                    var gridCopy = [];
+                    for (var y = 0; y < grid.length; y++) {
+                        var row = [];
+                        for (var x = 0; x < grid[y].length; x++) {
+                            row.push(LifeCell.build({
+                                box: grid[y][x].box,
+                                status: grid[y][x].status
+                            }));
+                        }
+                        gridCopy.push(row);
+                    }
+                    return Utils.fillNeighbors(gridCopy, udlr);
+                };
+
+                return LifeCell;
             }
-            else {
-                return DEAD;
-            }
-        }
-        else {
-            if (alive == 2 || alive == 3) {
-                return ALIVE;
-            }
-            else if (alive < 2 || alive > 3) {
-                return DEAD;
-            }
-        }
-    },
-
-    setStatus: function(status) {
-        this.status = status == DEAD || status == ALIVE ? status : DEAD;
-        this.color = this.status == DEAD ? DEAD_COLOR : ALIVE_COLOR;
-    },
-
-    update: function () {
-        var alive = 0;
-        this.neighbors.forEach(function(n) {
-            if (n.status == ALIVE) {
-                alive++;
-            }
-        });
-        return this.rules(alive);
-    },
-
-    render: function (ctx) {
-        DrawUtils.drawSquare(ctx, this.box, this.color);
-    }
-};
+        ]);
+})(angular);

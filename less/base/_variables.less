@@ -1,0 +1,43 @@
+@theme-dark: #333333;
+@theme-main-fade: #666666;
+@theme-main: #777777;
+@theme-light: #CCCCCC;
+
+@link-color: #8EAEC9;
+@link-active: #2b7fc4;
+
+@default-font: sans-serif;
+
+.make-gradient(@start, @end) {
+  background-image: -ms-linear-gradient(top, @start 0%, @end 100%);
+  background-image: -moz-linear-gradient(top, @start 0%, @end 100%);
+  background-image: -o-linear-gradient(top, @start 0%, @end 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, @start), color-stop(1, @end));
+  background-image: -webkit-linear-gradient(top, @start 0%, @end 100%);
+  background-image: linear-gradient(to bottom, @start 0%, @end 100%);
+}
+
+//multi-line ellipsis support
+//http://css-tricks.com/line-clampin/
+.line-clamp(@lines) {
+  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
+}
+
+// This will cut text off but requires the element to have a width
+.no-wrap-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@ipad-landscape: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape)";
+@ipad-portrait: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait)";
+@ipad-all: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px)";
+@retina: ~"only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)";
+@desktop: ~"only screen and (min-width: 992px)";
+@bootstrap-small: ~"(min-width: 768px) and (max-width: 991px)";
+@bootstrap-med: ~"(min-width: 992px) and (max-width: 1199px)";
+@bootstrap-large: ~"(min-width: 1200px)";

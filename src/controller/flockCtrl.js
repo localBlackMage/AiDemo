@@ -2,52 +2,53 @@
     'use strict';
 
     ng.module('aidemo.flock', [
-        'ui.router'
+        'ui.router',
+        'aidemo.service.mathUtils',
+        'aidemo.service.drawUtils',
+        'aidemo.models.vector',
+        'aidemo.models.flockEntity'
     ])
-        .controller("FlockController", ['$scope',
-            function ($scope) {
+        .controller("FlockController", ['$scope', 'MathUtils', 'DrawUtils', 'Vector', 'FlockEntity',
+            function ($scope, MathUtils, DrawUtils, Vector, FlockEntity) {
                 var CAN_BACK = "#222", GRID_COLOR = "#555";
                 var createHerd = function (num) {
-                    console.log($scope.preyStats);
                     var retArray = [];
                     for (var idx = 0; idx < num; idx++) {
-                        var options = {
-                            pos: New(Vector, {
+                        retArray.push(FlockEntity.build({
+                            pos: Vector.build({
                                 x: MathUtils.getRand(0, $scope.canvas.width),
                                 y: MathUtils.getRand(0, $scope.canvas.height)
                             }),
-                            vel: New(Vector, {x: MathUtils.getRand(-1, 1), y: MathUtils.getRand(-1, 1)}),
+                            vel: Vector.build({x: MathUtils.getRand(-1, 1), y: MathUtils.getRand(-1, 1)}),
                             speed: parseFloat($scope.preyStats.speed),
                             cohW: parseFloat($scope.preyStats.cohW),
                             avoW: parseFloat($scope.preyStats.avoW),
                             sepW: parseFloat($scope.preyStats.sepW),
                             aliW: parseFloat($scope.preyStats.aliW),
                             wanW: parseFloat($scope.preyStats.wanW),
-                            type: PREY,
+                            type: FlockEntity.PREY,
                             color: DrawUtils.getRandomGreen()
-                        };
-                        retArray.push(New(Entity, options));
+                        }));
                     }
                     return retArray;
                 };
                 var createPredators = function (num) {
                     var retArray = [];
                     for (var idx = 0; idx < num; idx++) {
-                        var options = {
-                            pos: New(Vector, {
+                        retArray.push(FlockEntity.build({
+                            pos: Vector.build({
                                 x: MathUtils.getRand(0, $scope.canvas.width),
                                 y: MathUtils.getRand(0, $scope.canvas.height)
                             }),
-                            vel: New(Vector, {x: MathUtils.getRand(-1, 1), y: MathUtils.getRand(-1, 1)}),
+                            vel: Vector.build({x: MathUtils.getRand(-1, 1), y: MathUtils.getRand(-1, 1)}),
                             speed: parseFloat($scope.predStats.speed),
                             cohW: parseFloat($scope.predStats.cohW),
                             sepW: parseFloat($scope.predStats.sepW),
                             aliW: parseFloat($scope.predStats.aliW),
                             wanW: parseFloat($scope.predStats.wanW),
-                            type: PREDATOR,
+                            type: FlockEntity.PREDATOR,
                             color: DrawUtils.getRandomRed()
-                        };
-                        retArray.push(New(Entity, options));
+                        }));
                     }
                     return retArray;
                 };
@@ -56,7 +57,7 @@
                 $scope.box = {
                     width: $scope.canvas.width,
                     height: $scope.canvas.height,
-                    center: New(Vector, {x: $scope.canvas.width / 2, y: $scope.canvas.height / 2})
+                    center: Vector.build({x: $scope.canvas.width / 2, y: $scope.canvas.height / 2})
                 };
                 $scope.ctx = $scope.canvas.getContext('2d');
                 $scope.herd = [];
@@ -208,7 +209,7 @@
                     resolve: {},
 
                     views: {
-                        'main': {
+                        'main@': {
                             templateUrl: 'flockDemo.html',
                             controller: 'FlockController'
                         }

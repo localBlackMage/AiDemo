@@ -1,20 +1,28 @@
+(function (ng) {
+    'use strict';
 
-var Neuron = {
-    options: {
+    ng.module('aidemo.models.neuron', [])
+        .factory('Neuron', ['Utils', 'DrawUtils',
+            function (Utils, DrawUtils) {
+                /**
+                 * Constructor, with class name
+                 */
+                function Neuron(params) {
+                }
 
-    },
+                Neuron.build = function (data) {
+                    return new Neuron(data);
+                };
 
-    constructor: function (options) {
+                Neuron.prototype.update = function () {
 
-        return this;
-    },
+                };
 
+                Neuron.prototype.render = function () {
 
-    update: function () {
+                };
 
-    },
-
-    render: function () {
-
-    }
-};
+                return Neuron;
+            }
+        ]);
+})(angular);

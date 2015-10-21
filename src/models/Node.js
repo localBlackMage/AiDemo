@@ -1,86 +1,97 @@
-var SELECTED_COLOR = "#FFF",
-    SPECIAL_COLOR = "#F00",
-    RENDER_COLOR = "#000",
-    PATH_COLOR = "#0F0",
-    RANGE = 25;
-var Node = {
-    id: null,
-    box: null,
-    pos: null,
-    neighbors: null,
-    distance: null,
-    selected: false, special: false, path: false,
-    options: {
-        id: null, pos: New(Vector, {}),
-        distance: 0, box: {}, neighbors: [],
-        selected: false, special: false, path: false
-    },
+(function (ng) {
+    'use strict';
 
-    constructor: function (options) {
-        this.id = IsNotNullOrUndefined(options.id) ? options.id : this.options.id;
-        this.pos = IsNotNullOrUndefined(options.pos) ? options.pos : this.options.pos;
-        this.distance = IsNotNullOrUndefined(options.distance) ? options.distance : this.options.distance;
-        this.box = IsNotNullOrUndefined(options.box) ? options.box : this.options.box;
+    ng.module('aidemo.models.node', [
+        'aidemo.service.utils',
+        'aidemo.service.mathUtils',
+        'aidemo.service.drawUtils',
+        'aidemo.models.vector'
+    ])
+        .factory('Node', ['Utils', 'DrawUtils', 'MathUtils', 'Vector',
+            function (Utils, DrawUtils, MathUtils, Vector) {
+                /**
+                 * Constructor, with class name
+                 */
+                function Node(params) {
+                    this.id = Utils.isNotNullOrUndefined(params.id) ? params.id : null;
+                    this.pos = Utils.isNotNullOrUndefined(params.pos) ? params.pos : Vector.build();
+                    this.distance = Utils.isNotNullOrUndefined(params.distance) ? params.distance : 0;
+                    this.box = Utils.isNotNullOrUndefined(params.box) ? params.box : {};
 
-        this.neighbors = IsNotNullOrUndefined(options.neighbors) ? options.neighbors : this.options.neighbors;
-        this.selected = IsNotNullOrUndefined(options.selected) ? options.selected : this.options.selected;
-        this.special = IsNotNullOrUndefined(options.special) ? options.special : this.options.special;
-        this.path = IsNotNullOrUndefined(options.path) ? options.path : this.options.path;
-        return this;
-    },
+                    this.neighbors = Utils.isNotNullOrUndefined(params.neighbors) ? params.neighbors : [];
+                    this.selected = Utils.isNotNullOrUndefined(params.selected) ? params.selected : false;
+                    this.special = Utils.isNotNullOrUndefined(params.special) ? params.special : false;
+                    this.path = Utils.isNotNullOrUndefined(params.path) ? params.path : false;
+                }
 
-    getNeighbors: function () {
-        return this.neighbors;
-    },
+                Node.build = function (data) {
+                    return new Node(data);
+                };
 
-    fillNeighbors: function (neighbors) {
-        this.neighbors = IsNotNullOrUndefined(neighbors) ? neighbors : [];
-    },
+                Node.prototype.SELECTED_COLOR = "#FFF";
+                Node.prototype.SPECIAL_COLOR = "#F00";
+                Node.prototype.RENDER_COLOR = "#000";
+                Node.prototype.PATH_COLOR = "#0F0";
+                Node.prototype.RANGE = 25;
 
-    resetSelect: function () {
-        this.selected = false;
-    },
+                Node.prototype.getNeighbors = function () {
+                    return this.neighbors;
+                };
 
-    select: function(pos) {
-        var dist = this.pos.subNew(pos).length();
-        this.selected = dist <= RANGE;
-    },
+                Node.prototype.fillNeighbors = function (neighbors) {
+                    this.neighbors = Utils.isNotNullOrUndefined(neighbors) ? neighbors : [];
+                };
 
-    specialSelect: function(pos) {
-        var dist = this.pos.subNew(pos).length();
-        this.special = dist <= RANGE;
-        return this.special;
-    },
+                Node.prototype.resetSelect = function () {
+                    this.selected = false;
+                };
 
-    pathSelect: function() {
-        this.path = !this.special;
-    },
+                Node.prototype.select = function (pos) {
+                    var dist = this.pos.subNew(pos).length();
+                    this.selected = dist <= this.RANGE;
+                };
 
-    update: function (options) {
+                Node.prototype.specialSelect = function (pos) {
+                    var dist = this.pos.subNew(pos).length();
+                    this.special = dist <= this.RANGE;
+                    return this.special;
+                };
 
-    },
+                Node.prototype.pathSelect = function () {
+                    this.path = !this.special;
+                };
 
-    renderPaths: function (ctx) {
-        var self = this;
-        this.neighbors.forEach(function(neighbor) {
-            if (neighbor.pos)
-                DrawUtils.drawLine(ctx, self.pos.x, self.pos.y, neighbor.pos.x, neighbor.pos.y, ((neighbor.path || neighbor.special) && (this.path || this.special)) ? PATH_COLOR : RENDER_COLOR);
-        });
-    },
+                Node.prototype.update = function (options) {
 
-    getColor: function () {
-        if (this.special)
-            return SPECIAL_COLOR;
-        else if (this.path)
-            return PATH_COLOR;
-        else if (this.selected)
-            return SELECTED_COLOR;
-        else
-            return RENDER_COLOR;
-    },
+                };
 
-    render: function (ctx) {
-        DrawUtils.drawText(ctx, this.pos.x+10, this.pos.y-10, SELECTED_COLOR, this.id.toString());
-        DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, this.getColor());
-    }
-};
+                Node.prototype.renderPaths = function (ctx) {
+                    var self = this;
+                    this.neighbors.forEach(function (neighbor) {
+                        if (neighbor.pos) {
+                            var color = ((neighbor.path || neighbor.special) && (this.path || this.special)) ? this.PATH_COLOR : this.RENDER_COLOR;
+                            DrawUtils.drawLine(ctx, self.pos.x, self.pos.y, neighbor.pos.x, neighbor.pos.y, color);
+                        }
+                    });
+                };
+
+                Node.prototype.getColor = function () {
+                    if (this.special)
+                        return this.SPECIAL_COLOR;
+                    else if (this.path)
+                        return this.PATH_COLOR;
+                    else if (this.selected)
+                        return this.SELECTED_COLOR;
+                    else
+                        return this.RENDER_COLOR;
+                };
+
+                Node.prototype.render = function (ctx) {
+                    DrawUtils.drawText(ctx, this.pos.x + 10, this.pos.y - 10, this.SELECTED_COLOR, this.id.toString());
+                    DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, 5, this.getColor());
+                };
+
+                return Node;
+            }
+        ]);
+})(angular);

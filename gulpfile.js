@@ -16,15 +16,16 @@ var PROJ_ROOT = '',
     DIST_ROOT = PROJ_ROOT + 'dist';
 
 var styles = [LESS_ROOT + '/*.less'],
+    stylesAll = [LESS_ROOT + '/**/*.less'],
     scripts = [
-        //SCRIPTS_ROOT + '/utils/*.js',
-        //SCRIPTS_ROOT + '/models/*.js',
+        SCRIPTS_ROOT + '/utils/*.js',
+        SCRIPTS_ROOT + '/models/*.js',
         SCRIPTS_ROOT + '/*.js',
-        //SCRIPTS_ROOT + '/controller/*.js'
+        //SCRIPTS_ROOT + '/controller/*.js',
         SCRIPTS_ROOT + '/controller/flockCtrl.js'
     ],
     css = [
-        DIST_ROOT + '/css/expanded/*.css',
+        DIST_ROOT + '/css/expanded/core.css',
         BOWER_COMP_ROOT + '/angular-bootstrap/ui-bootstrap-csp.css'
     ],
     libs = [
@@ -98,7 +99,7 @@ gulp.task('templates', function () {
 // Watch Files For Changes
 gulp.task('watch', function () {
     gulp.watch(scripts, ['appscripts']);
-    gulp.watch(styles, ['styles', 'cssmin']);
+    gulp.watch(stylesAll, ['styles', 'cssmin']);
     gulp.watch(templates, ['templates']);
     gulp.watch(tests, ['test']);
 });

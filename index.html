@@ -5,13 +5,13 @@
         <title>AI Demos</title>
         <!--<link rel="stylesheet" href="dist/css/bootstrap.min.css"/>-->
         <link rel="stylesheet" href="dist/css/aidemo.min.css"/>
+
+        <script src="dist/libs-all.min.js" defer></script>
+        <script src="dist/templates/aidemo-templates.js" defer></script>
+        <script src="dist/aidemo.js" defer></script>
     </head>
     <body ng-app="AIDemoApp" class="app-container">
         <header class="app-header" ui-view="header"></header>
         <div class="app-body" ui-view="main"></div>
-
-        <script src="dist/libs-all.min.js"></script>
-        <script src="dist/aidemo.js"></script>
-        <script src="dist/templates/aidemo-templates.js"></script>
     </body>
 </html>

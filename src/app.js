@@ -10,12 +10,14 @@
         //'ngAnimate',
 
         'aidemo.templates',
+        'aidemo.services.aStar',
         'aidemo.flock'
     ]);
 
     app.controller('HeaderController', ['$scope', '$state',
         function ($scope, $state) {
             $scope.links = [
+                {state: 'app', name: 'Home', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: true},
                 {state: 'app.flock', name: 'Flocking', inactive: false},
                 {state: 'app.life', name: 'Life', inactive: true},
