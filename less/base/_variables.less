@@ -3,8 +3,8 @@
 @theme-main: #777777;
 @theme-light: #CCCCCC;
 
-@link-color: #8EAEC9;
-@link-active: #2b7fc4;
+@theme-highlight: #8EAEC9;
+@theme-highlight-dark: #2B7FC4;
 
 @default-font: sans-serif;
 
@@ -31,6 +31,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.common-container {
+  padding: 30px;
+  background-color:rgba(0,0,0,0.75);
+  border-radius: 25px;
+  box-shadow: 0 0 20px black;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 @ipad-landscape: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape)";

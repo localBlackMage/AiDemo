@@ -1,16 +1,23 @@
-//var demoApp = angular.module('DemoApp', []);
-
 (function (ng) {
     'use strict';
 
-    var app = ng.module('AIDemoApp', [
+    var app = ng.module('aidemo.app', [
+        // Other dependencies
         'ui.router',
         //'ngSanitize',
         //'ui.bootstrap',
         //'ngAnimate',
 
+        // Templates
         'aidemo.templates',
+
+        // Services
         'aidemo.services.aStar',
+
+        // Directives
+        'aidemo.ui.canvas',
+
+        // Controllers
         'aidemo.flock'
     ]);
 

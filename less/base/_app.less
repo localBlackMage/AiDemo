@@ -47,11 +47,19 @@ button.btn-default {
 }
 
 a {
-  color: @link-color;
+  color: @theme-highlight;
 
   &:focus, &:active{
-    color: @link-active;
+    color: @theme-highlight-dark;
   }
+}
+
+div {
+  display: flex;
+}
+
+.highlight {
+  color: @theme-highlight;
 }
 
 body.app-container {
@@ -59,8 +67,8 @@ body.app-container {
 
   div.app-body {
     width: 100%;
-    height: 100%;
-    display: block;
+    //height: 100%;
+    justify-content: center;
     position: relative;
     padding: 30px;
 

@@ -1,12 +1,25 @@
-describe("Vector Tests", function () {
-    var defVec = {x: 1, y: 1};
-    beforeEach(module("DemoApp"));
+describe("Vector Model", function () {
+    var defaultVector = {x: 1, y: 1}, Vector;
+    beforeEach(function () {
+        module('aidemo.models.vector');
+
+        inject(function (_Vector_) {
+            Vector = _Vector_;
+        });
+    });
+
+    it('should build a Vector object', function() {
+        var vector = Vector.build(defaultVector);
+
+        expect(vector.x).toBe(1);
+        expect(vector.y).toBe(1);
+    });
 
     it("should instantiate properly", function () {
-        var vecOne = New (Vector, {}),
-            vecTwo = New (Vector, {x: 1}),
-            vecThree = New (Vector, {y: 1}),
-            vecFour = New (Vector, {x: 1, y: 1});
+        var vecOne = new Vector(),
+            vecTwo = new Vector({x: 1}),
+            vecThree = new Vector({y: 1}),
+            vecFour = new Vector({x: 1, y: 1});
 
         expect(vecOne.x).toBe(0);
         expect(vecOne.y).toBe(0);
@@ -22,8 +35,8 @@ describe("Vector Tests", function () {
     });
 
     it("should calculate it's length", function () {
-        var vec = New (Vector, defVec), res,
-            expected = Math.sqrt(Math.pow(defVec.x, 2) + Math.pow(defVec.y, 2));
+        var vec = new Vector(defaultVector), res,
+            expected = Math.sqrt(Math.pow(defaultVector.x, 2) + Math.pow(defaultVector.y, 2));
 
         res = vec.length();
 
@@ -31,8 +44,8 @@ describe("Vector Tests", function () {
     });
 
     it("should calculate it's normal", function () {
-        var vec = New (Vector, defVec), scalar = 1, res, length = vec.length(),
-            expected = New(Vector, {x: (this.x / length) * scalar, y: (this.y / length) * scalar});
+        var vec = new Vector(defaultVector), res, length = vec.length(),
+            expected = new Vector({x: (defaultVector.x / length), y: (defaultVector.y / length)});
 
         res = vec.normalize();
 
@@ -41,8 +54,8 @@ describe("Vector Tests", function () {
     });
 
     it("should add two vectors and return a new instance", function () {
-        var vecOne = New (Vector, defVec),
-            vecTwo = New (Vector, {x:-1, y:2}), res,
+        var vecOne = new Vector(defaultVector),
+            vecTwo = new Vector({x:-1, y:2}), res,
             expected = {x: vecOne.x + vecTwo.x, y: vecOne.y + vecTwo.y};
 
         res = vecOne.addNew(vecTwo);
@@ -52,8 +65,8 @@ describe("Vector Tests", function () {
     });
 
     it("should add two vectors and mutate the original", function () {
-        var vecOne = New (Vector, defVec),
-            vecTwo = New (Vector, {x:-1, y:2}),
+        var vecOne = new Vector(defaultVector),
+            vecTwo = new Vector({x:-1, y:2}),
             expected = {x: vecOne.x + vecTwo.x, y: vecOne.y + vecTwo.y};
 
         vecOne.add(vecTwo);
@@ -63,8 +76,8 @@ describe("Vector Tests", function () {
     });
 
     it("should subtract two vectors and return a new instance", function () {
-        var vecOne = New (Vector, defVec),
-            vecTwo = New (Vector, {x:-1, y:2}), res,
+        var vecOne = new Vector(defaultVector),
+            vecTwo = new Vector({x:-1, y:2}), res,
             expected = {x: vecOne.x - vecTwo.x, y: vecOne.y - vecTwo.y};
 
         res = vecOne.subNew(vecTwo);
@@ -74,8 +87,8 @@ describe("Vector Tests", function () {
     });
 
     it("should subtract two vectors and mutate the original", function () {
-        var vecOne = New (Vector, defVec),
-            vecTwo = New (Vector, {x:-1, y:2}),
+        var vecOne = new Vector(defaultVector),
+            vecTwo = new Vector({x:-1, y:2}),
             expected = {x: vecOne.x - vecTwo.x, y: vecOne.y - vecTwo.y};
 
         vecOne.sub(vecTwo);
@@ -85,7 +98,7 @@ describe("Vector Tests", function () {
     });
 
     it("should multiply a vector by a scalar and return a new instance", function () {
-        var vec = New (Vector, {x: 2, y: -2}), res, scalar = 4,
+        var vec = new Vector({x: 2, y: -2}), res, scalar = 4,
             expected = {x: vec.x * scalar, y: vec.y * scalar};
 
         res = vec.mulNew(scalar);
@@ -95,7 +108,7 @@ describe("Vector Tests", function () {
     });
 
     it("should multiply a vector by a scalar and mutate the original", function () {
-        var vec = New (Vector, {x: 2, y: -2}), scalar = 4,
+        var vec = new Vector({x: 2, y: -2}), scalar = 4,
             expected = {x: vec.x * scalar, y: vec.y * scalar};
 
         vec.mul(scalar);
@@ -105,7 +118,7 @@ describe("Vector Tests", function () {
     });
 
     it("should divide a vector by a scalar and return a new instance", function () {
-        var vec = New (Vector, {x: 2, y: -2}), res, scalar = 4,
+        var vec = new Vector({x: 2, y: -2}), res, scalar = 4,
             expected = {x: vec.x / scalar, y: vec.y / scalar};
 
         res = vec.divNew(scalar);
@@ -115,7 +128,7 @@ describe("Vector Tests", function () {
     });
 
     it("should divide a vector by a scalar and mutate the original", function () {
-        var vec = New (Vector, {x: 2, y: -2}), scalar = 4,
+        var vec = new Vector({x: 2, y: -2}), scalar = 4,
             expected = {x: vec.x / scalar, y: vec.y / scalar};
 
         vec.div(scalar);
@@ -124,8 +137,44 @@ describe("Vector Tests", function () {
         expect(vec.y).toEqual(expected.y);
     });
 
+    it('should convert an angle to a Vector object', function () {
+        var vector = Vector.angleToVector(180);
+
+        expect(vector.x).toBe(-1);
+        expect(vector.y).toBe(0);
+    });
+
+    it('should convert a vector to an angle in radians', function () {
+        var vector = new Vector(defaultVector),
+            angle = vector.vectorToAngleRadians();
+
+        expect(angle).toBe(45 * Math.PI / 180);
+    });
+
+    it('should convert a vector to an angle in degrees', function () {
+        var vector = new Vector(defaultVector),
+            angle = vector.vectorToAngleDegrees();
+
+        expect(angle).toBe(45);
+    });
+
+    it("should calculate the distance between two vectors", function () {
+        var vecOne = new Vector({x: 10, y: 5}),
+            vecTwo = new Vector({x: 5, y: 10}),
+            expected = Math.sqrt(Math.pow(vecOne.x - vecTwo.x, 2) + Math.pow(vecOne.y - vecTwo.y, 2)),
+            res;
+
+        res = vecOne.distance(vecTwo);
+
+        expect(res).toEqual(expected);
+    });
+
+    //it('should dosomething', function () {
+    //
+    //});
+
     it("should return itself as a JSON object when converted to a string", function () {
-        var vec = New (Vector, {x: 2, y: -2}), res,
+        var vec = new Vector({x: 2, y: -2}), res,
             expected = {x: vec.x, y: vec.y};
 
         res = vec.toString();

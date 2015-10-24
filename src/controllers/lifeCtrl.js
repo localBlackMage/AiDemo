@@ -28,7 +28,7 @@ demoApp.controller('LifeCtrl', ['$scope', function ($scope) {
         for(var y = 0; y < $scope.box.height / $scope.gridObj.tileSize; y++) {
             var arr = [];
             for(var x = 0; x < $scope.box.width / $scope.gridObj.tileSize; x++) {
-                de = MathUtils.getRand(0, 1) < 0.1 ? true : false;
+                de = MathUtils.getRandomNumber(0, 1) < 0.1 ? true : false;
                 arr.push((New(Cell, {
                     box: {
                         x: x * $scope.gridObj.tileSize,

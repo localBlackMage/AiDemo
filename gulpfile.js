@@ -5,7 +5,8 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     templateCache = require('gulp-angular-templatecache'),
-    cssmin = require('gulp-cssmin');
+    cssmin = require('gulp-cssmin'),
+    Server = require('karma').Server;
 
 var PROJ_ROOT = '',
     BOWER_COMP_ROOT = PROJ_ROOT + 'bower_components',
@@ -18,11 +19,12 @@ var PROJ_ROOT = '',
 var styles = [LESS_ROOT + '/*.less'],
     stylesAll = [LESS_ROOT + '/**/*.less'],
     scripts = [
-        SCRIPTS_ROOT + '/utils/*.js',
+        SCRIPTS_ROOT + '/services/*.js',
         SCRIPTS_ROOT + '/models/*.js',
-        SCRIPTS_ROOT + '/*.js',
-        //SCRIPTS_ROOT + '/controller/*.js',
-        SCRIPTS_ROOT + '/controller/flockCtrl.js'
+        SCRIPTS_ROOT + '/directives/*.js',
+        SCRIPTS_ROOT + '/controllers/flockCtrl.js',
+        //SCRIPTS_ROOT + '/controllers/*.js',
+        SCRIPTS_ROOT + '/*.js'
     ],
     css = [
         DIST_ROOT + '/css/expanded/core.css',
@@ -32,21 +34,25 @@ var styles = [LESS_ROOT + '/*.less'],
         BOWER_COMP_ROOT + '/jquery/dist/jquery.js',
         BOWER_COMP_ROOT + '/angular/angular.js',
         BOWER_COMP_ROOT + '/angular-ui-router/release/angular-ui-router.js',
-        BOWER_COMP_ROOT + '/angular-bootstrap/ui-bootstrap.js'
-        //BOWER_COMP_ROOT + '/bootstrap/dist/js/bootstrap.js',
-        //BOWER_COMP_ROOT + '/threejs/build/three.js',
-        //BOWER_COMP_ROOT + '/libs/*.js'
+        BOWER_COMP_ROOT + '/angular-bootstrap/ui-bootstrap.js',
+        BOWER_COMP_ROOT + '/lodash/lodash.js'
+        //BOWER_COMP_ROOT + '/threejs/build/three.js'
     ],
     templates = [
         TEMPLATES_ROOT + '/**/*.html'
     ],
     tests = [TESTS_ROOT + '/*.js'];
 
-// Concatenate JS - TESTS
-gulp.task('test', function () {
-    return gulp.src(tests)
-        .pipe(concat('tests-all.js'))
-        .pipe(gulp.dest(DIST_ROOT + '/tests'))
+/**
+ * Run test once and exit
+ */
+gulp.task('test', ['appscripts'], function(done) {
+    Server.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, function() {
+        done();
+    });
 });
 
 gulp.task('styles', function () {
@@ -98,13 +104,13 @@ gulp.task('templates', function () {
 
 // Watch Files For Changes
 gulp.task('watch', function () {
-    gulp.watch(scripts, ['appscripts']);
+    gulp.watch(scripts, ['appscripts', 'test']);
     gulp.watch(stylesAll, ['styles', 'cssmin']);
     gulp.watch(templates, ['templates']);
     gulp.watch(tests, ['test']);
 });
 
 // Default Task
-gulp.task('default', ['templates', 'libs', 'appscripts', 'styles', 'cssmin', 'test']);
+gulp.task('default', ['templates', 'appscripts', 'styles', 'cssmin', 'test']);
 
-gulp.task('dev', ['templates', 'appscripts', 'styles', 'cssmin']);
+gulp.task('build-all', ['templates', 'libs', 'appscripts', 'styles', 'cssmin', 'test']);

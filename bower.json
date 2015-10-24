@@ -1,0 +1,22 @@
+{
+  "name": "AiDemo",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hprofit/AiDemo",
+  "authors": [
+    "holden_profit <holdenprofit@gmail.com>"
+  ],
+  "description": "A collection of AI demos contained within a small AngularJS app.",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "angularjs", "ai", "artificial", "intelligence"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular-bootstrap": "~0.13.4",
+    "angular-ui-router": "~0.2.15",
+    "jquery": ">= 1.9.1",
+    "angular": "~1.4.7",
+    "lodash": "~3.10.1"
+  }
+}

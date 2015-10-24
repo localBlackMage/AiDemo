@@ -72,7 +72,7 @@ demoApp.controller('AstarCtrl', ['$scope', function ($scope) {
         for(var y = 0; y < $scope.box.height / $scope.gridObj.tileSize; y++) {
             var arr = [];
             for(var x = 0; x < $scope.box.width / $scope.gridObj.tileSize; x++) {
-                var spawn = true;//MathUtils.getRand(0, 1) < 0.8 ? true : false;
+                var spawn = true;//MathUtils.getRandomNumber(0, 1) < 0.8 ? true : false;
                 if (spawn) {
                     var pos = New(Vector, {
                         x: x * $scope.gridObj.tileSize + tCalc,

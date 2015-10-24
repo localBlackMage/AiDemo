@@ -8,8 +8,9 @@
                  * Constructor, with class name
                  */
                 function Vector(params) {
-                    this.x = params.x ? params.x : 0;
-                    this.y = params.y ? params.y : 0;
+                    params = params || {};
+                    this.x = params.x || 0;
+                    this.y = params.y || 0;
                 }
 
                 Vector.build = function (data) {
@@ -21,13 +22,13 @@
                 };
 
                 Vector.prototype.normalize = function (scalar) {
-                    scalar = scalar === null ? 1 : scalar;
+                    scalar = scalar || 1;
                     var length = this.length();
-                    return Vector.build({x: (this.x / length) * scalar, y: (this.y / length) * scalar});
+                    return new Vector({x: (this.x / length) * scalar, y: (this.y / length) * scalar});
                 };
 
                 Vector.prototype.addNew = function (other) {
-                    return Vector.build({x: this.x + other.x, y: this.y + other.y});
+                    return new Vector({x: this.x + other.x, y: this.y + other.y});
                 };
 
                 Vector.prototype.add = function (other) {
@@ -36,7 +37,7 @@
                 };
 
                 Vector.prototype.subNew = function (other) {
-                    return Vector.build({x: this.x - other.x, y: this.y - other.y});
+                    return new Vector({x: this.x - other.x, y: this.y - other.y});
                 };
 
                 Vector.prototype.sub = function (other) {
@@ -45,7 +46,7 @@
                 };
 
                 Vector.prototype.mulNew = function (scalar) {
-                    return Vector.build({x: this.x * scalar, y: this.y * scalar});
+                    return new Vector({x: this.x * scalar, y: this.y * scalar});
                 };
 
                 Vector.prototype.mul = function (scalar) {
@@ -54,7 +55,7 @@
                 };
 
                 Vector.prototype.divNew = function (scalar) {
-                    return Vector.build({x: this.x / scalar, y: this.y / scalar});
+                    return new Vector({x: this.x / scalar, y: this.y / scalar});
                 };
 
                 Vector.prototype.div = function (div) {
@@ -62,12 +63,20 @@
                     this.y /= div;
                 };
 
-                Vector.prototype.angleToVector = function (angle) {
-                    return Vector.build({x: parseFloat(Math.sin(angle)), y: -parseFloat(Math.cos(angle))});
+                Vector.angleToVector = function (angle) {
+                    angle = angle * Math.PI / 180.0;
+                    return new Vector({
+                        x: Math.round(parseFloat(Math.cos(angle)) * 100) / 100,
+                        y: Math.round(parseFloat(Math.sin(angle)) * 100) / 100
+                    });
                 };
 
-                Vector.prototype.vectorToAngle = function () {
-                    return parseFloat(Math.atan2(this.x, -this.y));
+                Vector.prototype.vectorToAngleRadians = function () {
+                    return parseFloat(Math.atan2(this.y, this.x));
+                };
+
+                Vector.prototype.vectorToAngleDegrees = function () {
+                    return this.vectorToAngleRadians() * 180 / Math.PI;
                 };
 
                 Vector.prototype.distance = function (other) {
