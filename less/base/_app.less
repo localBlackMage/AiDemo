@@ -54,6 +54,22 @@ a {
   }
 }
 
+label, input {
+  font-family: @default-font;
+  font-size: 16px;
+}
+
+input {
+  margin-left: 10px;
+  border: solid 1px @theme-light;
+  border-radius: 5px;
+  padding: 2px 4px;
+
+  &:focus {
+    outline: @theme-highlight-dark auto 5px;
+  }
+}
+
 div {
   display: flex;
 }
@@ -103,10 +119,10 @@ body.app-container {
   border-color: @theme-light;
 }
 
-.left {
-  float: left;
-  margin-right: 1em;
-}
+//.left {
+//  float: left;
+//  margin-right: 1em;
+//}
 
 .down {
   margin-top: 1em;

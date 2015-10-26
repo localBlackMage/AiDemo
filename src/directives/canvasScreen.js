@@ -101,7 +101,6 @@ angular.module('aidemo.ui.canvas', [
                             scope.onUpdate();
                         }
                         scope.render();
-                        console.log("Called");
 
                         // request new frame
                         scope.requestID = $window.requestAnimationFrame(scope.animate);

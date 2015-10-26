@@ -12,14 +12,28 @@ div.app-flexdemo {
   }
 
   div.information {
-    flex-grow: .05;
+    flex-grow: 1;
+    justify-content: space-around;
+    align-items: center;
 
-    label.label-remaining {
+    label {
       color: white;
     }
   }
 
   div.statistics {
     flex-grow: .2;
+    justify-content: space-around;
+
+    div.statistics-container {
+      flex-direction: column;
+      justify-content: space-around;
+
+      div.stat {
+        justify-content: space-between;
+
+
+      }
+    }
   }
 }

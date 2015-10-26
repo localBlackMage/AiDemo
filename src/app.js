@@ -21,8 +21,9 @@
         'aidemo.flock'
     ]);
 
-    app.controller('HeaderController', ['$scope', '$state',
-        function ($scope, $state) {
+    app.controller('HeaderController', ['$rootScope', '$scope', '$state',
+        function ($rootScope, $scope, $state) {
+            $scope.currentState = $state.current.name;
             $scope.links = [
                 {state: 'app', name: 'Home', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: true},
@@ -30,6 +31,11 @@
                 {state: 'app.life', name: 'Life', inactive: true},
                 {state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
+
+            $rootScope.$on('$stateChangeStart',
+                function (event, toState, toParams, fromState, fromParams) {
+                    $scope.currentState = toState.name;
+                });
         }
     ]);
 
