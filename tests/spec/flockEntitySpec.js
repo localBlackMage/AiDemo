@@ -234,7 +234,7 @@ describe("FlockEntity Model", function () {
         expect(entObj.avoidWalls).toHaveBeenCalled();
 
         expect(entObj.renderExclamation).toBe(false);
-        expect(entObj.velocity.x).toBe(2);
+        expect(entObj.velocity.x).toBe(1.6);
         expect(entObj.velocity.y).toBe(0);
     });
 

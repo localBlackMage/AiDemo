@@ -18,7 +18,8 @@
         'aidemo.ui.canvas',
 
         // Controllers
-        'aidemo.flock'
+        'aidemo.flock',
+        'aidemo.life'
     ]);
 
     app.controller('HeaderController', ['$rootScope', '$scope', '$state',
@@ -28,7 +29,7 @@
                 {state: 'app', name: 'Home', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: true},
                 {state: 'app.flock', name: 'Flocking', inactive: false},
-                {state: 'app.life', name: 'Life', inactive: true}//,
+                {state: 'app.life', name: 'Life', inactive: false}
                 //{state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
 

@@ -14,6 +14,8 @@
                     this.neighbors = [];
                     this.box = Utils.isNotNullOrUndefined(params.box) ? params.box : {};
                     this.status = params.status === this.DEAD || params.status === this.ALIVE ? params.status : this.DEAD;
+                    this.DEAD_COLOR = params.DEAD_COLOR || this.DEAD_COLOR;
+                    this.ALIVE_COLOR = params.ALIVE_COLOR || this.ALIVE_COLOR;
                     this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
                 }
 
@@ -50,8 +52,8 @@
                 };
 
                 LifeCell.prototype.setStatus = function (status) {
-                    this.status = status == this.DEAD || status == this.ALIVE ? status : this.DEAD;
-                    this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
+                    this.status = status === this.DEAD || status === this.ALIVE ? status : this.DEAD;
+                    this.color = this[this.status + '_COLOR'];
                 };
 
                 LifeCell.prototype.update = function () {
@@ -68,13 +70,13 @@
                     DrawUtils.drawSquare(ctx, this.box, this.color);
                 };
 
-                LifeCell.prototype.deepCopyGrid = function (grid, udlr) {
+                LifeCell.deepCopyGrid = function (grid, udlr) {
                     udlr = udlr === true || udlr === false ? udlr : false;
                     var gridCopy = [];
                     for (var y = 0; y < grid.length; y++) {
                         var row = [];
                         for (var x = 0; x < grid[y].length; x++) {
-                            row.push(LifeCell.build({
+                            row.push(new LifeCell({
                                 box: grid[y][x].box,
                                 status: grid[y][x].status
                             }));

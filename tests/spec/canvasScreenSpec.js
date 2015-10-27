@@ -7,7 +7,10 @@ describe("CanvasScreen Directive", function () {
     beforeEach(function () {
         module('aidemo.templates');
         module('aidemo.ui.canvas', function ($provide) {
-            $provide.value('$window', {});
+            $provide.value('$window', {
+                clearTimeout: function (id) {
+                }
+            });
 
             $provide.decorator('DrawUtils', function ($delegate) {
                 $delegate.path = jasmine.createSpy();
@@ -31,6 +34,7 @@ describe("CanvasScreen Directive", function () {
             Vector = _Vector_;
 
             scope.update = jasmine.createSpy('update');
+            scope.touch = jasmine.createSpy('touch');
         });
     });
 
@@ -63,6 +67,52 @@ describe("CanvasScreen Directive", function () {
         expect(iScope.onUpdate).toBeDefined();
     });
 
+    it('should start a touch event', function () {
+        var element = createDirective('<canvas-screen has-grid="y" bg-color="#FFFFFF" box="{}" touch="touch(touch)"></canvas-screen>'),
+            iScope = element.isolateScope(),
+            event = angular.element.Event('mousedown');
+
+        iScope.drawing = false;
+        spyOn(iScope, 'touch').and.callFake(function (e) {
+            expect(e.event).toBe(event);
+        });
+
+        iScope.startTouch(event);
+
+        expect(iScope.touch).toHaveBeenCalled();
+        expect(iScope.drawing).toBeTruthy();
+    });
+
+    it('should continue a touch event', function () {
+        var element = createDirective('<canvas-screen has-grid="y" bg-color="#FFFFFF" box="{}" touch="touch(touch)"></canvas-screen>'),
+            iScope = element.isolateScope(),
+            event = angular.element.Event('mousemove');
+
+        spyOn(iScope, 'touch').and.callFake(function (e) {
+            expect(e.event).toBe(event);
+        });
+
+        iScope.drawing = false;
+        iScope.continueTouch(event);
+
+        expect(iScope.touch).not.toHaveBeenCalled();
+
+        iScope.drawing = true;
+        iScope.continueTouch(event);
+
+        expect(iScope.touch).toHaveBeenCalled();
+    });
+
+    it('should stop a touch event', function () {
+        var element = createDirective('<canvas-screen has-grid="y" bg-color="#FFFFFF" box="{}" touch="touch(touch)"></canvas-screen>'),
+            iScope = element.isolateScope();
+
+        iScope.drawing = true;
+        iScope.stopTouch({});
+
+        expect(iScope.drawing).toBeFalsy();
+    });
+
     it('should set window.requestAnimFrame', function () {
         var element = createDirective(commonTemplate),
             iScope = element.isolateScope();
@@ -85,7 +135,7 @@ describe("CanvasScreen Directive", function () {
         expect(iScope.$apply).toHaveBeenCalled();
     });
 
-    it('should call an objects render method if it has one', function () {
+    it("should call an object's render method if it has one", function () {
         var element = createDirective(commonTemplate),
             iScope = element.isolateScope();
 
@@ -102,7 +152,58 @@ describe("CanvasScreen Directive", function () {
 
         iScope.renderObject(object);
 
+        expect(_.isFunction).toHaveBeenCalled();
         expect(object.render).toHaveBeenCalled();
+    });
+
+    it("should call renderArrayOrObjectsArrays for each item in the object if the object is an array", function () {
+        var element = createDirective(commonTemplate),
+            iScope = element.isolateScope();
+
+        var objects = [{}];
+
+        spyOn(_, 'isFunction').and.callFake(function (fn) {
+            expect(fn).not.toBeDefined();
+            return false;
+        });
+        spyOn(_, 'isArray').and.callFake(function (fn) {
+            expect(fn).toBe(objects);
+            return true;
+        });
+        spyOn(iScope, 'renderArrayOrObjectsArrays').and.callFake(function (obj) {
+            expect(obj).toBe(objects[0]);
+        });
+
+        iScope.renderObject(objects);
+
+        expect(_.isFunction).toHaveBeenCalled();
+        expect(_.isArray).toHaveBeenCalled();
+        expect(iScope.renderArrayOrObjectsArrays).toHaveBeenCalled();
+    });
+
+    it("should call renderArraysInObject if the object doesn't have a render method and isn't an array", function () {
+        var element = createDirective(commonTemplate),
+            iScope = element.isolateScope();
+
+        var object = {objects: [] };
+
+        spyOn(_, 'isFunction').and.callFake(function (fn) {
+            expect(fn).not.toBeDefined();
+            return false;
+        });
+        spyOn(_, 'isArray').and.callFake(function (fn) {
+            expect(fn).toBe(object);
+            return false;
+        });
+        spyOn(iScope, 'renderArraysInObject').and.callFake(function (obj) {
+            expect(obj).toBe(object);
+        });
+
+        iScope.renderObject(object);
+
+        expect(_.isFunction).toHaveBeenCalled();
+        expect(_.isArray).toHaveBeenCalled();
+        expect(iScope.renderArraysInObject).toHaveBeenCalled();
     });
 
     it('should call renderArrayOrObjectsArrays for each property of a given object', function () {
@@ -148,30 +249,20 @@ describe("CanvasScreen Directive", function () {
                     render: function (context) {
                     }
                 }
-                //,
-                //{
-                //    render: function (context) {
-                //    }
-                //},
-                //{
-                //    render: ''
-                //},
-                //{}
             ];
 
-        spyOn(iScope, 'renderArraysInObject').and.callFake(function (object) {
-            expect(object).toBeDefined();
-        });
+        spyOn(iScope, 'renderArrayOrObjectsArrays').and.callThrough();
         spyOn(iScope, 'renderObject').and.callFake(function (object) {
         });
 
-        iScope.renderArrayOrObjectsArrays({});
-
-        expect(iScope.renderArraysInObject).toHaveBeenCalled();
-
         iScope.renderArrayOrObjectsArrays(objects);
 
+        expect(iScope.renderArrayOrObjectsArrays.calls.count()).toBe(2);
+
+        iScope.renderArrayOrObjectsArrays({});
+
         expect(iScope.renderObject).toHaveBeenCalled();
+
     });
 
     it('should render the canvas and objects', function () {
@@ -195,7 +286,7 @@ describe("CanvasScreen Directive", function () {
         expect(iScope.renderArrayOrObjectsArrays).toHaveBeenCalled();
     });
 
-    it('should animate the canvas', function () {
+    it('should animate the scene', function () {
         var element = createDirective('<canvas-screen has-grid="y" bg-color="#FFFFFF" box="{}" on-update="update()"></canvas-screen>'),
             iScope = element.isolateScope();
 
@@ -204,10 +295,10 @@ describe("CanvasScreen Directive", function () {
         spyOn(iScope, 'render').and.callFake(function () {
         });
         spyOn($window, 'requestAnimationFrame').and.callFake(function (fn) {
-            expect(fn).toBe(iScope.animate);
+            expect(fn).toBe(iScope.animateScene);
         });
 
-        iScope.animate();
+        iScope.animateScene();
 
         expect(iScope.onUpdate).toHaveBeenCalled();
         expect(iScope.render).toHaveBeenCalled();
@@ -326,11 +417,31 @@ describe("CanvasScreen Directive", function () {
 
         callback = jasmine.createSpy('callback');
 
-        iScope.requestAnimFrameFunction(callback);
+        iScope.requestAnimationFrameDefaultFunction(callback, {});
     });
 
-    //it('should dosomething', function () {
-    //    var element = createDirective(commonTemplate),
-    //        iScope = element.isolateScope();
-    //});
+    it('should cancel an animation frame', function () {
+        var element = createDirective(commonTemplate),
+            iScope = element.isolateScope(),
+            requestId = 10;
+
+        spyOn($window, 'clearTimeout').and.callFake(function (id) {
+            expect(id).toBe(requestId);
+        });
+
+        iScope.cancelAnimationFrameDefaultFunction(requestId);
+
+        expect($window.clearTimeout).toHaveBeenCalled();
+    });
+
+    it('should cancel an animation frame when the element is destroyed', function () {
+        var element = createDirective(commonTemplate),
+            destroyEvent = angular.element.Event('$destroy');
+
+        spyOn($window, 'cancelAnimationFrame').and.callThrough();
+
+        element.trigger(destroyEvent);
+
+        expect($window.cancelAnimationFrame).toHaveBeenCalled();
+    });
 });

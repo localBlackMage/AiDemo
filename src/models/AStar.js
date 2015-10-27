@@ -66,7 +66,7 @@
                 };
 
                 MinHeapNodes.prototype.GetParent = function (i) {
-                    var ret = New(MinHeapRetObj, {
+                    var ret = new MinHeapRetObj({
                         index: parseInt(Math.floor((parseFloat(i) - 1.0) / 2.0))
                     });
                     if (ret.index >= 0)
@@ -75,7 +75,7 @@
                 };
 
                 MinHeapNodes.prototype.GetLeftChild = function (i) {
-                    var ret = New(MinHeapRetObj, {
+                    var ret = new MinHeapRetObj({
                         index: (2 * i) + 1
                     });
                     if (ret.index < this._currentCapacity)
@@ -84,7 +84,7 @@
                 };
 
                 MinHeapNodes.prototype.GetRightChild = function (i) {
-                    var ret = New(MinHeapRetObj, {
+                    var ret = new MinHeapRetObj({
                         index: (2 * i) + 2
                     });
                     if (ret.index < this._currentCapacity)
@@ -190,7 +190,7 @@
         .factory('AStar', [
             function () {
                 var DFS = function (start, max) {
-                    var stack = New(Queue, {});
+                    var stack = new Queue({});
                     stack.enqueue(start);
                     var count = 0, elementToIncDepth = 0, nextElementToDepthInc = 0, amtToAdd;
                     while (stack.count() !== 0) {
@@ -246,7 +246,7 @@
                     startNode.distance = 0;
 
                     var closedSet = [],
-                        openSet = New(MinHeapNodes, {capacity: 100}),
+                        openSet = new MinHeapNodes({capacity: 100}),
                         came_from = {}, // node.id : node
                         g_score = {};   // node.id : float
 
@@ -263,7 +263,7 @@
                             console.log(startNode);
 //            var results = ReconstructPath(came_from, endNode, startNode, New (Queue, {}));
 //            return results.map;
-                            return ReconstructPath(came_from, endNode, startNode, New(Queue, {})).map;
+                            return ReconstructPath(came_from, endNode, startNode, new Queue({})).map;
                         }
                         closedSet.push(current);
                         var neighbors = current.getNeighbors();

@@ -1,42 +1,25 @@
-<!doctype html>
-    <html ng-app="DemoApp">
-        <head>
-            <script type="text/javascript" src="../js/bower_components/angular/angular.min.js"></script>
-            <script type="text/javascript" src="../js/bower_components/jquery/dist/jquery.min.js"></script>
-            <script type="text/javascript" src="../js/dist/aidemo.min.js"></script>
-
-            <link rel="stylesheet" type="text/css" href="../js/bower_components/bootstrap/dist/css/bootstrap.css">
-            <link rel="stylesheet" type="text/css" href="../less/dist/app.min.css">
-
-            <title>Game of Life</title>
-        </head>
-        <body>
-            <div ng-controller="LifeCtrl">
-                <span class="left canvas-span">
-                    <canvas ng-canvas class="canvas down" id="lifeCanvas" width="800" height="800"></canvas>
-                    <div>
-                        <label class="form-label">Generation: {{generation}}</label>
-                    </div>
-                </span>
-                <span class="left down">
-                    <span class="left down">
-                        <form name="amountForm" role="form" class="flock-form" width="40%">
-                            <div class="form-group">
-                                <label for="stepAmt" class="form-label">Time Step (in seconds):</label>
-                                <input class="form-control"
-                                       type="text" id="stepAmt"
-                                       ng-model="step"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <p><a class="btn btn-primary" role="button" ng-click="reset();">Reset</a></p>
-                                <p><a class="btn btn-primary" role="button" ng-click="pauseToggle();">{{getPause()}}</a></p>
-                            </div>
-                        </form>
-                    </span>
-
-                </span>
+<div class="app-lifedemo">
+    <div class="demo-screen">
+        <canvas-screen has-grid="n" grid-spacing="gridObj.tileSize" grid-color="{{GRID_COLOR}}"
+                       bg-color="{{BACK_COLOR}}" height="400" width="600"
+                       objects="gridObj.grid" box="box" on-update="update()"
+                       touch="touch(event)" >
+        </canvas-screen>
+    </div>
+    <div class="information">
+        <label>Generation: {{generation}}</label>
+        <button class="btn-default" ng-click="pauseToggle()">{{pause ? 'Resume' : 'Pause'}}</button>
+        <button class="btn-default" ng-click="reset()">Reset</button>
+    </div>
+    <div class="statistics">
+        <div class="statistics-container" id="gameStats">
+            <div class="stat">
+                <label class="form-label">Step Speed:</label>
+                <input class="form-control"
+                       type="number" id="step"
+                       ng-model="step"
+                       step=".01" />
             </div>
-        </body>
-    </html>
-</doctype>
+        </div>
+    </div>
+</div>
