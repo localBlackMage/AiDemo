@@ -21,19 +21,17 @@
                 $scope.preyAmount = 20;
                 $scope.predatorAmount = 5;
                 $scope.predatorStats = {
-                    speed: 3.0,
-                    cohesionWeight: 0.2,
-                    separateWeight: 0.2,
-                    alignWeight: 0.1,
-                    wanderWeight: 0.5
+                    speed: 2.0,
+                    cohesionWeight: 0.5,
+                    separateWeight: 0.5,
+                    alignWeight: 0.5
                 };
                 $scope.preyStats = {
-                    speed: 2.5,
-                    cohesionWeight: 0.1,
-                    separateWeight: 0.1,
-                    alignWeight: 0.1,
-                    avoidWeight: 1.0,
-                    wanderWeight: 0//0.25
+                    speed: 2.2,
+                    cohesionWeight: 0.5,
+                    separateWeight: 0.5,
+                    alignWeight: 0.5,
+                    avoidWeight: 1.0
                 };
                 $scope.gameType = WOLVES;
 
@@ -42,7 +40,7 @@
                         return;
                     }
                     if (_.isNumber(newVal.width) && _.isNumber(newVal.height) && _.isObject(newVal.center)) {
-                        //$scope.reset();
+                        $scope.clear();
                     }
                 });
 
@@ -56,8 +54,7 @@
                                 speed: parseFloat(newVal.speed),
                                 cohesionWeight: parseFloat(newVal.cohesionWeight),
                                 separateWeight: parseFloat(newVal.separateWeight),
-                                alignWeight: parseFloat(newVal.alignWeight),
-                                wanderWeight: parseFloat(newVal.wanderWeight)
+                                alignWeight: parseFloat(newVal.alignWeight)
                             });
                         }
                     }
@@ -73,8 +70,7 @@
                                 speed: parseFloat(newVal.speed),
                                 cohesionWeight: parseFloat(newVal.cohesionWeight),
                                 separateWeight: parseFloat(newVal.separateWeight),
-                                alignWeight: parseFloat(newVal.alignWeight),
-                                wanderWeight: parseFloat(newVal.wanderWeight)
+                                alignWeight: parseFloat(newVal.alignWeight)
                             });
                         }
                     }
@@ -86,7 +82,7 @@
                  */
                 $scope.toggleGameType = function () {
                     $scope.gameType = $scope.gameType === WOLVES ? ZOMBIES : WOLVES;
-                    $scope.reset();
+                    $scope.clear();
                 };
 
                 $scope.reset = function () {
@@ -111,7 +107,6 @@
                             avoidWeight: parseFloat($scope.preyStats.avoidWeight),
                             separateWeight: parseFloat($scope.preyStats.separateWeight),
                             alignWeight: parseFloat($scope.preyStats.alignWeight),
-                            wanderWeight: parseFloat($scope.preyStats.wanderWeight),
                             type: FlockEntity.PREY,
                             color: DrawUtils.getRandomGreen()
                         }));
@@ -135,7 +130,6 @@
                             cohesionWeight: parseFloat($scope.predatorStats.cohesionWeight),
                             separateWeight: parseFloat($scope.predatorStats.separateWeight),
                             alignWeight: parseFloat($scope.predatorStats.alignWeight),
-                            wanderWeight: parseFloat($scope.predatorStats.wanderWeight),
                             type: FlockEntity.PREDATOR,
                             color: DrawUtils.getRandomRed()
                         }));
@@ -190,7 +184,6 @@
                                 cohesionWeight: parseFloat($scope.predatorStats.cohesionWeight),
                                 separateWeight: parseFloat($scope.predatorStats.separateWeight),
                                 alignWeight: parseFloat($scope.predatorStats.alignWeight),
-                                wanderWeight: parseFloat($scope.predatorStats.wanderWeight),
                                 type: FlockEntity.PREDATOR,
                                 color: DrawUtils.getRandomRed()
                             }));

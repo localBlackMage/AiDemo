@@ -28,8 +28,8 @@
                 {state: 'app', name: 'Home', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: true},
                 {state: 'app.flock', name: 'Flocking', inactive: false},
-                {state: 'app.life', name: 'Life', inactive: true},
-                {state: 'app.threejs', name: 'Three JS', inactive: true}
+                {state: 'app.life', name: 'Life', inactive: true}//,
+                //{state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
 
             $rootScope.$on('$stateChangeStart',

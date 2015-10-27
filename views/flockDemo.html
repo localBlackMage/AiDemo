@@ -1,6 +1,5 @@
 <div class="app-flexdemo">
     <div class="demo-screen">
-        <!--<canvas class="screen" id="flockCanvas"></canvas>-->
         <canvas-screen has-grid="t" grid-color="{{GRID_COLOR}}"
                 bg-color="{{BACK_COLOR}}" height="400" width="600"
                        objects="entities" box="box" on-update="update()">
@@ -18,42 +17,36 @@
                 <label class="form-label">Prey Amount:</label>
                 <input class="form-control"
                        type="number" id="preyAmount"
-                       ng-model="preyAmount"/>
+                       ng-model="preyAmount"
+                       step="1" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Speed:</label>
                 <input class="form-control"
                        type="number" id="preySpeed"
-                       ng-model="preyStats.speed" />
-                       <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="preyStats.speed"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Cohesion:</label>
                 <input class="form-control"
                        type="number" id="preyCohesion"
-                       ng-model="preyStats.cohesionWeight" />
-                       <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="preyStats.cohesionWeight"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Separation:</label>
                 <input class="form-control"
                        type="number" id="preySeparation"
-                       ng-model="preyStats.separateWeight" />
-                       <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="preyStats.separateWeight"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Alignment:</label>
                 <input class="form-control"
                        type="number" id="preyAlign"
-                       ng-model="preyStats.alignWeight" />
-                       <!--ng-model-options="{ getterSetter: true }" />-->
-            </div>
-            <div class="stat">
-                <label class="form-label">Prey Wander:</label>
-                <input class="form-control"
-                       type="number" id="preyWander"
-                       ng-model="preyStats.wanderWeight" />
-                       <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="preyStats.alignWeight"
+                       step=".1" />
             </div>
         </div>
 
@@ -62,101 +55,37 @@
                 <label class="form-label">Predator Amount:</label>
                 <input class="form-control"
                        type="number" id="predatorAmount"
-                       ng-model="predatorAmount"/>
+                       ng-model="predatorAmount"
+                       step="1" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Speed:</label>
                 <input class="form-control"
                        type="number" id="predatorSpeed"
-                       ng-model="predatorStats.speed" />
-                <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="predatorStats.speed"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Cohesion:</label>
                 <input class="form-control"
                        type="number" id="predatorCohesion"
-                       ng-model="predatorStats.cohesionWeight" />
-                <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="predatorStats.cohesionWeight"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Separation:</label>
                 <input class="form-control"
                        type="number" id="predatorSeparation"
-                       ng-model="predatorStats.separateWeight" />
-                <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="predatorStats.separateWeight"
+                       step=".1" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Alignment:</label>
                 <input class="form-control"
                        type="number" id="predatorAlign"
-                       ng-model="predatorStats.alignWeight" />
-                <!--ng-model-options="{ getterSetter: true }" />-->
-            </div>
-            <div class="stat">
-                <label class="form-label">Predator Wander:</label>
-                <input class="form-control"
-                       type="number" id="predatorWander"
-                       ng-model="predatorStats.wanderWeight" />
-                <!--ng-model-options="{ getterSetter: true }" />-->
+                       ng-model="predatorStats.alignWeight"
+                       step=".1" />
             </div>
         </div>
-
-            <!--<span id="predStats" class="left">-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predAmount" class="form-label">Predator Amount:</label>-->
-                    <!--<input class="form-control"-->
-                        <!--type="text" id="predAmount"-->
-                        <!--ng-model="predAmt"-->
-                        <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predSpeed" class="form-label">Predator Speed:</label>-->
-                    <!--<input class="form-control"-->
-                           <!--type="text" id="predSpeed"-->
-                           <!--ng-model="predStats.speed"-->
-                           <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predCoh" class="form-label">Predator Cohesion:</label>-->
-                    <!--<input class="form-control"-->
-                           <!--type="text" id="predCoh"-->
-                           <!--ng-model="predStats.cohW"-->
-                           <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predSep" class="form-label">Predator Separation:</label>-->
-                    <!--<input class="form-control"-->
-                           <!--type="text" id="predSep"-->
-                           <!--ng-model="predStats.sepW"-->
-                           <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predAli" class="form-label">Predator Alignment:</label>-->
-                    <!--<input class="form-control"-->
-                           <!--type="text" id="predAli"-->
-                           <!--ng-model="predStats.aliW"-->
-                           <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<label for="predWan" class="form-label">Predator Wander:</label>-->
-                    <!--<input class="form-control"-->
-                           <!--type="text" id="predWan"-->
-                           <!--ng-model="predStats.wanW"-->
-                           <!--ng-model-options="{ getterSetter: true }" />-->
-                <!--</div>-->
-            <!--</span>-->
-
-            <!--<div class="form-group">-->
-                <!--<span class="left">-->
-                    <!--<p><a class="btn btn-primary" role="button" ng-click="reset();">Spawn</a></p>-->
-                <!--</span>-->
-                <!--<span class="left">-->
-                    <!--<p><a class="btn btn-primary" role="button" ng-click="clear();">Clear</a></p>-->
-                <!--</span>-->
-                <!--<div class="toggleControl">-->
-                    <!--<label class="form-label">{{wozDisplay}}</label>-->
-                    <!--<p><a class="btn btn-primary" role="button" ng-click="toggleWolfOrZombie();">Wolves or Zombies</a></p>-->
-                <!--</div>-->
-            <!--</div>-->
     </div>
 </div>

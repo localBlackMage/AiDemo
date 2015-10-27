@@ -25,7 +25,6 @@
                     this.separateWeight = _.isNumber(params.separateWeight) ? params.separateWeight : 0.0;
                     this.alignWeight = _.isNumber(params.alignWeight) ? params.alignWeight : 0.0;
                     this.avoidWeight = _.isNumber(params.avoidWeight) ? params.avoidWeight : 0.0;
-                    this.wanderWeight = _.isNumber(params.wanderWeight) ? params.wanderWeight : 0.5;
 
                     this.type = _.isString(params.type) ? params.type : FlockEntity.PREY;
                     this.renderExclamation = false;
@@ -52,7 +51,6 @@
                     this.separateWeight = _.isNumber(params.separateWeight) ? params.separateWeight : this.separateWeight;
                     this.alignWeight = _.isNumber(params.alignWeight) ? params.alignWeight : this.alignWeight;
                     this.avoidWeight = _.isNumber(params.avoidWeight) ? params.avoidWeight : this.avoidWeight;
-                    this.wanderWeight = _.isNumber(params.wanderWeight) ? params.wanderWeight : this.wanderWeight;
 
                     this.type = _.isString(params.type) ? params.type : this.type;
                 };
@@ -62,7 +60,7 @@
                 };
 
                 FlockEntity.prototype.calculateCohesion = function (objects) {
-                    if (objects.length) {
+                    if (objects.length === 0) {
                         return new Vector();
                     }
 
@@ -77,7 +75,7 @@
                 };
 
                 FlockEntity.prototype._calculateSeparationForceForTarget = function (target, others) {
-                    var desiredVelocity = target.position.subNew(this.position)
+                    var desiredVelocity = target.position.subNew(this.position);
                     var steeringForce = desiredVelocity.subNew(this.velocity);
                     return steeringForce.divNew(others.length).mulNew(-1);
                 };
@@ -89,7 +87,6 @@
                     objects.forEach(function (other) {
                         separationVector.add(self._calculateSeparationForceForTarget(other, objects));
                     });
-
                     return separationVector.normalize();
                 };
 
@@ -99,10 +96,6 @@
                 };
 
                 FlockEntity.prototype.calculateAlignment = function (objects) {
-                    if (objects.length) {
-                        return new Vector();
-                    }
-
                     var self = this,
                         alignmentVector = new Vector();
 
@@ -111,11 +104,6 @@
                     });
 
                     return alignmentVector.normalize();
-                };
-
-                FlockEntity.prototype.calculateWander = function () {
-                    var angle = this.velocity.vectorToAngleRadians() + MathUtils.getRandomNumber(-2.0, 2.0);
-                    return Vector.angleToVector(angle).normalize();
                 };
 
                 FlockEntity.prototype.avoidWalls = function (box) {
@@ -151,7 +139,7 @@
 
                 /**
                  * Prey will try to group with other prey, stay away from other prey, align with
-                 * other prey, calculateWander randomly to the left or right, and avoid walls
+                 * other prey, and avoid walls
                  * @param options - Object with prey, predators, and box properties
                  */
                 FlockEntity.prototype.updateAsPrey = function (options) {
@@ -163,18 +151,16 @@
                     }
                     else {
                         this.renderExclamation = false;
-                        var neighbors = MathUtils.getNearestObjects(options.prey, this, 300.0);
+                        var neighbors = MathUtils.getNearestObjects(options.prey, this, 80.0);
 
                         var cohesion = this.calculateCohesion(neighbors).mulNew(this.cohesionWeight),
                             separate = this.calculateSeparation(neighbors).mulNew(this.separateWeight),
                             align = this.calculateAlignment(neighbors).mulNew(this.alignWeight),
-                            wander = this.calculateWander().mulNew(this.wanderWeight),
                             avoidWalls = this.avoidWalls(options.box).mulNew(0.5);
 
                         var total = cohesion
                             .addNew(separate)
                             .addNew(align)
-                            .addNew(wander)
                             .addNew(avoidWalls);
                         this.velocity.add(total);
                     }
@@ -182,20 +168,21 @@
 
                 /**
                  * Predators will try to group with the prey, stay away from other predators, align with
-                 * other predators, align themselves with other predator's wandering path, and avoid walls
+                 * other predators, and avoid walls
                  * @param options - Object with prey, predators, and box properties
                  */
                 FlockEntity.prototype.updateAsPredator = function (options) {
-                    var cohesion = this.calculateCohesion(options.prey).mulNew(this.cohesionWeight),
-                        separate = this.calculateSeparation(options.predators).mulNew(this.separateWeight),
-                        align = this.calculateAlignment(options.predators).mulNew(this.alignWeight),
-                        wander = this.calculateAlignment(options.predators).mulNew(this.wanderWeight),
-                        avoidWalls = this.avoidWalls(options.box).mulNew(0.5);
+                    var preyCloseEnough = MathUtils.getNearestObjects(options.prey, this, 80.0),
+                        predatorsCloseEnough = MathUtils.getNearestObjects(options.predators, this, 80.0);
+
+                    var cohesion = this.calculateCohesion(preyCloseEnough).mulNew(this.cohesionWeight),
+                        separate = this.calculateSeparation(predatorsCloseEnough).mulNew(this.separateWeight),
+                        align = this.calculateAlignment(predatorsCloseEnough).mulNew(this.alignWeight),
+                        avoidWalls = this.avoidWalls(options.box).mulNew(0.1);
 
                     var total = cohesion
                         .addNew(separate)
                         .addNew(align)
-                        .addNew(wander)
                         .addNew(avoidWalls);
                     this.velocity.add(total);
                 };
