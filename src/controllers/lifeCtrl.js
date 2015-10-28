@@ -6,47 +6,36 @@
         'aidemo.service.utils',
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
-        'aidemo.models.vector',
+        'aidemo.service.lifeCellService',
         'aidemo.models.lifeCell'
     ])
-        .controller('LifeController', ['$scope', 'Utils', 'MathUtils', 'DrawUtils', 'LifeCell',
-            function ($scope, Utils, MathUtils, DrawUtils, LifeCell) {
+        .controller('LifeController', ['$scope', 'Utils', 'MathUtils', 'DrawUtils', 'LifeCellService', 'LifeCell',
+            function ($scope, Utils, MathUtils, DrawUtils, LifeCellService, LifeCell) {
             $scope.BACK_COLOR = "#555555";
             $scope.GRID_COLOR = "#8EAEC9";
-
-            //// Scope Fields
-            //$scope.canvas = $('#lifeCanvas')[0];
-            //$scope.box = {
-            //    width: $scope.canvas.width,
-            //    height: $scope.canvas.height,
-            //    center: New(Vector, {x: $scope.canvas.width / 2, y: $scope.canvas.height / 2})
-            //};
-            //$scope.ctx = $scope.canvas.getContext('2d');
-
             $scope.generation = 0;
             $scope.step = 1;
             $scope.pause = true;
             $scope.gridObj = {
                 grid: [],
-                tileSize: 20
+                tileSize: 10
             };
             $scope.lastTime = 0;
             $scope.cumulativeTime = 0;
 
-            // Scope Functions
             $scope.generateGrid = function () {
-                var de;
+                var de,
+                    numberOfRows = $scope.box.height / $scope.gridObj.tileSize,
+                    numberOfColumns = $scope.box.width / $scope.gridObj.tileSize;
                 $scope.gridObj.grid = [];
-                for (var y = 0; y < $scope.box.height / $scope.gridObj.tileSize; y++) {
-                    var arr = [];
-                    for (var x = 0; x < $scope.box.width / $scope.gridObj.tileSize; x++) {
+                for (var row = 0; row < numberOfRows; row++) {
+                    var currentRow = [];
+                    for (var col = 0; col < numberOfColumns; col++) {
                         de = MathUtils.getRandomNumber(0, 1) < 0.1;
-                        // DEBUG
-                        de ? console.log('ALIVE') : '';
-                        arr.push((new LifeCell({
+                        currentRow.push((new LifeCell({
                             box: {
-                                x: x * $scope.gridObj.tileSize,
-                                y: y * $scope.gridObj.tileSize,
+                                x: col * $scope.gridObj.tileSize,
+                                y: row * $scope.gridObj.tileSize,
                                 width: $scope.gridObj.tileSize,
                                 height: $scope.gridObj.tileSize
                             },
@@ -54,20 +43,19 @@
                             DEAD_COLOR: $scope.BACK_COLOR
                         })));
                     }
-                    $scope.gridObj.grid.push(arr);
+                    $scope.gridObj.grid.push(currentRow);
                 }
-                Utils.fillNeighbors($scope.gridObj.grid);
+                LifeCellService.fillGridNeighbors($scope.gridObj.grid, false);
             };
 
             $scope.nextGeneration = function () {
                 $scope.generation++;
-                var copy = LifeCell.deepCopyGrid($scope.gridObj.grid);
+                var copy = LifeCellService.deepCopyGrid($scope.gridObj.grid);
                 for (var y = 0; y < $scope.gridObj.grid.length; y++) {
                     for (var x = 0; x < $scope.gridObj.grid[y].length; x++) {
                         $scope.gridObj.grid[y][x].setStatus(copy[y][x].update());
                     }
                 }
-
                 $scope.$apply();
             };
 

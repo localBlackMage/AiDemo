@@ -61,8 +61,7 @@ module.exports = function (config) {
             TEST_ROOT + 'minHeapNodesSpec.js',
             TEST_ROOT + 'neuronSpec.js',
             TEST_ROOT + 'nodeSpec.js',
-            TEST_ROOT + 'queueSpec.js',
-            TEST_ROOT + 'utilsSpec.js'
+            TEST_ROOT + 'queueSpec.js'
         ],
 
         // test results reporter to use

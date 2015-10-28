@@ -16,6 +16,7 @@
                         box: '=',
                         gridColor: '@?',
                         gridSpacing: '=?',
+                        gridIsBackground: '@?gridBg',
                         height: '=?',
                         width: '=?',
                         minHeight: '=?',
@@ -117,15 +118,21 @@
                         };
 
                         /**
-                         * Erases the canvas with the bgColor, draws a grid if hasGrid is true, calls each
-                         * object's render function within scope.objects
+                         * Erases the canvas with the bgColor, calls renderGrid if it is a background, calls each
+                         * object's render function within scope.objects, then calls renderGrid if it is NOT a background
                          */
                         scope.render = function () {
                             DrawUtils.fillCanvas(scope.canvas, scope.bgColor);
 
-                            scope.renderGrid();
+                            if (!scope.gridIsBackground) {
+                                scope.renderGrid();
+                            }
 
                             scope.renderArrayOrObjectsArrays(scope.objects);
+
+                            if (scope.gridIsBackground) {
+                                scope.renderGrid();
+                            }
                         };
 
                         /**
@@ -274,7 +281,21 @@
                                     }) > -1;
                             }
 
+                            /**
+                             * Given the scope's gridIsBackground property, compares it to a list of acceptable 'true' strings and
+                             * returns the result
+                             * @param gridBg - String, scope's gridIsBackground property
+                             * @returns {boolean} - True if gridIsBackground is an acceptable 'true' string, false if not
+                             */
+                            function getGridIsBackground(gridBg) {
+                                var gridBgStringArray = ['t', 'true', 'yes', 'y'];
+                                return _.findIndex(gridBgStringArray, function (gridBgString) {
+                                        return gridBgString === gridBg.toLowerCase();
+                                    }) > -1;
+                            }
+
                             scope.hasGrid = getHasGrid(scope.hasGrid);
+                            scope.gridIsBackground = scope.gridIsBackground ? getGridIsBackground(scope.gridIsBackground) : false;
                             scope.gridSpacing = scope.gridSpacing ? scope.gridSpacing : 20;
                             scope.objects = scope.objects ? scope.objects : [];
 

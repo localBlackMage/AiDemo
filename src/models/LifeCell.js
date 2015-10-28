@@ -12,7 +12,7 @@
                  */
                 function LifeCell(params) {
                     this.neighbors = [];
-                    this.box = Utils.isNotNullOrUndefined(params.box) ? params.box : {};
+                    this.box = _.isObject(params.box) ? params.box : {};
                     this.status = params.status === this.DEAD || params.status === this.ALIVE ? params.status : this.DEAD;
                     this.DEAD_COLOR = params.DEAD_COLOR || this.DEAD_COLOR;
                     this.ALIVE_COLOR = params.ALIVE_COLOR || this.ALIVE_COLOR;
@@ -28,8 +28,11 @@
                 LifeCell.prototype.DEAD = "DEAD";
                 LifeCell.prototype.ALIVE = "ALIVE";
 
+                LifeCell.DEAD = LifeCell.prototype.DEAD;
+                LifeCell.ALIVE = LifeCell.prototype.ALIVE;
+
                 LifeCell.prototype.fillNeighbors = function (neighbors) {
-                    this.neighbors = Utils.isNotNullOrUndefined(neighbors) ? neighbors : [];
+                    this.neighbors = _.isArray(neighbors) ? neighbors : [];
                 };
 
                 LifeCell.prototype.rules = function (alive) {
@@ -57,9 +60,10 @@
                 };
 
                 LifeCell.prototype.update = function () {
-                    var alive = 0;
+                    var alive = 0,
+                        self = this;
                     this.neighbors.forEach(function (n) {
-                        if (n.status == this.ALIVE) {
+                        if (n.status === self.ALIVE) {
                             alive++;
                         }
                     });
@@ -68,22 +72,6 @@
 
                 LifeCell.prototype.render = function (ctx) {
                     DrawUtils.drawSquare(ctx, this.box, this.color);
-                };
-
-                LifeCell.deepCopyGrid = function (grid, udlr) {
-                    udlr = udlr === true || udlr === false ? udlr : false;
-                    var gridCopy = [];
-                    for (var y = 0; y < grid.length; y++) {
-                        var row = [];
-                        for (var x = 0; x < grid[y].length; x++) {
-                            row.push(new LifeCell({
-                                box: grid[y][x].box,
-                                status: grid[y][x].status
-                            }));
-                        }
-                        gridCopy.push(row);
-                    }
-                    return Utils.fillNeighbors(gridCopy, udlr);
                 };
 
                 return LifeCell;
