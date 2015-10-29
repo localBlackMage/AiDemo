@@ -4,6 +4,7 @@ sudo: false
 
 before_install:
   - npm install
+  - npm install bower
 
 before_script:
   - bower install
