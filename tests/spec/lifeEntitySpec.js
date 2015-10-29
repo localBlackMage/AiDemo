@@ -1,20 +1,20 @@
 describe("LifeCell Model", function () {
-    var box, LifeCell, Utils, MathUtils, DrawUtils, Vector, LifeCellService,
+    var box, LifeCell, Utils, MathUtils, DrawUtils, Vector, GridService,
         ALIVE = "ALIVE", DEAD = "DEAD", ALIVE_COLOR = "#00FF00", DEAD_COLOR = "#222222";
 
     beforeEach(function () {
         module('aidemo.service.utils', 'aidemo.service.mathUtils',
-            'aidemo.service.drawUtils', 'aidemo.service.lifeCellService',
+            'aidemo.service.drawUtils', 'aidemo.service.gridService',
             'aidemo.models.vector', 'aidemo.models.lifeCell');
 
         inject(function (_LifeCell_, _Utils_, _MathUtils_, _DrawUtils_,
-                         _Vector_, _LifeCellService_) {
+                         _Vector_, _GridService_) {
             LifeCell = _LifeCell_;
             Utils = _Utils_;
             MathUtils = _MathUtils_;
             DrawUtils = _DrawUtils_;
             Vector = _Vector_;
-            LifeCellService = _LifeCellService_;
+            GridService = _GridService_;
 
             box = {
                 width: 10, height: 10,

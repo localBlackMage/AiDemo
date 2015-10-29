@@ -6,11 +6,11 @@
         'aidemo.service.utils',
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
-        'aidemo.service.lifeCellService',
+        'aidemo.service.gridService',
         'aidemo.models.lifeCell'
     ])
-        .controller('LifeController', ['$scope', 'Utils', 'MathUtils', 'DrawUtils', 'LifeCellService', 'LifeCell',
-            function ($scope, Utils, MathUtils, DrawUtils, LifeCellService, LifeCell) {
+        .controller('LifeController', ['$scope', 'Utils', 'MathUtils', 'DrawUtils', 'GridService', 'LifeCell',
+            function ($scope, Utils, MathUtils, DrawUtils, GridService, LifeCell) {
                 $scope.BACK_COLOR = "#555555";
                 $scope.GRID_COLOR = "#8EAEC9";
                 $scope.generation = 0;
@@ -45,12 +45,12 @@
                         }
                         $scope.gridObj.grid.push(currentRow);
                     }
-                    LifeCellService.fillGridNeighbors($scope.gridObj.grid, false);
+                    GridService.fillGridNeighbors($scope.gridObj.grid, false);
                 };
 
                 $scope.nextGeneration = function () {
                     $scope.generation++;
-                    var copy = LifeCellService.deepCopyGrid($scope.gridObj.grid);
+                    var copy = GridService.deepCopyGrid($scope.gridObj.grid, LifeCell, false);
                     for (var y = 0; y < $scope.gridObj.grid.length; y++) {
                         for (var x = 0; x < $scope.gridObj.grid[y].length; x++) {
                             $scope.gridObj.grid[y][x].setStatus(copy[y][x].update());

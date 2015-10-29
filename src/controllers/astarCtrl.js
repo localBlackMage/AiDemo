@@ -6,13 +6,13 @@
         'aidemo.service.utils',
         'aidemo.service.mathUtils',
         'aidemo.service.aStar',
-        'aidemo.service.lifeCellService',
+        'aidemo.service.gridService',
         'aidemo.models.vector',
         'aidemo.models.node'
         //'aidemo.models.lifeCell'
     ])
-        .controller('AStarController', ['$scope', '$timeout', 'AStar', 'LifeCellService', 'MathUtils', 'Vector', 'Node',
-            function ($scope, $timeout, AStar, LifeCellService, MathUtils, Vector, Node) {
+        .controller('AStarController', ['$scope', '$timeout', 'AStar', 'GridService', 'MathUtils', 'Vector', 'Node',
+            function ($scope, $timeout, AStar, GridService, MathUtils, Vector, Node) {
                 $scope.BACK_COLOR = "#555555";
                 $scope.GRID_COLOR = "#8EAEC9";
                 $scope.step = 0.25;
@@ -97,7 +97,7 @@
                         }
                         $scope.gridObj.grid.push(arr);
                     }
-                    LifeCellService.fillGridNeighbors($scope.gridObj.grid, true);
+                    GridService.fillGridNeighbors($scope.gridObj.grid, true);
                 };
 
                 $scope.update = function () {

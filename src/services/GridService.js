@@ -1,11 +1,10 @@
 (function (ng) {
     'use strict';
-    ng.module('aidemo.service.lifeCellService', [
-        'aidemo.models.lifeCell',
+    ng.module('aidemo.service.gridService', [
         'aidemo.service.utils'
     ])
-        .service('LifeCellService', ['LifeCell', 'Utils',
-            function (LifeCell, Utils) {
+        .service('GridService', ['$log', 'Utils',
+            function ($log, Utils) {
                 var service = this;
 
                 service.getNeighbors = function (x, y, xLen, yLen, grid, noDiagonal) {
@@ -33,7 +32,7 @@
                         xLen = grid[0].length;
                     for (var y = 0; y < grid.length; y++) {
                         for (var x = 0; x < grid[y].length; x++) {
-                            if (grid[y][x]) {
+                            if (grid[y][x] && _.isFunction(grid[y][x].fillNeighbors)) {
                                 grid[y][x].fillNeighbors(service.getNeighbors(x, y, xLen, yLen, grid, noDiagonal));
                             }
                         }
@@ -41,16 +40,23 @@
                     return grid;
                 };
 
-                service.deepCopyGrid = function (grid, noDiagonal) {
+                service.deepCopyGrid = function (grid, gridObjectType, noDiagonal) {
+                    if (!_.isFunction(gridObjectType)) {
+                        $log.error("gridObjectType MUST be a function!");
+                        $log.log(gridObjectType);
+                        return;
+                    }
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
                     var gridCopy = [];
                     for (var row = 0; row < grid.length; row++) {
                         var currentRow = [];
                         for (var col = 0; col < grid[row].length; col++) {
-                            currentRow.push(new LifeCell({
-                                box: grid[row][col].box,
-                                status: grid[row][col].status
-                            }));
+                            if (grid[row][col]) {
+                                currentRow.push(new gridObjectType({
+                                    box: grid[row][col].box,
+                                    status: grid[row][col].status
+                                }));
+                            }
                         }
                         gridCopy.push(currentRow);
                     }
