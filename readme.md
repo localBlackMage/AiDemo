@@ -1,3 +1,6 @@
+AIDemos [![Build Status](https://travis-ci.org/hprofit/aidemo.svg?branch=reorganize)](https://travis-ci.org/hprofit/aidemo)
+=========
+
 1. (sudo) npm install
 2. (sudo) install -g http-server (this may or may not be necessary)
 3. bower install
