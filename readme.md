@@ -1,4 +1,4 @@
-AIDemos [![Build Status](https://travis-ci.org/hprofit/aidemo.svg?branch=reorganize)](https://travis-ci.org/hprofit/aidemo)
+AIDemos [![Build Status](https://travis-ci.org/hprofit/AiDemo.svg?branch=reorganize)](https://travis-ci.org/hprofit/aidemo)
 =========
 
 1. (sudo) npm install
