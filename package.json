@@ -1,21 +1,29 @@
 {
   "name": "aidemo",
   "version": "1.0.0",
-  "description": "A collection of various AI done through JavaScript presented in an Angular app.",
+  "description": "A collection of AI Demos.",
   "main": "gulpfile.js",
   "directories": {
     "test": "tests"
   },
   "dependencies": {
     "gulp": "^3.9.0",
-    "gulp-angular-templatecache": "^1.7.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
     "gulp-jshint": "^1.8.6",
+    "gulp-angular-templatecache": "^1.8.0",
     "gulp-less": "^3.0.3",
-    "gulp-minify-css": "^0.3.13",
-    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^0.3.2",
+    "gulp-rename": "^1.2.2",
+    "jasmine-core": "^2.3.4",
+    "karma-coverage": "^0.5.3",
+    "karma-html-reporter": "^0.2.7",
+    "karma": "^0.13.12",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "karma-ng-html2js-preprocessor": "^0.2.0",
+    "phantomjs": "^1.9.18",
+    "gulp-minify-css": "^0.3.13",
     "http-server": "^0.7.5"
   },
   "devDependencies": {},
@@ -27,16 +35,13 @@
     "url": "https://github.com/hprofit/AiDemo.git"
   },
   "keywords": [
-    "ai",
-    "demo",
-    "javascript",
+    "angularjs",
     "artificial",
     "intelligence",
-    "computer",
-    "learning"
+    "ai"
   ],
   "author": "Holden Profit <holdenprofit@gmail.com> (https://github.com/hprofit/)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/hprofit/AiDemo/issues"
   },
