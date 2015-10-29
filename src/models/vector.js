@@ -4,9 +4,6 @@
     ng.module('aidemo.models.vector', [])
         .factory('Vector', [
             function () {
-                /**
-                 * Constructor, with class name
-                 */
                 function Vector(params) {
                     params = params || {};
                     this.x = params.x || 0;

@@ -1,9 +1,22 @@
-describe("AStar Tests", function () {
-    beforeEach(module("DemoApp"));
+describe("AStar Service", function () {
+    var AStar, Queue, Vector;
 
-    it("should instantiate a ReconRetValue properly", function () {
-        var recRetValueObj = New(ReconRetValue, {});
+    beforeEach(function () {
+        module('aidemo.service.aStar', 'aidemo.models.queue', 'aidemo.models.vector');
 
-        expect(recRetValueObj.constructor).toBeDefined();
+        inject(function (_AStar_, _Queue_, _Vector_) {
+            AStar = _AStar_;
+            Queue = _Queue_;
+            Vector = _Vector_;
+        });
+    });
+
+    it("should calculate heuristic cost estimates", function () {
+        var a = {position: new Vector()},
+            b = {position: new Vector({x: 10})};
+
+        var result = AStar._heuristicCostEstimate(a, b);
+
+        expect(result).toBe(9);
     });
 });

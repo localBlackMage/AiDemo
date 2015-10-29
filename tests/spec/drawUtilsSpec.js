@@ -1,12 +1,19 @@
-describe("DrawUtils Tests", function () {
-    var canvas, context, letters = '0123456789ABCDEF';
-    beforeEach(module("DemoApp"));
+describe("DrawUtils Service", function () {
+    var DrawUtils, Utils, canvas, context, letters = '0123456789ABCDEF';
 
-    beforeEach(function() {
-        canvas = document.createElement("canvas");
-        canvas.height = 100;
-        canvas.width = 100;
-        context = canvas.getContext("2d")
+
+    beforeEach(function () {
+        module('aidemo.service.drawUtils', 'aidemo.service.utils');
+
+        inject(function (_DrawUtils_, _Utils_) {
+            DrawUtils = _DrawUtils_;
+            Utils = _Utils_;
+
+            canvas = document.createElement("canvas");
+            canvas.height = 100;
+            canvas.width = 100;
+            context = canvas.getContext("2d")
+        });
     });
 
     it("should clear a canvas", function () {
@@ -15,7 +22,7 @@ describe("DrawUtils Tests", function () {
         DrawUtils.clearCanvas(canvas);
 
         expect(context.clearRect.calls.count()).toEqual(1);
-        expect(context.clearRect).toHaveBeenCalledWith(0, 0, canvas.width+1, canvas.height+1);
+        expect(context.clearRect).toHaveBeenCalledWith(0, 0, canvas.width + 1, canvas.height + 1);
     });
 
     it("should fill a canvas", function () {
@@ -26,7 +33,7 @@ describe("DrawUtils Tests", function () {
 
         expect(context.fillStyle.toLowerCase()).toEqual(color.toLowerCase());
         expect(context.fillRect.calls.count()).toEqual(1);
-        expect(context.fillRect).toHaveBeenCalledWith(0, 0, canvas.width+1, canvas.height+1);
+        expect(context.fillRect).toHaveBeenCalledWith(0, 0, canvas.width + 1, canvas.height + 1);
     });
 
     it("should draw a circle on the canvas", function () {
@@ -111,11 +118,13 @@ describe("DrawUtils Tests", function () {
 
         DrawUtils.drawGrid(context, box, spacing, color);
 
-        expect(DrawUtils.drawLine.calls.count()).toEqual(4);
+        expect(DrawUtils.drawLine.calls.count()).toEqual(6);
         expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 0, 0, box.width, 0, color);
         expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 0, 50, box.width, 50, color);
         expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 0, 0, 0, box.height, color);
         expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 50, 0, 50, box.height, color);
+        expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 99, 0, 99, 100, color);
+        expect(DrawUtils.drawLine).toHaveBeenCalledWith(context, 0, 99, 100, 99, color);
     });
 
     it("should draw a exclamation on the canvas", function () {
@@ -146,7 +155,7 @@ describe("DrawUtils Tests", function () {
 
         expect(res.length).toEqual(7);
         expect(res).toContain("#");
-        for(var idx=1; idx<res.length;idx++) {
+        for (var idx = 1; idx < res.length; idx++) {
             expect(letters.toLowerCase()).toContain(res[idx].toLowerCase());
         }
     });
@@ -156,12 +165,12 @@ describe("DrawUtils Tests", function () {
 
         expect(res.length).toEqual(7);
         expect(res).toContain("#");
-        for(var x=1; x<3;x++) {
+        for (var x = 1; x < 3; x++) {
             expect(res[x]).toBe('0');
         }
         expect(greenLetters).toContain(res[3]);
         expect(greenLetters).toContain(res[4]);
-        for(var y=5; y<res.length;y++) {
+        for (var y = 5; y < res.length; y++) {
             expect(res[y]).toBe('0');
         }
     });
@@ -173,7 +182,7 @@ describe("DrawUtils Tests", function () {
         expect(res).toContain("#");
         expect(redLetters).toContain(res[1]);
         expect(redLetters).toContain(res[2]);
-        for(var idx=3; idx<res.length;idx++) {
+        for (var idx = 3; idx < res.length; idx++) {
             expect(res[idx]).toBe('0');
         }
     });

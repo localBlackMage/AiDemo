@@ -55,13 +55,8 @@ module.exports = function (config) {
 
         // list of files / patterns to exclude
         exclude: [
-            TEST_ROOT + 'aStarSpec.js',
-            TEST_ROOT + 'drawUtilsSpec.js',
-            TEST_ROOT + 'lifeEntitySpec.js',
             TEST_ROOT + 'minHeapNodesSpec.js',
-            TEST_ROOT + 'neuronSpec.js',
-            TEST_ROOT + 'nodeSpec.js',
-            TEST_ROOT + 'queueSpec.js'
+            TEST_ROOT + 'neuronSpec.js'
         ],
 
         // test results reporter to use

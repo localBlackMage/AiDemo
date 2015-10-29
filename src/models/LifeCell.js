@@ -7,9 +7,6 @@
     ])
         .factory('LifeCell', ['Utils', 'DrawUtils',
             function (Utils, DrawUtils) {
-                /**
-                 * Constructor, with class name
-                 */
                 function LifeCell(params) {
                     this.neighbors = [];
                     this.box = _.isObject(params.box) ? params.box : {};
@@ -18,10 +15,6 @@
                     this.ALIVE_COLOR = params.ALIVE_COLOR || this.ALIVE_COLOR;
                     this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
                 }
-
-                LifeCell.build = function (data) {
-                    return new LifeCell(data);
-                };
 
                 LifeCell.prototype.DEAD_COLOR = "#222222";
                 LifeCell.prototype.ALIVE_COLOR = "#00FF00";

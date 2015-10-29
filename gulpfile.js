@@ -24,6 +24,7 @@ var styles = [LESS_ROOT + '/*.less'],
         SCRIPTS_ROOT + '/directives/*.js',
         SCRIPTS_ROOT + '/controllers/flockCtrl.js',
         SCRIPTS_ROOT + '/controllers/lifeCtrl.js',
+        SCRIPTS_ROOT + '/controllers/astarCtrl.js',
         //SCRIPTS_ROOT + '/controllers/*.js',
         SCRIPTS_ROOT + '/*.js'
     ],

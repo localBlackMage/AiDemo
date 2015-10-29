@@ -5,17 +5,10 @@
         .factory('Queue', [
             function () {
                 /* code.stephenmorley.org */
-                /**
-                 * Constructor, with class name
-                 */
                 function Queue() {
                     this.queue = [];
                     this.offset = 0;
                 }
-
-                Queue.build = function () {
-                    return new Vector();
-                };
 
                 Queue.prototype.count = function () {
                     return (this.queue.length - this.offset);

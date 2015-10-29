@@ -8,7 +8,7 @@
             function (LifeCell, Utils) {
                 var service = this;
 
-                this.getNeighbors = function (x, y, xLen, yLen, grid, noDiagonal) {
+                service.getNeighbors = function (x, y, xLen, yLen, grid, noDiagonal) {
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
                     var neighbors = [];
                     neighbors.push(x - 1 >= 0 ? grid[y][x - 1] : null); // 0, -1
@@ -27,7 +27,7 @@
                     });
                 };
 
-                this.fillGridNeighbors = function (grid, noDiagonal) {
+                service.fillGridNeighbors = function (grid, noDiagonal) {
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
                     var yLen = grid.length,
                         xLen = grid[0].length;
@@ -41,7 +41,7 @@
                     return grid;
                 };
 
-                this.deepCopyGrid = function (grid, noDiagonal) {
+                service.deepCopyGrid = function (grid, noDiagonal) {
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
                     var gridCopy = [];
                     for (var row = 0; row < grid.length; row++) {
@@ -54,7 +54,7 @@
                         }
                         gridCopy.push(currentRow);
                     }
-                    return this.fillGridNeighbors(gridCopy, noDiagonal);
+                    return service.fillGridNeighbors(gridCopy, noDiagonal);
                 };
             }
         ]);

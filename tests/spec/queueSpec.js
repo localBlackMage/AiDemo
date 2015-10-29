@@ -1,8 +1,16 @@
-describe("Queue Tests", function () {
-    beforeEach(module("DemoApp"));
+describe("Queue Model", function () {
+    var Queue;
+
+    beforeEach(function () {
+        module('aidemo.models.queue');
+
+        inject(function (_Queue_) {
+            Queue = _Queue_;
+        });
+    });
 
     it("should instantiate properly", function () {
-        var queue = New (Queue, {});
+        var queue = new Queue({});
 
         expect(queue.queue).toBeDefined();
         expect(queue.queue.length).toBe(0);
@@ -11,7 +19,7 @@ describe("Queue Tests", function () {
     });
 
     it("should return the length of the queue", function () {
-        var queue = New (Queue, {}), res;
+        var queue = new Queue({}), res;
         queue.queue = [{}, {}];
         queue.offset = 1;
 
@@ -21,7 +29,7 @@ describe("Queue Tests", function () {
     });
 
     it("should know if the queue is empty", function () {
-        var queue = New (Queue, {}), res;
+        var queue = new Queue({}), res;
 
         res = queue.isEmpty();
 
@@ -35,7 +43,7 @@ describe("Queue Tests", function () {
     });
 
     it("should push an item into the queue when enqueue is called", function () {
-        var queue = New (Queue, {}), res;
+        var queue = new Queue({}), res;
 
         queue.enqueue({id: 0});
 
@@ -44,7 +52,7 @@ describe("Queue Tests", function () {
     });
 
     it("should remove an item from the queue when dequeue is called", function () {
-        var queue = New (Queue, {}), res, itemOne = {id: 0}, itemTwo = {id: 1};
+        var queue = new Queue({}), res, itemOne = {id: 0}, itemTwo = {id: 1};
         queue.queue = [itemOne, itemTwo];
 
         res = queue.dequeue();
@@ -56,7 +64,7 @@ describe("Queue Tests", function () {
     });
 
     it("should peek at the last element in the queue", function () {
-        var queue = New (Queue, {}), res;
+        var queue = new Queue({}), res;
         queue.queue = [{id: 0},{id:1}];
         queue.offset = 1;
 
