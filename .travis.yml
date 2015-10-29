@@ -4,6 +4,8 @@ sudo: false
 
 before_install:
   - npm install
+
+before_script:
   - bower install
 
 script: gulp build-all
