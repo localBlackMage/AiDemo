@@ -1,0 +1,9 @@
+language: javascript
+
+sudo: false
+
+before_install:
+  - npm install
+  - bower install
+
+script: gulp build-all
