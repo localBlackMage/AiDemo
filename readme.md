@@ -1,9 +1,6 @@
-1. cd js
-2. bower install
-3. cd build
-4. npm install
-5. npm install -g http-server
-6. gulp
-7. cd ../..
-8. http-server -p {port}
-9. In browser, go to "localhost:{port}/index.html"
+1. (sudo) npm install
+2. (sudo) install -g http-server (this may or may not be necessary)
+3. bower install
+4. gulp build-all
+5. http-server -p {port}
+6. In browser, go to "localhost:{port}"
