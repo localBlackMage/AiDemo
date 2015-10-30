@@ -46,7 +46,7 @@ describe("CanvasScreen Directive", function () {
         var element = createDirective(commonTemplate),
             iScope = element.isolateScope();
 
-        expect(iScope.hasGrid).toEqual(false);
+        expect(iScope.canvasHasGrid).toEqual(false);
         expect(iScope.bgColor).toEqual('#FFFFFF');
         expect(iScope.box).toBeDefined();
     });
@@ -234,7 +234,7 @@ describe("CanvasScreen Directive", function () {
             expect(color).toBe(iScope.gridColor);
         });
 
-        iScope.hasGrid = true;
+        iScope.canvasHasGrid = true;
 
         iScope.renderGrid();
 

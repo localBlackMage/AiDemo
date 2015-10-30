@@ -19,16 +19,24 @@
                 $scope.pause = false;
                 $scope.gridObj = {
                     grid: [],
+                    //paths: [],
                     tileSize: 50
                 };
                 $scope.start = null;
                 $scope.end = null;
 
                 $scope.markPath = function (path) {
+                    if (!path) {
+                        return;
+                    }
                     while (!path.isEmpty()) {
                         var node = path.dequeue();
                         node.pathSelect();
                     }
+                };
+
+                $scope.setPaths = function (grid) {
+                    //$scope.gridObj.paths = grid;
                 };
 
                 $scope.detect = function (position) {
@@ -64,20 +72,26 @@
                         $scope.start = null;
                         $scope.end = null;
                     }
+
+                    $scope.setPaths($scope.gridObj.grid);
                 };
 
                 $scope.generateGrid = function () {
                     var curId = 0,
-                        tCalc = $scope.gridObj.tileSize / 2;
+                        tCalc = $scope.gridObj.tileSize / 2,
+                        yDifference = $scope.box.height - $scope.gridObj.tileSize,
+                        xDifference = $scope.box.width - $scope.gridObj.tileSize,
+                        columns = yDifference / $scope.gridObj.tileSize,
+                        rows = xDifference / $scope.gridObj.tileSize;
                     $scope.gridObj.grid = [];
-                    for (var y = 0; y < $scope.box.height / $scope.gridObj.tileSize; y++) {
+                    for (var y = 0; y < columns; y++) {
                         var arr = [];
-                        for (var x = 0; x < $scope.box.width / $scope.gridObj.tileSize; x++) {
+                        for (var x = 0; x < rows; x++) {
                             var spawn = true;//MathUtils.getRandomNumber(0, 1) < 0.8 ? true : false;
                             if (spawn) {
                                 var position = new Vector({
-                                    x: x * $scope.gridObj.tileSize + tCalc,
-                                    y: y * $scope.gridObj.tileSize + tCalc
+                                    x: x * $scope.gridObj.tileSize + tCalc + rows,
+                                    y: y * $scope.gridObj.tileSize + tCalc + columns
                                 });
                                 arr.push((new Node({
                                     box: {
@@ -98,10 +112,19 @@
                         $scope.gridObj.grid.push(arr);
                     }
                     GridService.fillGridNeighbors($scope.gridObj.grid, true);
+                    $scope.setPaths($scope.gridObj.grid);
                 };
 
-                $scope.update = function () {
+                $scope.touch = function (event) {
+                    if ($scope.gridObj.grid.length === 0 || (event.type !== 'mouseup' && event.type !== 'touchend')) {
+                        return;
+                    }
+                    var position = new Vector({
+                        x: event.offsetX - 1,
+                        y: event.offsetY - 1
+                    });
 
+                    $scope.detect(position);
                 };
 
                 //$scope.render = function () {

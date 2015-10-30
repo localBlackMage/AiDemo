@@ -82,6 +82,8 @@
                 Node.prototype.render = function (ctx) {
                     DrawUtils.drawText(ctx, this.position.x + 10, this.position.y - 10, this.SELECTED_COLOR, this.id.toString());
                     DrawUtils.drawCircle(ctx, this.position.x, this.position.y, 5, this.getColor());
+
+                    this.renderPaths(ctx);
                 };
 
                 return Node;

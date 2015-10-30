@@ -43,13 +43,14 @@
                         };
 
                         scope.stopTouch = function (event) {
+                            scope.touch({event: event});
                             scope.drawing = false;
                         };
 
                         scope.bindTouchEvents = function () {
-                            element.bind('mousedown', scope.startTouch);
-                            element.bind('mousemove', scope.continueTouch);
-                            element.bind('mouseup', scope.stopTouch);
+                            element.bind('mousedown touchstart', scope.startTouch);
+                            element.bind('mousemove touchmove', scope.continueTouch);
+                            element.bind('mouseup touchend', scope.stopTouch);
                         };
 
                         /**
@@ -112,7 +113,7 @@
                          * Calls DrawUtils.drawGrid if this directive has a grid
                          */
                         scope.renderGrid = function () {
-                            if (scope.hasGrid) {
+                            if (scope.canvasHasGrid) {
                                 DrawUtils.drawGrid(scope.canvasContext, scope.box, scope.gridSpacing, scope.gridColor);
                             }
                         };
@@ -124,13 +125,13 @@
                         scope.render = function () {
                             DrawUtils.fillCanvas(scope.canvas, scope.bgColor);
 
-                            if (!scope.gridIsBackground) {
+                            if (!scope.canvasGridIsBackground) {
                                 scope.renderGrid();
                             }
 
                             scope.renderArrayOrObjectsArrays(scope.objects);
 
-                            if (scope.gridIsBackground) {
+                            if (scope.canvasGridIsBackground) {
                                 scope.renderGrid();
                             }
                         };
@@ -265,37 +266,37 @@
                         };
 
                         /**
+                         * Given the scope's hasGrid property, compares it to a list of acceptable 'true' strings and
+                         * returns the result
+                         * @param hasGrid - String, scope's hasGrid property
+                         * @returns {boolean} - True if hasGrid is an acceptable 'true' string, false if not
+                         */
+                        scope.getHasGrid = function(hasGrid) {
+                            var gridStringArray = ['t', 'true', 'yes', 'y'];
+                            return _.findIndex(gridStringArray, function (gridString) {
+                                    return gridString === hasGrid.toLowerCase();
+                                }) > -1;
+                        };
+
+                        /**
+                         * Given the scope's gridIsBackground property, compares it to a list of acceptable 'true' strings and
+                         * returns the result
+                         * @param gridBg - String, scope's gridIsBackground property
+                         * @returns {boolean} - True if gridIsBackground is an acceptable 'true' string, false if not
+                         */
+                        scope.getGridIsBackground = function(gridBg) {
+                            var gridBgStringArray = ['t', 'true', 'yes', 'y'];
+                            return _.findIndex(gridBgStringArray, function (gridBgString) {
+                                    return gridBgString === gridBg.toLowerCase();
+                                }) > -1;
+                        };
+
+                        /**
                          * Setup function
                          */
                         (function () {
-                            /**
-                             * Given the scope's hasGrid property, compares it to a list of acceptable 'true' strings and
-                             * returns the result
-                             * @param hasGrid - String, scope's hasGrid property
-                             * @returns {boolean} - True if hasGrid is an acceptable 'true' string, false if not
-                             */
-                            function getHasGrid(hasGrid) {
-                                var gridStringArray = ['t', 'true', 'yes', 'y'];
-                                return _.findIndex(gridStringArray, function (gridString) {
-                                        return gridString === hasGrid.toLowerCase();
-                                    }) > -1;
-                            }
-
-                            /**
-                             * Given the scope's gridIsBackground property, compares it to a list of acceptable 'true' strings and
-                             * returns the result
-                             * @param gridBg - String, scope's gridIsBackground property
-                             * @returns {boolean} - True if gridIsBackground is an acceptable 'true' string, false if not
-                             */
-                            function getGridIsBackground(gridBg) {
-                                var gridBgStringArray = ['t', 'true', 'yes', 'y'];
-                                return _.findIndex(gridBgStringArray, function (gridBgString) {
-                                        return gridBgString === gridBg.toLowerCase();
-                                    }) > -1;
-                            }
-
-                            scope.hasGrid = getHasGrid(scope.hasGrid);
-                            scope.gridIsBackground = scope.gridIsBackground ? getGridIsBackground(scope.gridIsBackground) : false;
+                            scope.canvasHasGrid = scope.getHasGrid(scope.hasGrid);
+                            scope.canvasGridIsBackground = scope.gridIsBackground ? scope.getGridIsBackground(scope.gridIsBackground) : false;
                             scope.gridSpacing = scope.gridSpacing ? scope.gridSpacing : 20;
                             scope.objects = scope.objects ? scope.objects : [];
 

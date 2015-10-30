@@ -1,56 +1,13 @@
-<!--<!doctype html>-->
-    <!--<html ng-app="DemoApp">-->
-        <!--<head>-->
-            <!--<script type="text/javascript" src="../js/bower_components/angular/angular.min.js"></script>-->
-            <!--<script type="text/javascript" src="../js/bower_components/jquery/dist/jquery.min.js"></script>-->
-            <!--<script type="text/javascript" src="../js/dist/aidemo.min.js"></script>-->
-
-            <!--<link rel="stylesheet" type="text/css" href="../js/bower_components/bootstrap/dist/css/bootstrap.css">-->
-            <!--<link rel="stylesheet" type="text/css" href="../less/dist/app.min.css">-->
-
-            <!--<title>A*</title>-->
-        <!--</head>-->
-        <!--<body>-->
-            <!--<div ng-controller="AstarCtrl">-->
-                <!--<span class="left canvas-span">-->
-                    <!--<canvas ng-canvas-ai class="canvas down" id="astarCanvas" width="800" height="800"></canvas>-->
-                    <!--<div>-->
-                    <!--</div>-->
-                <!--</span>-->
-                <!--&lt;!&ndash;-->
-                <!--<span class="left down">-->
-                    <!--<span class="left down">-->
-                        <!--<form name="amountForm" role="form" class="flock-form" width="40%">-->
-                            <!--<div class="form-group">-->
-                                <!--<label for="stepAmt" class="form-label">Time Step (in seconds):</label>-->
-                                <!--<input class="form-control"-->
-                                       <!--type="text" id="stepAmt"-->
-                                       <!--ng-model="step"-->
-                                       <!--ng-model-options="{ getterSetter: true }" />-->
-                            <!--</div>-->
-                            <!--<div class="form-group">-->
-                            <!--</div>-->
-                        <!--</form>-->
-                    <!--</span>-->
-                <!--</span>-->
-                <!--&ndash;&gt;-->
-            <!--</div>-->
-        <!--</body>-->
-    <!--</html>-->
-<!--</doctype>-->
-
-
 <div class="app-astardemo">
     <div class="demo-screen">
-        <canvas-screen has-grid="n" grid-spacing="gridObj.tileSize" grid-color="{{GRID_COLOR}}"
-                       bg-color="{{BACK_COLOR}}" height="400" width="600"
-                       objects="gridObj.grid" box="box" on-update="update()"
+        <canvas-screen has-grid="n" bg-color="{{BACK_COLOR}}" height="600" width="800"
+                       objects="gridObj.grid" box="box"
                        touch="touch(event)">
+            <!--on-update="update()"-->
         </canvas-screen>
     </div>
     <div class="information">
         <!--<label>Generation: {{generation}}</label>-->
-        <!--<button class="btn-default" ng-click="pauseToggle()">{{pause ? 'Resume' : 'Pause'}}</button>-->
         <!--<button class="btn-default" ng-click="reset()">Reset</button>-->
     </div>
     <div class="statistics">
