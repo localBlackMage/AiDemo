@@ -35,8 +35,10 @@
                     this.neighbors = _.isArray(neighbors) ? neighbors : [];
                 };
 
-                Node.prototype.resetSelect = function () {
+                Node.prototype.reset = function () {
                     this.selected = false;
+                    this.special = false;
+                    this.path = false;
                 };
 
                 Node.prototype.select = function (position) {

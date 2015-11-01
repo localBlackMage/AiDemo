@@ -68,13 +68,17 @@ describe("Node Model", function () {
         expect(node.neighbors).toEqual(neighbors);
     });
 
-    it("should reset selected", function () {
+    it("should reset selected, special, and path", function () {
         var node = new Node(defaultOptions);
         node.selected = true;
+        node.special = true;
+        node.path = true;
 
-        node.resetSelect();
+        node.reset();
 
-        expect(node.selected).toBe(false);
+        expect(node.selected).toBeFalsy();
+        expect(node.special).toBeFalsy();
+        expect(node.path).toBeFalsy();
     });
 
     it("should know if it is selected", function () {

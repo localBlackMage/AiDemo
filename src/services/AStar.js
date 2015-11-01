@@ -52,8 +52,9 @@
                     var ret = new MinHeapRetObj({
                         index: parseInt(Math.floor((parseFloat(i) - 1.0) / 2.0), 10)
                     });
-                    if (ret.index >= 0)
+                    if (ret.index >= 0) {
                         ret.other = this._collection[ret.index];
+                    }
                     return ret;
                 };
 
@@ -61,8 +62,9 @@
                     var ret = new MinHeapRetObj({
                         index: (2 * i) + 1
                     });
-                    if (ret.index < this._currentCapacity)
+                    if (ret.index < this._currentCapacity) {
                         ret.other = this._collection[ret.index];
+                    }
                     return ret;
                 };
 
@@ -70,8 +72,9 @@
                     var ret = new MinHeapRetObj({
                         index: (2 * i) + 2
                     });
-                    if (ret.index < this._currentCapacity)
+                    if (ret.index < this._currentCapacity) {
                         ret.other = this._collection[ret.index];
+                    }
                     return ret;
                 };
 
@@ -125,34 +128,36 @@
                     if (left > right) {
                         return ridx;
                     }
+                    else if (left < right) {
+                        return lidx;
+                    }
                     return lidx;
                 };
 
                 MinHeapNodes.prototype.heapify = function (index) {
                     var leftRes = this.getLeftChild(index),
                         rightRes = this.getRightChild(index),
-                        leftChildIndex = leftRes.index, rightChildIndex = rightRes.index,
-                        leftChild = leftRes.other, rightChild = rightRes.other;
+                        leftChildIndex = leftRes.index,
+                        rightChildIndex = rightRes.index,
+                        leftChild = leftRes.other,
+                        rightChild = rightRes.other;
 
                     if ((leftChild && rightChild) && (leftChild.distance === 0 && rightChild.distance === 0)) {
                         return;
                     }
-                    var replacingElement;
 
                     if (leftChild && rightChild) {
-                        replacingElement = this.getIndexOfSmallest(leftChild.distance, rightChild.distance, leftChildIndex, rightChildIndex);
+                        var replacingElement = this.getIndexOfSmallest(leftChild.distance, rightChild.distance, leftChildIndex, rightChildIndex);
 
                         this.swap(index, replacingElement);
 
                         this.heapify(replacingElement);
                     }
                     else if (!leftChild && rightChild) {
-                        replacingElement = rightChildIndex;
-                        this.swap(index, replacingElement);
+                        this.swap(index, rightChildIndex);
                     }
                     else if (leftChild && !rightChild) {
-                        replacingElement = leftChildIndex;
-                        this.swap(index, replacingElement);
+                        this.swap(index, leftChildIndex);
                     }
                 };
 
@@ -167,7 +172,7 @@
                 };
 
                 MinHeapNodes.prototype.empty = function () {
-                    return this._collection.length === 0 || !this._collection[0];
+                    return !this._collection[0];
                 };
 
                 return MinHeapNodes;
@@ -216,7 +221,8 @@
                         r.map = path;
                         return r;
                     }
-                    if (_.isNumber(came_from[current_node.id])) {
+
+                    if (!_.isUndefined(came_from[current_node.id]) && !_.isNull(came_from[current_node.id])) {
                         r = service._reconstructPath(came_from, came_from[current_node.id], start_node, path);
                         path.enqueue(current_node);
                         r.map = path;
@@ -238,7 +244,7 @@
                     }
                 };
 
-                service.aStarAlgorithm = function (startNode, endNode, nodeMap) {
+                service.aStarAlgorithm = function (startNode, endNode, nodeMap, distBetween) {
                     if (startNode.id === endNode.id) {
                         return null;
                     }
@@ -257,30 +263,41 @@
                         var current = openSet.extractMinimum();
                         if (current.id === endNode.id) {
                             service._resetDistances(nodeMap);
-                            //console.log(came_from);
-                            //console.log(endNode);
-                            //console.log(startNode);
-//            var results = _reconstructPath(came_from, endNode, startNode, New (Queue, {}));
-//            return results.map;
+
+                            //for (var current in came_from) {
+                            //    if (came_from.hasOwnProperty(current)) {
+                            //        var cur = came_from[current],
+                            //            other = came_from[cur.id];
+                            //        if (other && current === other.id) {
+                            //            console.log("RECURSIVE");
+                            //        }
+                            //    }
+                            //}
+
                             return service._reconstructPath(came_from, endNode, startNode, new Queue({})).map;
                         }
                         closedSet.push(current);
                         var neighbors = current.getNeighbors();
 
                         for (var idx = 0; idx < neighbors.length; idx++) {
-                            var tentative_g_score = parseFloat(g_score[current.id]) + 1.0;
-                            var g_score_neighbor = service._heuristicCostEstimate(neighbors[idx], startNode);
+                            var neighbor = neighbors[idx];
+                            var tentative_g_score = parseFloat(g_score[current.id]) + distBetween;
+                            var g_score_neighbor = parseFloat(service._heuristicCostEstimate(neighbor, startNode));
+                            var neighborInClosedSet = _.findIndex(closedSet, function (closedNode) {
+                                    return closedNode.id === neighbor.id;
+                                }) > -1;
 
-                            if (closedSet.indexOf(neighbors[idx]) > -1 && tentative_g_score >= g_score_neighbor) {
+                            if (neighborInClosedSet && tentative_g_score >= g_score_neighbor) {
                                 continue;
                             }
 
-                            if (!openSet.nodeInHeap(neighbors[idx]) || tentative_g_score < g_score_neighbor) {
-                                came_from[neighbors[idx].id] = current;
-                                g_score[neighbors[idx].id] = parseFloat(tentative_g_score);
-                                neighbors[idx].distance = parseFloat(g_score[neighbors[idx].id]) + service._heuristicCostEstimate(neighbors[idx], endNode);
-                                if (!openSet.nodeInHeap(neighbors[idx]))
-                                    openSet.insert(neighbors[idx]);
+                            if (!openSet.nodeInHeap(neighbor) || tentative_g_score < g_score_neighbor) {
+                                came_from[neighbor.id] = current;
+                                g_score[neighbor.id] = tentative_g_score;
+                                neighbor.distance = g_score[neighbor.id] + parseFloat(service._heuristicCostEstimate(neighbor, endNode));
+                                if (!openSet.nodeInHeap(neighbor)) {
+                                    openSet.insert(neighbor);
+                                }
                             }
                         }
                     }

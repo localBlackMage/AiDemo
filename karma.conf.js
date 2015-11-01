@@ -22,7 +22,10 @@ module.exports = function (config) {
             SCRIPT_ROOT + 'services/*.js',
             SCRIPT_ROOT + 'models/*.js',
             SCRIPT_ROOT + 'directives/**/*.js',
-            SCRIPT_ROOT + 'controller/*.js',
+            //SCRIPT_ROOT + 'controllers/*.js',
+            SCRIPT_ROOT + 'controllers/astarCtrl.js',
+            SCRIPT_ROOT + 'controllers/flockCtrl.js',
+            SCRIPT_ROOT + 'controllers/lifeCtrl.js',
             SCRIPT_ROOT + '*.js',
 
             TEST_ROOT + '*.js'

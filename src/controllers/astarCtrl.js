@@ -20,12 +20,13 @@
                 $scope.gridObj = {
                     grid: [],
                     //paths: [],
-                    tileSize: 50
+                    tileSize: 50.0
                 };
                 $scope.start = null;
                 $scope.end = null;
 
                 $scope.markPath = function (path) {
+                    console.log(path);
                     if (!path) {
                         return;
                     }
@@ -35,16 +36,12 @@
                     }
                 };
 
-                $scope.setPaths = function (grid) {
-                    //$scope.gridObj.paths = grid;
-                };
-
                 $scope.detect = function (position) {
                     if ($scope.start === null) {
                         $scope.gridObj.grid.forEach(function (row) {
                             row.forEach(function (node) {
                                 if (node) {
-                                    node.resetSelect();
+                                    node.reset();
                                     if (node.specialSelect(position)) {
                                         $scope.start = node;
                                     }
@@ -59,21 +56,27 @@
                     else if ($scope.end === null) {
                         $scope.gridObj.grid.forEach(function (row) {
                             row.forEach(function (node) {
-                                if (node && node.selected && !node.special) {
-                                    if (node.specialSelect(position)) {
-                                        $scope.end = node;
-                                    }
+                                if (node && node.selected && !node.special && node.specialSelect(position)) {
+                                    $scope.end = node;
                                 }
                             });
                         });
-                        $scope.markPath(AStar.aStarAlgorithm($scope.start, $scope.end, $scope.gridObj.grid));
+                        if ($scope.start && $scope.end) {
+                            $scope.markPath(AStar.aStarAlgorithm($scope.start, $scope.end, $scope.gridObj.grid, $scope.gridObj.tileSize));
+                        }
                     }
                     else {
                         $scope.start = null;
                         $scope.end = null;
-                    }
 
-                    $scope.setPaths($scope.gridObj.grid);
+                        $scope.gridObj.grid.forEach(function (row) {
+                            row.forEach(function (node) {
+                                if (node) {
+                                    node.reset();
+                                }
+                            });
+                        });
+                    }
                 };
 
                 $scope.generateGrid = function () {
@@ -112,7 +115,6 @@
                         $scope.gridObj.grid.push(arr);
                     }
                     GridService.fillGridNeighbors($scope.gridObj.grid, true);
-                    $scope.setPaths($scope.gridObj.grid);
                 };
 
                 $scope.touch = function (event) {
@@ -126,25 +128,6 @@
 
                     $scope.detect(position);
                 };
-
-                //$scope.render = function () {
-                //    DrawUtils.fillCanvas($scope.canvas, CAN_BACK);
-                //    DrawUtils.drawGrid($scope.ctx, $scope.box, GRID_SIZE, GRID_COLOR);
-                //
-                //    $scope.gridObj.grid.forEach(function (row) {
-                //        row.forEach(function (node) {
-                //            if (node)
-                //                node.renderPaths($scope.ctx);
-                //        });
-                //    });
-                //
-                //    $scope.gridObj.grid.forEach(function (row) {
-                //        row.forEach(function (node) {
-                //            if (node)
-                //                node.render($scope.ctx);
-                //        });
-                //    });
-                //};
 
                 // Setup
                 $timeout($scope.generateGrid, 100);
@@ -160,37 +143,6 @@
                         }
                     }
                 };
-                //test();
-
-                //// Animation
-                //window.requestAnimFrame = (function (callback) {
-                //    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-                //        function (callback) {
-                //            window.setTimeout(callback, 1000 / 60);
-                //        };
-                //})();
-                //
-                //$scope.animate = function (startTime) {
-                //    var time = (new Date()).getTime() - startTime;
-                //    if (time > $scope.step * 1000 && !$scope.pause) {
-                //        startTime = (new Date()).getTime();
-                //        $scope.update();
-                //        $scope.render();
-                //        $scope.$apply();
-                //    }
-                //    else if ($scope.pause) {
-                //        startTime = (new Date()).getTime();
-                //    }
-                //    // request new frame
-                //    requestAnimFrame(function () {
-                //        $scope.animate(startTime);
-                //    });
-                //};
-                //
-                //setTimeout(function () {
-                //    var startTime = (new Date()).getTime();
-                //    $scope.animate(startTime);
-                //}, 0);
             }])
 
         .config(['$stateProvider', function ($stateProvider) {
@@ -209,23 +161,3 @@
                 });
         }]);
 }(angular));
-
-//demoApp.directive('ngCanvasAi', function () {
-//    return {
-//        restrict: "A",
-//        link: function (scope, element) {
-////            var drawing = false;
-//            element.bind('mousedown', function (event) {
-//                scope.detect(New(Vector, {x: event.offsetX - 1, y: event.offsetY - 1}));
-////                drawing = true;
-//            });
-////            element.bind('mousemove', function (event) {
-////                if (drawing)
-////                    scope.detect(New(Vector, {x: event.offsetX - 1, y: event.offsetY - 1}));
-////            });
-//            element.bind('mouseup', function (event) {
-////                drawing = false;
-//            });
-//        }
-//    };
-//});

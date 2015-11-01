@@ -23,7 +23,9 @@
                 };
 
                 Queue.prototype.dequeue = function () {
-                    if (this.queue.length === 0) return undefined;
+                    if (this.queue.length === 0) {
+                        return undefined;
+                    }
                     var item = this.queue[this.offset];
                     if (++this.offset * 2 >= this.queue.length) {
                         this.queue = this.queue.slice(this.offset);

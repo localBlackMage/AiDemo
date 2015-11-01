@@ -23,26 +23,30 @@
                 $scope.lastTime = 0;
                 $scope.cumulativeTime = 0;
 
+                $scope.generateGridColumns = function (numberOfColumns, row) {
+                    var currentRow = [];
+                    for (var col = 0; col < numberOfColumns; col++) {
+                        var alive = MathUtils.getRandomNumber(0, 1) <= 0.1;
+                        currentRow.push((new LifeCell({
+                            box: {
+                                x: col * $scope.gridObj.tileSize,
+                                y: row * $scope.gridObj.tileSize,
+                                width: $scope.gridObj.tileSize,
+                                height: $scope.gridObj.tileSize
+                            },
+                            status: alive ? LifeCell.ALIVE : LifeCell.DEAD,
+                            DEAD_COLOR: $scope.BACK_COLOR
+                        })));
+                    }
+                    return currentRow;
+                };
+
                 $scope.generateGrid = function () {
-                    var de,
-                        numberOfRows = $scope.box.height / $scope.gridObj.tileSize,
+                    var numberOfRows = $scope.box.height / $scope.gridObj.tileSize,
                         numberOfColumns = $scope.box.width / $scope.gridObj.tileSize;
                     $scope.gridObj.grid = [];
                     for (var row = 0; row < numberOfRows; row++) {
-                        var currentRow = [];
-                        for (var col = 0; col < numberOfColumns; col++) {
-                            de = MathUtils.getRandomNumber(0, 1) < 0.1;
-                            currentRow.push((new LifeCell({
-                                box: {
-                                    x: col * $scope.gridObj.tileSize,
-                                    y: row * $scope.gridObj.tileSize,
-                                    width: $scope.gridObj.tileSize,
-                                    height: $scope.gridObj.tileSize
-                                },
-                                status: de ? LifeCell.ALIVE : LifeCell.DEAD,
-                                DEAD_COLOR: $scope.BACK_COLOR
-                            })));
-                        }
+                        var currentRow = $scope.generateGridColumns(numberOfColumns, row);
                         $scope.gridObj.grid.push(currentRow);
                     }
                     GridService.fillGridNeighbors($scope.gridObj.grid, false);
