@@ -92,4 +92,141 @@ describe('Life Controller', function () {
 
         expect(scope.generateGridColumns.calls.count()).toBe(2);
     });
+
+    it("should move the grid to the next generation", function () {
+        scope.generation = 0;
+
+        scope.gridObj.grid = [[
+            new LifeCell({
+                box: {
+                    x: 0, y: 0, width: 10, height: 10
+                },
+                status: LifeCell.ALIVE, DEAD_COLOR: scope.BACK_COLOR
+            })
+        ]];
+
+        spyOn(GridService, 'deepCopyGrid').and.callThrough();
+
+        spyOn(scope.gridObj.grid[0][0], 'setStatus').and.callThrough();
+
+        spyOn(scope, '$apply').and.callFake(function () {
+        });
+
+        scope.nextGeneration();
+
+        expect(GridService.deepCopyGrid).toHaveBeenCalled();
+        expect(scope.gridObj.grid[0][0].setStatus).toHaveBeenCalled();
+        expect(scope.$apply).toHaveBeenCalled();
+    });
+
+    it("should update", function () {
+        scope.pause = true;
+
+        spyOn(scope, 'nextGeneration').and.callFake(function () {
+        });
+
+        scope.update();
+
+        expect(scope.nextGeneration.calls.count()).toBe(0);
+
+        scope.pause = false;
+        scope.step = Number.MAX_VALUE;
+        scope.lastTime = new Date().getTime();
+
+        scope.update();
+
+        expect(scope.nextGeneration.calls.count()).toBe(0);
+
+        scope.step = 0;
+        scope.lastTime = 0;
+
+        scope.update();
+
+        expect(scope.nextGeneration.calls.count()).toBe(1);
+        expect(scope.cumulativeTime).toBe(0);
+    });
+
+    it("should reset", function () {
+        scope.generation = 1;
+
+        spyOn(scope, 'generateGrid').and.callFake(function () {
+        });
+
+        scope.reset();
+
+        expect(scope.generateGrid.calls.count()).toBe(1);
+        expect(scope.generation).toBe(0);
+    });
+
+    it("should toggle pause", function () {
+        scope.pause = false;
+        scope.gridObj.grid = [{}];
+
+        spyOn(scope, 'generateGrid').and.callFake(function () {
+        });
+
+        scope.pauseToggle();
+
+        expect(scope.generateGrid.calls.count()).toBe(0);
+        expect(scope.pause).toBeTruthy();
+
+        scope.gridObj.grid = [];
+
+        scope.pauseToggle();
+
+        expect(scope.generateGrid.calls.count()).toBe(1);
+        expect(scope.pause).toBeFalsy();
+    });
+
+    it("should spawn a cell", function () {
+        scope.gridObj.grid = [[
+            new LifeCell({
+                box: {
+                    x: 0, y: 0, width: 10, height: 10
+                },
+                status: LifeCell.ALIVE, DEAD_COLOR: scope.BACK_COLOR
+            })
+        ]];
+
+        spyOn(scope.gridObj.grid[0][0], 'setStatus').and.callFake(function(status){
+            expect(status).toBe(LifeCell.ALIVE);
+        });
+
+        scope.spawnCell(0, 0);
+
+        expect(scope.gridObj.grid[0][0].setStatus.calls.count()).toBe(1);
+    });
+
+    it("should handle a touch event", function () {
+        var event = {
+            offsetX: 1,
+            offsetY: 1
+        };
+
+        scope.gridObj.grid = [];
+        scope.pause = false;
+
+        spyOn(scope, 'spawnCell').and.callFake(function(x, y) {
+            expect(x).toBe(0);
+            expect(y).toBe(0);
+        });
+
+        scope.touch(event);
+
+        expect(scope.spawnCell).not.toHaveBeenCalled();
+
+
+        scope.gridObj.grid = [[]];
+        scope.pause = true;
+
+        scope.touch(event);
+        expect(scope.spawnCell).not.toHaveBeenCalled();
+
+
+        scope.gridObj.grid = [[]];
+        scope.pause = false;
+
+        scope.touch(event);
+        expect(scope.spawnCell).toHaveBeenCalled();
+    });
 });

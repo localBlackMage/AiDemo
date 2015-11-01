@@ -64,10 +64,7 @@
                 };
 
                 $scope.update = function () {
-                    if ($scope.pause) {
-                        return;
-                    }
-                    else {
+                    if (!$scope.pause) {
                         var currTime = new Date().getTime();
                         $scope.cumulativeTime += (currTime - $scope.lastTime) / 1000;
                         $scope.lastTime = currTime;
@@ -76,7 +73,6 @@
                             $scope.nextGeneration();
                             $scope.cumulativeTime = 0;
                         }
-
                     }
                 };
 
@@ -94,8 +90,8 @@
                 };
 
                 $scope.spawnCell = function (x, y) {
-                    var newX = Math.round(x / $scope.gridObj.tileSize) - 1,
-                        newY = Math.round(y / $scope.gridObj.tileSize) - 1;
+                    var newX = Math.max(Math.round(x / $scope.gridObj.tileSize) - 1, 0),
+                        newY = Math.max(Math.round(y / $scope.gridObj.tileSize) - 1, 0);
                     $scope.gridObj.grid[newY][newX].setStatus(LifeCell.ALIVE);
                 };
 

@@ -35,44 +35,26 @@
                 };
                 $scope.gameType = WOLVES;
 
-                $scope.$watch('box', function (newVal, oldVal) {
-                    if (newVal === oldVal) {
-                        return;
+                $scope.updateStats = function (newStats, entityType) {
+                    for (var entity in $scope.entities[entityType]) {
+                        $scope.entities[entityType][entity].updateStats({
+                            speed: parseFloat(newStats.speed),
+                            cohesionWeight: parseFloat(newStats.cohesionWeight),
+                            separateWeight: parseFloat(newStats.separateWeight),
+                            alignWeight: parseFloat(newStats.alignWeight)
+                        });
                     }
-                    if (_.isNumber(newVal.width) && _.isNumber(newVal.height) && _.isObject(newVal.center)) {
-                        $scope.clear();
-                    }
-                });
+                };
 
                 $scope.$watch('preyStats', function (newVal, oldVal) {
-                    if (newVal === oldVal) {
-                        return;
-                    }
-                    else {
-                        for (var which in $scope.entities.prey) {
-                            $scope.entities.prey[which].updateStats({
-                                speed: parseFloat(newVal.speed),
-                                cohesionWeight: parseFloat(newVal.cohesionWeight),
-                                separateWeight: parseFloat(newVal.separateWeight),
-                                alignWeight: parseFloat(newVal.alignWeight)
-                            });
-                        }
+                    if (newVal !== oldVal) {
+                        $scope.updateStats(newVal, 'prey');
                     }
                 }, true);
 
                 $scope.$watch('predatorStats', function (newVal, oldVal) {
-                    if (newVal === oldVal) {
-                        return;
-                    }
-                    else {
-                        for (var which in $scope.entities.predators) {
-                            $scope.entities.predators[which].updateStats({
-                                speed: parseFloat(newVal.speed),
-                                cohesionWeight: parseFloat(newVal.cohesionWeight),
-                                separateWeight: parseFloat(newVal.separateWeight),
-                                alignWeight: parseFloat(newVal.alignWeight)
-                            });
-                        }
+                    if (newVal !== oldVal) {
+                        $scope.updateStats(newVal, 'predators');
                     }
                 }, true);
 
@@ -86,14 +68,34 @@
                 };
 
                 $scope.reset = function () {
-                    $scope.entities.prey = $scope.createPrey($scope.preyAmount);
-                    $scope.entities.predators = $scope.createPredators($scope.predatorAmount);
+                    $scope.entities.prey = $scope.createPreyArray($scope.preyAmount);
+                    $scope.entities.predators = $scope.createPredatorsArray($scope.predatorAmount);
                 };
 
-                $scope.createPrey = function (num) {
+                $scope.createFlockEntity = function (stats, positionAndVelocity, type) {
+                    return new FlockEntity({
+                        position: new Vector({
+                            x: positionAndVelocity.position.x,
+                            y: positionAndVelocity.position.y
+                        }),
+                        velocity: new Vector({
+                            x: positionAndVelocity.velocity.x,
+                            y: positionAndVelocity.velocity.y
+                        }),
+                        speed: parseFloat(stats.speed),
+                        cohesionWeight: parseFloat(stats.cohesionWeight),
+                        avoidWeight: parseFloat(stats.avoidWeight),
+                        separateWeight: parseFloat(stats.separateWeight),
+                        alignWeight: parseFloat(stats.alignWeight),
+                        type: type,
+                        color: type === FlockEntity.PREY ? DrawUtils.getRandomGreen() : DrawUtils.getRandomRed()
+                    })
+                };
+
+                $scope.createPreyArray = function (num) {
                     var retArray = [];
                     for (var idx = 0; idx < num; idx++) {
-                        retArray.push(new FlockEntity({
+                        retArray.push($scope.createFlockEntity($scope.preyStats, {
                             position: new Vector({
                                 x: MathUtils.getRandomNumber(0, $scope.box.width),
                                 y: MathUtils.getRandomNumber(0, $scope.box.height)
@@ -101,94 +103,63 @@
                             velocity: new Vector({
                                 x: MathUtils.getRandomNumber(-1, 1),
                                 y: MathUtils.getRandomNumber(-1, 1)
-                            }),
-                            speed: parseFloat($scope.preyStats.speed),
-                            cohesionWeight: parseFloat($scope.preyStats.cohesionWeight),
-                            avoidWeight: parseFloat($scope.preyStats.avoidWeight),
-                            separateWeight: parseFloat($scope.preyStats.separateWeight),
-                            alignWeight: parseFloat($scope.preyStats.alignWeight),
-                            type: FlockEntity.PREY,
-                            color: DrawUtils.getRandomGreen()
-                        }));
+                            })
+                        }, FlockEntity.PREY));
                     }
                     return retArray;
                 };
 
-                $scope.createPredators = function (num) {
+                $scope.createPredatorsArray = function (num) {
                     var retArray = [];
                     for (var idx = 0; idx < num; idx++) {
-                        retArray.push(new FlockEntity({
-                            position: Vector.build({
+                        retArray.push($scope.createFlockEntity($scope.predatorStats, {
+                            position: new Vector({
                                 x: MathUtils.getRandomNumber(0, $scope.box.width),
                                 y: MathUtils.getRandomNumber(0, $scope.box.height)
                             }),
-                            velocity: Vector.build({
+                            velocity: new Vector({
                                 x: MathUtils.getRandomNumber(-1, 1),
                                 y: MathUtils.getRandomNumber(-1, 1)
-                            }),
-                            speed: parseFloat($scope.predatorStats.speed),
-                            cohesionWeight: parseFloat($scope.predatorStats.cohesionWeight),
-                            separateWeight: parseFloat($scope.predatorStats.separateWeight),
-                            alignWeight: parseFloat($scope.predatorStats.alignWeight),
-                            type: FlockEntity.PREDATOR,
-                            color: DrawUtils.getRandomRed()
-                        }));
+                            })
+                        }, FlockEntity.PREDATOR));
                     }
                     return retArray;
+                };
+
+                $scope.updateEntity = function (entity) {
+                    entity.update({
+                        box: $scope.box,
+                        prey: MathUtils.getNearestObjects($scope.entities.prey, entity, 50.0),
+                        predators: MathUtils.getNearestObjects($scope.entities.predators, entity, 50.0)
+                    });
                 };
 
                 $scope.update = function () {
                     $scope.entities.predators.forEach(function (predator) {
-                        predator.update({
-                            box: $scope.box,
-                            prey: MathUtils.getNearestObjects($scope.entities.prey, predator, 50.0),
-                            predators: $scope.entities.predators
-                        });
+                        $scope.updateEntity(predator);
                     });
                     $scope.entities.prey.forEach(function (prey) {
-                        prey.update({
-                            box: $scope.box,
-                            prey: MathUtils.getNearestObjects($scope.entities.prey, prey, 50.0),
-                            predators: MathUtils.getNearestObjects($scope.entities.predators, prey, 50.0)
-                        });
+                        $scope.updateEntity(prey);
                     });
 
-                    $scope['updatePrey' + $scope.gameType]();
+                    $scope.predatorsKillPrey();
                     $scope.$apply();
                 };
 
-                $scope.updatePreyWolves = function () {
-                    $scope.entities.predators.forEach(function (predator) {
-                        var toKill = MathUtils.getNearestObjects($scope.entities.prey, predator, 7);
-                        toKill.forEach(function (dead) {
-                            $scope.entities.prey.splice($scope.entities.prey.indexOf(dead), 1);
-                            console.log("Wolves got a kill! AWOOOO!");
-                        });
-                    });
+                $scope.killPreyZombies = function (prey) {
+                    $scope.entities.predators.push($scope.createFlockEntity($scope.predatorStats, prey, FlockEntity.PREDATOR));
+                    $scope.entities.prey.splice($scope.entities.prey.indexOf(prey), 1);
                 };
 
-                $scope.updatePreyZombies = function () {
+                $scope.killPreyWolves = function (prey) {
+                    $scope.entities.prey.splice($scope.entities.prey.indexOf(prey), 1);
+                };
+
+                $scope.predatorsKillPrey = function () {
                     $scope.entities.predators.forEach(function (predator) {
                         var toKill = MathUtils.getNearestObjects($scope.entities.prey, predator, 7);
-                        toKill.forEach(function (dead) {
-                            $scope.entities.predators.push(new FlockEntity({
-                                position: new Vector({
-                                    x: dead.position.x,
-                                    y: dead.position.y
-                                }),
-                                velocity: new Vector({
-                                    x: dead.velocity.x,
-                                    y: dead.velocity.y
-                                }),
-                                speed: parseFloat($scope.predatorStats.speed),
-                                cohesionWeight: parseFloat($scope.predatorStats.cohesionWeight),
-                                separateWeight: parseFloat($scope.predatorStats.separateWeight),
-                                alignWeight: parseFloat($scope.predatorStats.alignWeight),
-                                type: FlockEntity.PREDATOR,
-                                color: DrawUtils.getRandomRed()
-                            }));
-                            $scope.entities.prey.splice($scope.entities.prey.indexOf(dead), 1);
-                            console.log("Oh no, they got Timmy!");
+                        toKill.forEach(function (deadPrey) {
+                            $scope['killPrey' + $scope.gameType](deadPrey);
                         });
                     });
                 };
@@ -199,7 +170,6 @@
                 };
             }
         ])
-
         .config(['$stateProvider', function ($stateProvider) {
             $stateProvider
                 .state('app.flock', {
@@ -215,5 +185,4 @@
                     }
                 });
         }]);
-
 }(angular));
