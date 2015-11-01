@@ -74,14 +74,8 @@
 
                 $scope.createFlockEntity = function (stats, positionAndVelocity, type) {
                     return new FlockEntity({
-                        position: new Vector({
-                            x: positionAndVelocity.position.x,
-                            y: positionAndVelocity.position.y
-                        }),
-                        velocity: new Vector({
-                            x: positionAndVelocity.velocity.x,
-                            y: positionAndVelocity.velocity.y
-                        }),
+                        position: positionAndVelocity.position,
+                        velocity: positionAndVelocity.velocity,
                         speed: parseFloat(stats.speed),
                         cohesionWeight: parseFloat(stats.cohesionWeight),
                         avoidWeight: parseFloat(stats.avoidWeight),
