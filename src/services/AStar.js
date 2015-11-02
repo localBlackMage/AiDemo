@@ -20,7 +20,7 @@
         .factory('MinHeapRetObj', [function () {
             function MinHeapRetObj(params) {
                 params = params || {};
-                this.index = params.index ? params.index : null;
+                this.index = !_.isUndefined(params.index) ? params.index : null;
                 this.other = params.other ? params.other : null;
             }
 
