@@ -226,9 +226,9 @@ describe('A Star Controller', function () {
             height: 20
         };
 
-        //spyOn(MathUtils, 'getRandomNumber').and.callFake(function(min, max){
-        //
-        //});
+        spyOn(MathUtils, 'getRandomNumber').and.callFake(function(min, max){
+            return 0;
+        });
 
         var result = scope.generateNode(numberOfColumns, numberOfRows, column, row, offset, curId);
 

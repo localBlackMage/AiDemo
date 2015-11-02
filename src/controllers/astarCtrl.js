@@ -33,7 +33,7 @@
                     }
                 };
 
-                $scope.createPath = function() {
+                $scope.createPath = function () {
                     if ($scope.start && $scope.end) {
                         $scope.markPath(
                             AStar.aStarAlgorithm(
@@ -100,7 +100,7 @@
                 };
 
                 $scope.generateNode = function (numberOfColumns, numberOfRows, column, row, offset, curId) {
-                    var spawn = true;//MathUtils.getRandomNumber(0, 1) < 0.8 ? true : false;
+                    var spawn = MathUtils.getRandomNumber(0, 1) <= 0.8;
                     return spawn ? new Node({
                         box: {
                             x: column * $scope.gridObj.tileSize,

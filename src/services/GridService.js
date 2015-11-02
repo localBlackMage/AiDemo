@@ -7,9 +7,11 @@
             function ($log, Utils) {
                 var service = this;
 
-                service.getNeighbors = function (x, y, xLen, yLen, grid, noDiagonal) {
+                service.getNeighborsForCoordinates = function (x, y, grid, noDiagonal) {
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
-                    var neighbors = [];
+                    var neighbors = [],
+                        yLen = grid.length,
+                        xLen = grid[0].length;
                     neighbors.push(x - 1 >= 0 ? grid[y][x - 1] : null); // 0, -1
                     neighbors.push(x + 1 < xLen ? grid[y][x + 1] : null); // 0, 1
                     neighbors.push(y - 1 >= 0 ? grid[y - 1][x] : null); // -1, 0
@@ -28,12 +30,10 @@
 
                 service.fillGridNeighbors = function (grid, noDiagonal) {
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
-                    var yLen = grid.length,
-                        xLen = grid[0].length;
                     for (var y = 0; y < grid.length; y++) {
                         for (var x = 0; x < grid[y].length; x++) {
                             if (grid[y][x] && _.isFunction(grid[y][x].fillNeighbors)) {
-                                grid[y][x].fillNeighbors(service.getNeighbors(x, y, xLen, yLen, grid, noDiagonal));
+                                grid[y][x].fillNeighbors(service.getNeighborsForCoordinates(x, y, grid, noDiagonal));
                             }
                         }
                     }
@@ -48,18 +48,18 @@
                     }
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
                     var gridCopy = [];
-                    for (var row = 0; row < grid.length; row++) {
+                    grid.forEach(function(row) {
                         var currentRow = [];
-                        for (var col = 0; col < grid[row].length; col++) {
-                            if (grid[row][col]) {
+                        row.forEach(function(node){
+                            if (node) {
                                 currentRow.push(new gridObjectType({
-                                    box: grid[row][col].box,
-                                    status: grid[row][col].status
+                                    box: node.box,
+                                    status: node.status
                                 }));
                             }
-                        }
+                        });
                         gridCopy.push(currentRow);
-                    }
+                    });
                     return service.fillGridNeighbors(gridCopy, noDiagonal);
                 };
             }

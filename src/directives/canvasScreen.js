@@ -67,6 +67,10 @@
                          * @param object - JS Object
                          */
                         scope.renderObject = function (object) {
+                            if (!object) {
+                                return;
+                            }
+
                             if (_.isFunction(object.render)) {
                                 object.render(scope.canvasContext);
                             }
@@ -271,7 +275,7 @@
                          * @param hasGrid - String, scope's hasGrid property
                          * @returns {boolean} - True if hasGrid is an acceptable 'true' string, false if not
                          */
-                        scope.getHasGrid = function(hasGrid) {
+                        scope.getHasGrid = function (hasGrid) {
                             var gridStringArray = ['t', 'true', 'yes', 'y'];
                             return _.findIndex(gridStringArray, function (gridString) {
                                     return gridString === hasGrid.toLowerCase();
@@ -284,7 +288,7 @@
                          * @param gridBg - String, scope's gridIsBackground property
                          * @returns {boolean} - True if gridIsBackground is an acceptable 'true' string, false if not
                          */
-                        scope.getGridIsBackground = function(gridBg) {
+                        scope.getGridIsBackground = function (gridBg) {
                             var gridBgStringArray = ['t', 'true', 'yes', 'y'];
                             return _.findIndex(gridBgStringArray, function (gridBgString) {
                                     return gridBgString === gridBg.toLowerCase();
