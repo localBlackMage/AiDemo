@@ -22,14 +22,23 @@
                 $scope.start = null;
                 $scope.end = null;
 
+                $scope.findNodeInGridAndPathSelect = function (node) {
+                    if ($scope.gridObj.grid) {
+                        var row = parseInt(node.id / $scope.gridObj.grid[0].length, 10),
+                            column = parseInt(node.id - (row * $scope.gridObj.grid[0].length), 10);
+
+                        $scope.gridObj.grid[row][column] = node;
+                        $scope.gridObj.grid[row][column].pathSelect();
+                    }
+                };
+
                 $scope.markPath = function (path) {
-                    //console.log(path);
                     if (!path) {
                         return;
                     }
                     while (!path.isEmpty()) {
                         var node = path.dequeue();
-                        node.pathSelect();
+                        $scope.findNodeInGridAndPathSelect(node);
                     }
                 };
 

@@ -41,6 +41,28 @@ describe('A Star Controller', function () {
     });
 
 
+    it("should find a node in the grid and call pathSelect on it", function () {
+
+        var node = new Node({id: 0});
+
+        spyOn(node, 'pathSelect').and.callFake(function () {
+        });
+
+        scope.gridObj.grid = null;
+
+        scope.findNodeInGridAndPathSelect({});
+
+        expect(node.pathSelect).not.toHaveBeenCalled();
+
+
+        scope.gridObj.grid = [[{}]];
+
+        scope.findNodeInGridAndPathSelect(node);
+
+        expect(node.pathSelect).toHaveBeenCalled();
+        expect(scope.gridObj.grid[0][0]).toBe(node);
+    });
+
     it("should mark nodes in a path", function () {
         var node = new Node(),
             queue = new Queue();
@@ -49,19 +71,20 @@ describe('A Star Controller', function () {
 
         spyOn(queue, 'isEmpty').and.callThrough();
         spyOn(queue, 'dequeue').and.callThrough();
-        spyOn(node, 'pathSelect').and.callFake(function () {});
+        spyOn(scope, 'findNodeInGridAndPathSelect').and.callFake(function (node) {
+        });
 
         scope.markPath(null);
 
         expect(queue.isEmpty).not.toHaveBeenCalled();
         expect(queue.dequeue).not.toHaveBeenCalled();
-        expect(node.pathSelect).not.toHaveBeenCalled();
+        expect(scope.findNodeInGridAndPathSelect).not.toHaveBeenCalled();
 
         scope.markPath(queue);
 
         expect(queue.isEmpty).toHaveBeenCalled();
         expect(queue.dequeue).toHaveBeenCalled();
-        expect(node.pathSelect).toHaveBeenCalled();
+        expect(scope.findNodeInGridAndPathSelect).toHaveBeenCalled();
     });
 
     it("should create a path if there is a start and end node", function () {
@@ -226,7 +249,7 @@ describe('A Star Controller', function () {
             height: 20
         };
 
-        spyOn(MathUtils, 'getRandomNumber').and.callFake(function(min, max){
+        spyOn(MathUtils, 'getRandomNumber').and.callFake(function (min, max) {
             return 0;
         });
 

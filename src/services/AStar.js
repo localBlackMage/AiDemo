@@ -3,7 +3,7 @@
 
     ng.module('aidemo.service.aStar', [
         'aidemo.service.utils',
-
+        'aidemo.models.node',
         'aidemo.models.queue'
     ])
         .factory('ReconRetValue', [
@@ -27,8 +27,8 @@
             return MinHeapRetObj;
         }
         ])
-        .factory('MinHeapNodes', ['MinHeapRetObj',
-            function (MinHeapRetObj) {
+        .factory('MinHeapNodes', ['MinHeapRetObj', 'Node',
+            function (MinHeapRetObj, Node) {
                 function MinHeapNodes(params) {
                     params = params || {};
                     this._index = 0;
@@ -106,7 +106,8 @@
                 };
 
                 MinHeapNodes.prototype.swap = function (a, b) {
-                    var tmp = angular.copy(this._collection[a]);
+                    //var tmp = angular.copy(this._collection[a]);
+                    var tmp = this._collection[a] ? new Node(this._collection[a]) : null;
                     this._collection[a] = this._collection[b];
                     this._collection[b] = tmp;
                 };
@@ -263,18 +264,7 @@
                         var current = openSet.extractMinimum();
                         if (current.id === endNode.id) {
                             service._resetDistances(nodeMap);
-
-                            //for (var current in came_from) {
-                            //    if (came_from.hasOwnProperty(current)) {
-                            //        var cur = came_from[current],
-                            //            other = came_from[cur.id];
-                            //        if (other && current === other.id) {
-                            //            console.log("RECURSIVE");
-                            //        }
-                            //    }
-                            //}
-
-                            return service._reconstructPath(came_from, endNode, startNode, new Queue({})).map;
+                            return service._reconstructPath(came_from, endNode, startNode, new Queue()).map;
                         }
                         closedSet.push(current);
                         var neighbors = current.getNeighbors();
