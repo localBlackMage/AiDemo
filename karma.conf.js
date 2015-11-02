@@ -58,6 +58,7 @@ module.exports = function (config) {
 
         // list of files / patterns to exclude
         exclude: [
+            SCRIPT_ROOT + 'models/Neuron.js',
             TEST_ROOT + 'minHeapNodesSpec.js',
             TEST_ROOT + 'neuronSpec.js'
         ],

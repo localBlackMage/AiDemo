@@ -10,6 +10,7 @@
         .factory('Node', ['Utils', 'DrawUtils', 'MathUtils', 'Vector',
             function (Utils, DrawUtils, MathUtils, Vector) {
                 function Node(params) {
+                    params = params || {};
                     this.id = params.id ? params.id : null;
                     this.position = params.position ? params.position : new Vector();
                     this.distance = params.distance ? params.distance : 0;
@@ -41,6 +42,10 @@
                     this.path = false;
                 };
 
+                Node.prototype.eligibleForSelect = function(position) {
+                    return this.selected && !this.special && this.specialSelect(position)
+                };
+                
                 Node.prototype.select = function (position) {
                     var dist = this.position.subNew(position).length();
                     this.selected = dist <= this.RANGE;
