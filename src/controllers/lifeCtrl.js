@@ -96,7 +96,7 @@
                 };
 
                 $scope.touch = function (event) {
-                    if ($scope.pause || $scope.gridObj.grid.length === 0) {
+                    if ($scope.gridObj.grid.length === 0) {
                         return;
                     }
                     var x = event.offsetX - 1,

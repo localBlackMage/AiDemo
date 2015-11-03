@@ -66,10 +66,6 @@
                             }
                         });
                     });
-
-                    if ($scope.start) {
-                        AStar.depthFirstSearch($scope.start, 5);
-                    }
                 };
 
                 $scope.selectEndNode = function (position) {
@@ -109,7 +105,7 @@
                 };
 
                 $scope.generateNode = function (numberOfColumns, numberOfRows, column, row, offset, curId) {
-                    var spawn = MathUtils.getRandomNumber(0, 1) <= 0.8;
+                    var spawn = MathUtils.getRandomNumber(0, 1) <= 0.7;
                     return spawn ? new Node({
                         box: {
                             x: column * $scope.gridObj.tileSize,

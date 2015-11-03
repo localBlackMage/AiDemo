@@ -18,6 +18,7 @@ describe("LifeCell Model", function () {
 
             box = {
                 width: 10, height: 10,
+                x: 10, y: 10,
                 center: new Vector({
                     x: 10,
                     y: 10
@@ -84,15 +85,28 @@ describe("LifeCell Model", function () {
     it("should render", function () {
         var cellObj = new LifeCell({box: box, status: ALIVE}),
             context = document.createElement("canvas").getContext('2d');
-        spyOn(DrawUtils, 'drawSquare').and.callFake(function (ctx, box, color) {
+        //spyOn(DrawUtils, 'drawSquare').and.callFake(function (ctx, box, color) {
+        //    expect(ctx).toBe(context);
+        //    expect(box).toBe(cellObj.box);
+        //    expect(color).toBe(cellObj.color);
+        //});
+        spyOn(DrawUtils, 'drawCircle').and.callFake(function (ctx, x, y, radius, color) {
             expect(ctx).toBe(context);
-            expect(box).toBe(cellObj.box);
+            /**
+            * x - width / 2
+            * y - height / 2
+            * width / 3
+            */
+            expect(x).toBe(5);
+            expect(y).toBe(5);
+            expect(radius).toBe(3);
             expect(color).toBe(cellObj.color);
         });
 
         cellObj.render(context);
 
-        expect(DrawUtils.drawSquare).toHaveBeenCalled();
+        //expect(DrawUtils.drawSquare).toHaveBeenCalled();
+        expect(DrawUtils.drawCircle).toHaveBeenCalled();
     });
 
     it("should follow it's rules", function () {

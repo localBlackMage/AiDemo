@@ -43,7 +43,8 @@
                 };
 
                 Node.prototype.eligibleForSelect = function(position) {
-                    return this.selected && !this.special && this.specialSelect(position)
+                    //return this.selected && !this.special && this.specialSelect(position);
+                    return !this.special && this.specialSelect(position);
                 };
                 
                 Node.prototype.select = function (position) {

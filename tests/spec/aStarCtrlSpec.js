@@ -126,11 +126,6 @@ describe('A Star Controller', function () {
             position = new Vector();
         scope.gridObj.grid = [[null, node1, node2]];
 
-        spyOn(AStar, 'depthFirstSearch').and.callFake(function (start, range) {
-            expect(start).toBe(node2);
-            expect(range).toBe(5);
-        });
-
         spyOn(node1, 'specialSelect').and.callFake(function (pos) {
             expect(pos).toBe(position);
             return false;
@@ -152,7 +147,6 @@ describe('A Star Controller', function () {
         expect(node2.specialSelect.calls.count()).toBe(1);
         expect(node2.reset.calls.count()).toBe(1);
         expect(scope.start).toBe(node2);
-        expect(AStar.depthFirstSearch.calls.count()).toBe(1);
     });
 
     it("should select an eligible end node and call createPath", function () {

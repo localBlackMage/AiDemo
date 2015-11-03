@@ -64,7 +64,10 @@
                 };
 
                 LifeCell.prototype.render = function (ctx) {
-                    DrawUtils.drawSquare(ctx, this.box, this.color);
+                    //DrawUtils.drawSquare(ctx, this.box, this.color);
+                    var offset = this.box.width / 2;
+                    var radius = parseInt(this.box.width / 3, 10);
+                    DrawUtils.drawCircle(ctx, this.box.x - offset, this.box.y  - offset, radius, this.color);
                 };
 
                 return LifeCell;
