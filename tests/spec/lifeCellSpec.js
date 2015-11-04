@@ -109,26 +109,59 @@ describe("LifeCell Model", function () {
         expect(DrawUtils.drawCircle).toHaveBeenCalled();
     });
 
-    it("should follow it's rules", function () {
-        var cellObj = new LifeCell({box: box, status: ALIVE}),
-            result;
+    it("should call deadRules if it is dead", function() {
+        var cell = new LifeCell({status: DEAD}),
+            neighbors = 1;
 
-        for (var i = 0; i < 9; i++) {
-            result = cellObj.rules(i);
-            if (i === 2 || i === 3)
-                expect(result).toBe(ALIVE);
-            else
-                expect(result).toBe(DEAD);
-        }
+        spyOn(cell, 'deadRules').and.callFake(function(living){
+            expect(living).toBe(neighbors);
+        });
 
-        cellObj.setStatus(DEAD);
+        cell.rules(neighbors);
 
-        for (var j = 0; j < 9; j++) {
-            result = cellObj.rules(j);
-            if (j === 3)
-                expect(result).toBe(ALIVE);
-            else
-                expect(result).toBe(DEAD);
-        }
+        expect(cell.deadRules).toHaveBeenCalled();
+    });
+
+    it("should call aliveRules if it is alive", function() {
+        var cell = new LifeCell({status: ALIVE}),
+            neighbors = 1;
+
+        spyOn(cell, 'aliveRules').and.callFake(function(living){
+            expect(living).toBe(neighbors);
+        });
+
+        cell.rules(neighbors);
+
+        expect(cell.aliveRules).toHaveBeenCalled();
+    });
+
+    it("should follow it's dead rules and return a status", function() {
+        var cell = new LifeCell(), result;
+
+        result = cell.deadRules(2);
+
+        expect(result).toBe(DEAD);
+
+
+        result = cell.deadRules(3);
+
+        expect(result).toBe(ALIVE);
+    });
+
+    it("should follow it's alive rules and return a status", function() {
+        var cell = new LifeCell(), result;
+
+        result = cell.aliveRules(2);
+
+        expect(result).toBe(ALIVE);
+
+
+        result = cell.aliveRules(3);
+
+        expect(result).toBe(ALIVE);
+
+        result = cell.aliveRules(1);
+
+        expect(result).toBe(DEAD);
     });
 });

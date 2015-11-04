@@ -50,7 +50,7 @@
                         service.drawLine(ctx, x, 0, x, box.height, color);
                     }
                     service.drawLine(ctx, box.width - 1, 0, box.width - 1, box.height, color);
-                    service.drawLine(ctx, 0, box.height - 1, box.width , box.height - 1, color);
+                    service.drawLine(ctx, 0, box.height - 1, box.width, box.height - 1, color);
                 };
                 service.drawExclamation = function (ctx, x, y, c) {
                     service.drawLine(ctx, x, y, x, y - 1, c);
@@ -86,8 +86,8 @@
                 service.getRandomBlue = function () {
                     var color = service.getRandomColor().split(''), min = 5;
                     color[1] = color[2] = color[3] = color[4] = "0";
-                    color[1] = Utils.isGreaterThanOrNaN(color[5], min) ? color[5] : min.toString();
-                    color[2] = Utils.isGreaterThanOrNaN(color[6], min) ? color[6] : min.toString();
+                    color[5] = Utils.isGreaterThanOrNaN(color[5], min) ? color[5] : min.toString();
+                    color[6] = Utils.isGreaterThanOrNaN(color[6], min) ? color[6] : min.toString();
                     return color.join('');
                 };
             }

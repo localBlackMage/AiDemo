@@ -8,8 +8,9 @@
         .factory('LifeCell', ['Utils', 'DrawUtils',
             function (Utils, DrawUtils) {
                 function LifeCell(params) {
+                    params = params || {};
                     this.neighbors = [];
-                    this.box = _.isObject(params.box) ? params.box : {};
+                    this.box = params.box ? params.box : {x: 0, y: 0, width: 0, height: 0};
                     this.status = params.status === this.DEAD || params.status === this.ALIVE ? params.status : this.DEAD;
                     this.DEAD_COLOR = params.DEAD_COLOR || this.DEAD_COLOR;
                     this.ALIVE_COLOR = params.ALIVE_COLOR || this.ALIVE_COLOR;
@@ -28,23 +29,16 @@
                     this.neighbors = _.isArray(neighbors) ? neighbors : [];
                 };
 
-                LifeCell.prototype.rules = function (alive) {
-                    if (this.status == this.DEAD) {
-                        if (alive == 3) {
-                            return this.ALIVE;
-                        }
-                        else {
-                            return this.DEAD;
-                        }
-                    }
-                    else {
-                        if (alive == 2 || alive == 3) {
-                            return this.ALIVE;
-                        }
-                        else if (alive < 2 || alive > 3) {
-                            return this.DEAD;
-                        }
-                    }
+                LifeCell.prototype.deadRules = function (livingNeighbors) {
+                    return livingNeighbors === 3 ? this.ALIVE : this.DEAD;
+                };
+
+                LifeCell.prototype.aliveRules = function (livingNeighbors) {
+                    return (livingNeighbors === 2 || livingNeighbors === 3) ? this.ALIVE : this.DEAD;
+                };
+
+                LifeCell.prototype.rules = function (livingNeighbors) {
+                    return this[this.status.toLowerCase() + "Rules"](livingNeighbors);
                 };
 
                 LifeCell.prototype.setStatus = function (status) {
@@ -67,7 +61,7 @@
                     //DrawUtils.drawSquare(ctx, this.box, this.color);
                     var offset = this.box.width / 2;
                     var radius = parseInt(this.box.width / 3, 10);
-                    DrawUtils.drawCircle(ctx, this.box.x - offset, this.box.y  - offset, radius, this.color);
+                    DrawUtils.drawCircle(ctx, this.box.x - offset, this.box.y - offset, radius, this.color);
                 };
 
                 return LifeCell;

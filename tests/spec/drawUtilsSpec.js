@@ -186,4 +186,17 @@ describe("DrawUtils Service", function () {
             expect(res[idx]).toBe('0');
         }
     });
+
+    it("should generate a random blue color hex value", function () {
+        var res = DrawUtils.getRandomBlue(),
+            blueLetters = '56789ABCDEF';
+
+        expect(res.length).toEqual(7);
+        expect(res).toContain("#");
+        expect(blueLetters).toContain(res[5]);
+        expect(blueLetters).toContain(res[6]);
+        for (var idx = 1; idx < 5; idx++) {
+            expect(res[idx]).toBe('0');
+        }
+    });
 });

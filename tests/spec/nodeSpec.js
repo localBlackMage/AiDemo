@@ -81,6 +81,31 @@ describe("Node Model", function () {
         expect(node.path).toBeFalsy();
     });
 
+    it("should know if it's eligible for selection", function() {
+        var node = new Node(defaultOptions),
+            position = new Vector();
+
+        node.special = true;
+
+        spyOn(node, 'specialSelect').and.callFake(function(pos){
+            expect(pos).toBe(position);
+            return true;
+        });
+
+        var result = node.eligibleForSelect(position);
+
+        expect(node.specialSelect).not.toHaveBeenCalled();
+        expect(result).toBeFalsy();
+
+
+        node.special = false;
+
+        result = node.eligibleForSelect(position);
+
+        expect(node.specialSelect).toHaveBeenCalled();
+        expect(result).toBeTruthy();
+    });
+
     it("should know if it is selected", function () {
         var node = new Node(defaultOptions);
         node.position = new Vector({});
@@ -123,11 +148,6 @@ describe("Node Model", function () {
 
         expect(node.path).toBe(true);
     });
-
-//    it("should update accordingly", function () {
-//        var node = new Node(defaultOptions);
-//        node.update();
-//    });
 
     it("should render it's paths", function () {
         var node = new Node(defaultOptions),

@@ -13,7 +13,7 @@
                  * Constructor, with class name
                  */
                 function FlockEntity(params) {
-                    params = params ? params : {};
+                    params = params || {};
                     this.position = params.position ? params.position : new Vector();
                     this.velocity = params.velocity ? params.velocity : new Vector();
 
@@ -30,16 +30,12 @@
                     this.renderExclamation = false;
                 }
 
-                FlockEntity.build = function (data) {
-                    return new FlockEntity(data);
-                };
-
                 FlockEntity.PREY = 'Prey';
                 FlockEntity.PREDATOR = 'Predator';
                 FlockEntity.EXCLAMATION_COLOR = '#FFFF00';
 
                 FlockEntity.prototype.updateStats = function (params) {
-                    params = params ? params : {};
+                    params = params || {};
                     this.position = params.position || this.position;
                     this.velocity = params.velocity || this.velocity;
 

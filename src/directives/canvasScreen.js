@@ -270,28 +270,15 @@
                         };
 
                         /**
-                         * Given the scope's hasGrid property, compares it to a list of acceptable 'true' strings and
+                         * Given a string, compares it to a list of acceptable 'true' strings and
                          * returns the result
-                         * @param hasGrid - String, scope's hasGrid property
-                         * @returns {boolean} - True if hasGrid is an acceptable 'true' string, false if not
+                         * @param string - String
+                         * @returns {boolean} - True if string is an acceptable 'true' string, false if not
                          */
-                        scope.getHasGrid = function (hasGrid) {
-                            var gridStringArray = ['t', 'true', 'yes', 'y'];
-                            return _.findIndex(gridStringArray, function (gridString) {
-                                    return gridString === hasGrid.toLowerCase();
-                                }) > -1;
-                        };
-
-                        /**
-                         * Given the scope's gridIsBackground property, compares it to a list of acceptable 'true' strings and
-                         * returns the result
-                         * @param gridBg - String, scope's gridIsBackground property
-                         * @returns {boolean} - True if gridIsBackground is an acceptable 'true' string, false if not
-                         */
-                        scope.getGridIsBackground = function (gridBg) {
-                            var gridBgStringArray = ['t', 'true', 'yes', 'y'];
-                            return _.findIndex(gridBgStringArray, function (gridBgString) {
-                                    return gridBgString === gridBg.toLowerCase();
+                        scope.stringToBoolean = function (string) {
+                            var acceptableTrueStrings = ['t', 'true', 'yes', 'y'];
+                            return _.findIndex(acceptableTrueStrings, function (acceptable) {
+                                    return acceptable === string.toLowerCase();
                                 }) > -1;
                         };
 
@@ -299,8 +286,8 @@
                          * Setup function
                          */
                         (function () {
-                            scope.canvasHasGrid = scope.getHasGrid(scope.hasGrid);
-                            scope.canvasGridIsBackground = scope.gridIsBackground ? scope.getGridIsBackground(scope.gridIsBackground) : false;
+                            scope.canvasHasGrid = scope.stringToBoolean(scope.hasGrid);
+                            scope.canvasGridIsBackground = scope.gridIsBackground ? scope.stringToBoolean(scope.gridIsBackground) : false;
                             scope.gridSpacing = scope.gridSpacing ? scope.gridSpacing : 20;
                             scope.objects = scope.objects ? scope.objects : [];
 

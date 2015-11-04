@@ -63,7 +63,7 @@ describe("FlockEntity Model", function () {
     });
 
     it('should build a FlockEntity object', function() {
-        var entObj = FlockEntity.build(defaultOptionsPrey);
+        var entObj = new FlockEntity(defaultOptionsPrey);
 
         expect(entObj.position).toEqual(defaultOptionsPrey.position);
         expect(entObj.velocity).toEqual(defaultOptionsPrey.velocity);
@@ -94,6 +94,37 @@ describe("FlockEntity Model", function () {
         expect(entObj.avoidWeight).toEqual(defaultOptionsPrey.avoidWeight);
 
         expect(entObj.type).toEqual(defaultOptionsPrey.type);
+    });
+
+    it("should update stats properly", function () {
+        var entObj = new FlockEntity(defaultOptionsPrey),
+            updatedStats = {
+                position: new Vector({x: 0, y: 0}),
+                velocity: new Vector({x: -1, y: 1}),
+                radius: 15,
+                speed: .5,
+                cohesionWeight: 1.0,
+                separateWeight: 1.0,
+                alignWeight: 1.0,
+                avoidWeight: 0.0,
+                type: FlockEntity.PREDATOR,
+                color: "#F00"
+            };
+
+        entObj.updateStats(updatedStats);
+
+        expect(entObj.position).toEqual(updatedStats.position);
+        expect(entObj.velocity).toEqual(updatedStats.velocity);
+        expect(entObj.radius).toEqual(updatedStats.radius);
+        expect(entObj.color).toEqual(updatedStats.color);
+        expect(entObj.speed).toEqual(updatedStats.speed);
+
+        expect(entObj.cohesionWeight).toEqual(updatedStats.cohesionWeight);
+        expect(entObj.separateWeight).toEqual(updatedStats.separateWeight);
+        expect(entObj.alignWeight).toEqual(updatedStats.alignWeight);
+        expect(entObj.avoidWeight).toEqual(updatedStats.avoidWeight);
+
+        expect(entObj.type).toEqual(updatedStats.type);
     });
 
     it("should calculate the cohesion force for a given target", function () {
