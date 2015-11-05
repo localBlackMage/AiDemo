@@ -26,7 +26,7 @@
                 Node.prototype.SPECIAL_COLOR = "#FF0000";
                 Node.prototype.RENDER_COLOR = "#000000";
                 Node.prototype.PATH_COLOR = "#00FF00";
-                Node.prototype.RANGE = 25;
+                Node.prototype.RANGE = 10;
 
                 Node.prototype.getNeighbors = function () {
                     return this.neighbors;
@@ -88,7 +88,7 @@
                 };
 
                 Node.prototype.render = function (ctx) {
-                    DrawUtils.drawText(ctx, this.position.x + 10, this.position.y - 10, this.SELECTED_COLOR, this.id.toString());
+                    //DrawUtils.drawText(ctx, this.position.x + 10, this.position.y - 10, this.SELECTED_COLOR, this.id.toString());
                     DrawUtils.drawCircle(ctx, this.position.x, this.position.y, 5, this.getColor());
 
                     this.renderPaths(ctx);

@@ -216,23 +216,24 @@
 
                 // Dictionary<Node, Node> came_from, Node current_node, Node start_node, Queue<Node> path
                 service._reconstructPath = function (came_from, current_node, start_node, path) {
-                    var r = new ReconRetValue();
+                    var reconstructedPath = new ReconRetValue();
+
                     if (current_node.id === start_node.id) {
                         path.enqueue(current_node);
-                        r.map = path;
-                        return r;
+                        reconstructedPath.map = path;
+                        return reconstructedPath;
                     }
 
                     if (!_.isUndefined(came_from[current_node.id]) && !_.isNull(came_from[current_node.id])) {
-                        r = service._reconstructPath(came_from, came_from[current_node.id], start_node, path);
+                        reconstructedPath = service._reconstructPath(came_from, came_from[current_node.id], start_node, path);
                         path.enqueue(current_node);
-                        r.map = path;
-                        return r;
+                        reconstructedPath.map = path;
                     }
                     else {
-                        r.node = current_node;
-                        return r;
+                        reconstructedPath.node = current_node;
                     }
+
+                    return reconstructedPath;
                 };
 
                 service._resetDistances = function (nodeMap) {
@@ -245,10 +246,18 @@
                     }
                 };
 
+                service._isNodeInArray = function(array, node) {
+                    return _.findIndex(array, function (otherNode) {
+                        return otherNode.id === node.id;
+                    }) > -1;
+                };
+
                 service.aStarAlgorithm = function (startNode, endNode, nodeMap, distBetween) {
                     if (startNode.id === endNode.id) {
                         return null;
                     }
+                    distBetween = parseFloat(distBetween);
+
                     startNode.distance = 0;
 
                     var closedSet = [],
@@ -262,20 +271,26 @@
 
                     while (!openSet.empty()) {
                         var current = openSet.extractMinimum();
+
+                        // Made it to goal, return the path
                         if (current.id === endNode.id) {
                             service._resetDistances(nodeMap);
                             return service._reconstructPath(came_from, endNode, startNode, new Queue()).map;
                         }
+
                         closedSet.push(current);
                         var neighbors = current.getNeighbors();
 
+                        /**
+                         * This is typically calculated in the following for loop, but since the distance
+                         * between nodes is the same no matter what, it can be calculated here to save time
+                         */
+                        var tentative_g_score = parseFloat(g_score[current.id]) + distBetween;
+
                         for (var idx = 0; idx < neighbors.length; idx++) {
                             var neighbor = neighbors[idx];
-                            var tentative_g_score = parseFloat(g_score[current.id]) + distBetween;
                             var g_score_neighbor = parseFloat(service._heuristicCostEstimate(neighbor, startNode));
-                            var neighborInClosedSet = _.findIndex(closedSet, function (closedNode) {
-                                    return closedNode.id === neighbor.id;
-                                }) > -1;
+                            var neighborInClosedSet = service._isNodeInArray(closedSet, neighbor);
 
                             if (neighborInClosedSet && tentative_g_score >= g_score_neighbor) {
                                 continue;
@@ -285,9 +300,7 @@
                                 came_from[neighbor.id] = current;
                                 g_score[neighbor.id] = tentative_g_score;
                                 neighbor.distance = g_score[neighbor.id] + parseFloat(service._heuristicCostEstimate(neighbor, endNode));
-                                if (!openSet.nodeInHeap(neighbor)) {
-                                    openSet.insert(neighbor);
-                                }
+                                openSet.insert(neighbor);
                             }
                         }
                     }

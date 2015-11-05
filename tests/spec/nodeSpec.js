@@ -1,7 +1,7 @@
 describe("Node Model", function () {
     var box, defaultOptions, Node, Utils, MathUtils, DrawUtils, Vector,
         SELECTED_COLOR = "#FFFFFF", SPECIAL_COLOR = "#FF0000",
-        RENDER_COLOR = "#000000", PATH_COLOR = "#00FF00", RANGE = 25;
+        RENDER_COLOR = "#000000", PATH_COLOR = "#00FF00", RANGE = 10;
 
     beforeEach(function () {
         module('aidemo.service.utils', 'aidemo.service.mathUtils', 'aidemo.service.drawUtils',
@@ -191,13 +191,13 @@ describe("Node Model", function () {
         spyOn(node, 'getColor').and.callFake(function () {
             return RENDER_COLOR;
         });
-        spyOn(DrawUtils, 'drawText').and.callFake(function (ctx, x, y, color, str) {
-            expect(ctx).toBe(context);
-            expect(x).toBe(node.position.x + 10);
-            expect(y).toBe(node.position.y - 10);
-            expect(color).toBe(SELECTED_COLOR);
-            expect(str).toBe(node.id.toString());
-        });
+        //spyOn(DrawUtils, 'drawText').and.callFake(function (ctx, x, y, color, str) {
+        //    expect(ctx).toBe(context);
+        //    expect(x).toBe(node.position.x + 10);
+        //    expect(y).toBe(node.position.y - 10);
+        //    expect(color).toBe(SELECTED_COLOR);
+        //    expect(str).toBe(node.id.toString());
+        //});
         spyOn(DrawUtils, 'drawCircle').and.callFake(function (ctx, x, y, radius, color) {
             expect(ctx).toBe(context);
             expect(x).toBe(node.position.x);
@@ -207,7 +207,7 @@ describe("Node Model", function () {
         });
         expectedColor = RENDER_COLOR;
         node.render(context);
-        expect(DrawUtils.drawText.calls.count()).toBe(1);
+        //expect(DrawUtils.drawText.calls.count()).toBe(1);
         expect(DrawUtils.drawCircle.calls.count()).toBe(1);
         expect(node.getColor.calls.count()).toBe(1);
     });

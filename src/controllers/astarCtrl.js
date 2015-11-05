@@ -17,7 +17,7 @@
                 $scope.GRID_COLOR = "#8EAEC9";
                 $scope.gridObj = {
                     grid: [],
-                    tileSize: 50.0
+                    tileSize: 20.0
                 };
                 $scope.start = null;
                 $scope.end = null;
@@ -115,8 +115,8 @@
                         },
                         id: curId.toString(),
                         position: new Vector({
-                            x: column * $scope.gridObj.tileSize + offset + numberOfColumns,
-                            y: row * $scope.gridObj.tileSize + offset + numberOfRows
+                            x: column * $scope.gridObj.tileSize + offset,
+                            y: row * $scope.gridObj.tileSize + offset
                         })
                     }) : null;
                 };
@@ -135,7 +135,7 @@
 
                 $scope.generateGrid = function () {
                     var curId = 0,
-                        offset = $scope.gridObj.tileSize / 2,
+                        offset = $scope.gridObj.tileSize,
                         xDifference = $scope.box.width - $scope.gridObj.tileSize,
                         yDifference = $scope.box.height - $scope.gridObj.tileSize,
                         numberOfColumns = xDifference / $scope.gridObj.tileSize,

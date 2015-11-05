@@ -35,7 +35,7 @@ describe('A Star Controller', function () {
         expect(scope.GRID_COLOR).toBe("#8EAEC9");
         expect(scope.gridObj.grid).toBeDefined();
         expect(scope.gridObj.grid.length).toBe(0);
-        expect(scope.gridObj.tileSize).toBe(50);
+        expect(scope.gridObj.tileSize).toBe(20);
         expect(scope.start).toBe(null);
         expect(scope.end).toBe(null);
     });
@@ -295,7 +295,7 @@ describe('A Star Controller', function () {
             expect(cols).toBe(1);
             expect(rows).toBe(1);
             expect(rowNum).toBe(0);
-            expect(offset).toBe(5);
+            expect(offset).toBe(10);
             expect(curId).toBe(0);
             return [new Node()];
         });
