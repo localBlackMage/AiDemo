@@ -150,6 +150,99 @@ describe("DrawUtils Service", function () {
         expect(context.fillText).toHaveBeenCalledWith(txt, x, y);
     });
 
+    it("should return if a value is an acceptable numeric hex value", function () {
+        spyOn(_, 'isNumber').and.callThrough();
+
+        var result = DrawUtils.isValueAcceptableHexValue('A');
+        expect(_.isNumber).toHaveBeenCalled();
+        expect(result).toBeFalsy();
+
+
+        result = DrawUtils.isValueAcceptableHexValue(-1);
+        expect(_.isNumber.calls.count()).toBe(2);
+        expect(result).toBeFalsy();
+
+
+        result = DrawUtils.isValueAcceptableHexValue(16);
+        expect(_.isNumber.calls.count()).toBe(3);
+        expect(result).toBeFalsy();
+
+
+        result = DrawUtils.isValueAcceptableHexValue(0);
+        expect(_.isNumber.calls.count()).toBe(4);
+        expect(result).toBeTruthy();
+    });
+
+    it("should return the numerical value for a hex input", function () {
+        var res1 = DrawUtils.getColorValueForHex('A'),
+            res2 = DrawUtils.getColorValueForHex('B'),
+            res3 = DrawUtils.getColorValueForHex('C'),
+            res4 = DrawUtils.getColorValueForHex('D'),
+            res5 = DrawUtils.getColorValueForHex('E'),
+            res6 = DrawUtils.getColorValueForHex('F'),
+            res7 = DrawUtils.getColorValueForHex('NA'),
+            res8 = DrawUtils.getColorValueForHex(0);
+
+        expect(res1).toBe(10);
+        expect(res2).toBe(11);
+        expect(res3).toBe(12);
+        expect(res4).toBe(13);
+        expect(res5).toBe(14);
+        expect(res6).toBe(15);
+        expect(res7).toBe('NA');
+        expect(res8).toBe(0);
+    });
+
+    it("should return the numerical value for a hex input", function () {
+        var res1 = DrawUtils.getHexValueForColor(10),
+            res2 = DrawUtils.getHexValueForColor(11),
+            res3 = DrawUtils.getHexValueForColor(12),
+            res4 = DrawUtils.getHexValueForColor(13),
+            res5 = DrawUtils.getHexValueForColor(14),
+            res6 = DrawUtils.getHexValueForColor(15),
+            res7 = DrawUtils.getHexValueForColor(16),
+            res8 = DrawUtils.getHexValueForColor(9);
+
+        expect(res1).toBe('A');
+        expect(res2).toBe('B');
+        expect(res3).toBe('C');
+        expect(res4).toBe('D');
+        expect(res5).toBe('E');
+        expect(res6).toBe('F');
+        expect(res7).toBe(16);
+        expect(res8).toBe(9);
+    });
+
+    it("should check if a value is an accepted numeric hex value and return it", function () {
+        spyOn(DrawUtils, 'getColorValueForHex').and.callFake(function(val){
+            return 0;
+        });
+        spyOn(DrawUtils, 'isValueAcceptableHexValue').and.callFake(function(val){
+            return true;
+        });
+
+        var result = DrawUtils.convertValueToHexOrMinimum(0, 0);
+
+        expect(result).toBe(0);
+        expect(DrawUtils.getColorValueForHex).toHaveBeenCalled();
+        expect(DrawUtils.isValueAcceptableHexValue).toHaveBeenCalled();
+    });
+
+    it("should check if a value is an accepted numeric hex value and return the minimum if it is not", function () {
+        spyOn(DrawUtils, 'getColorValueForHex').and.callFake(function(val){
+            return 0;
+        });
+        spyOn(DrawUtils, 'isValueAcceptableHexValue').and.callFake(function(val){
+            return false;
+        });
+
+        var result = DrawUtils.convertValueToHexOrMinimum(0, 10);
+
+        expect(result).toBe(10);
+        expect(DrawUtils.getColorValueForHex).toHaveBeenCalled();
+        expect(DrawUtils.isValueAcceptableHexValue).toHaveBeenCalled();
+    });
+
     it("should generate a random color hex value", function () {
         var res = DrawUtils.getRandomColor();
 

@@ -61,6 +61,36 @@
                     ctx.fillStyle = c;
                     ctx.fillText(s, x, y);
                 };
+                service.getColorValueForHex = function(value) {
+                    value = !_.isNumber(value) && value ? value.toUpperCase() : value;
+                    var hexColors = {
+                        A: 10,
+                        B: 11,
+                        C: 12,
+                        D: 13,
+                        E: 14,
+                        F: 15
+                    };
+                    return hexColors[value] || value;
+                };
+                service.getHexValueForColor = function(value) {
+                    var hexColors = {
+                        "10": "A",
+                        "11": "B",
+                        "12": "C",
+                        "13": "D",
+                        "14": "E",
+                        "15": "F"
+                    };
+                    return hexColors[value] || value;
+                };
+                service.isValueAcceptableHexValue = function(value) {
+                    return _.isNumber(value) && value >= 0 && value <= 15;
+                };
+                service.convertValueToHexOrMinimum = function (value, minimum) {
+                    value = service.getColorValueForHex(value);
+                    return service.isValueAcceptableHexValue(value) ? value : minimum;
+                };
                 service.getRandomColor = function () {
                     var letters = '0123456789ABCDEF'.split('');
                     var color = '#';
@@ -69,25 +99,31 @@
                     }
                     return color;
                 };
-                service.getRandomGreen = function () {
-                    var color = service.getRandomColor().split(''), min = 5;
+                service.getRandomGreen = function (min) {
+                    var color = service.getRandomColor().split('');
+                    min = service.getColorValueForHex(min);
+                    min = _.isNumber(min) ? min : 5;
                     color[1] = color[2] = color[5] = color[6] = "0";
-                    color[3] = Utils.isGreaterThanOrNaN(color[3], min) ? color[3] : min.toString();
-                    color[4] = Utils.isGreaterThanOrNaN(color[4], min) ? color[4] : min.toString();
+                    color[3] = Utils.isGreaterThanOrNaN(color[3], min) ? color[3] : service.getHexValueForColor(min);
+                    color[4] = Utils.isGreaterThanOrNaN(color[4], min) ? color[4] : service.getHexValueForColor(min);
                     return color.join('');
                 };
-                service.getRandomRed = function () {
-                    var color = service.getRandomColor().split(''), min = 5;
+                service.getRandomRed = function (min) {
+                    var color = service.getRandomColor().split('');
+                    min = service.getColorValueForHex(min);
+                    min = _.isNumber(min) ? min : 5;
                     color[3] = color[4] = color[5] = color[6] = "0";
-                    color[1] = Utils.isGreaterThanOrNaN(color[1], min) ? color[1] : min.toString();
-                    color[2] = Utils.isGreaterThanOrNaN(color[2], min) ? color[2] : min.toString();
+                    color[1] = Utils.isGreaterThanOrNaN(color[1], min) ? color[1] : service.getHexValueForColor(min);
+                    color[2] = Utils.isGreaterThanOrNaN(color[2], min) ? color[2] : service.getHexValueForColor(min);
                     return color.join('');
                 };
-                service.getRandomBlue = function () {
-                    var color = service.getRandomColor().split(''), min = 5;
+                service.getRandomBlue = function (min) {
+                    var color = service.getRandomColor().split('');
+                    min = service.getColorValueForHex(min);
+                    min = _.isNumber(min) ? min : 5;
                     color[1] = color[2] = color[3] = color[4] = "0";
-                    color[5] = Utils.isGreaterThanOrNaN(color[5], min) ? color[5] : min.toString();
-                    color[6] = Utils.isGreaterThanOrNaN(color[6], min) ? color[6] : min.toString();
+                    color[5] = Utils.isGreaterThanOrNaN(color[5], min) ? color[5] : service.getHexValueForColor(min);
+                    color[6] = Utils.isGreaterThanOrNaN(color[6], min) ? color[6] : service.getHexValueForColor(min);
                     return color.join('');
                 };
             }

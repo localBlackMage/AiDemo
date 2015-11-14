@@ -150,6 +150,13 @@ describe("CanvasScreen Directive", function () {
         });
         spyOn(object, 'render').and.callThrough();
 
+
+        iScope.renderObject(null);
+
+        expect(_.isFunction).not.toHaveBeenCalled();
+        expect(object.render).not.toHaveBeenCalled();
+
+
         iScope.renderObject(object);
 
         expect(_.isFunction).toHaveBeenCalled();
@@ -265,25 +272,58 @@ describe("CanvasScreen Directive", function () {
 
     });
 
-    it('should render the canvas and objects', function () {
+    it('should render the canvas and objects and the grid first if it is NOT a background', function () {
         var element = createDirective(commonTemplate),
-            iScope = element.isolateScope();
+            iScope = element.isolateScope(),
+            order;
 
         spyOn(DrawUtils, 'fillCanvas').and.callFake(function (canvas, color) {
             expect(canvas).toBe(iScope.canvas);
             expect(color).toBe(iScope.bgColor);
         });
         spyOn(iScope, 'renderGrid').and.callFake(function () {
+            order = 2;
         });
         spyOn(iScope, 'renderArrayOrObjectsArrays').and.callFake(function (objects) {
             expect(objects).toBe(iScope.objects);
+            order = 1;
         });
+
+        iScope.canvasGridIsBackground = false;
 
         iScope.render();
 
         expect(DrawUtils.fillCanvas).toHaveBeenCalled();
         expect(iScope.renderGrid).toHaveBeenCalled();
         expect(iScope.renderArrayOrObjectsArrays).toHaveBeenCalled();
+        expect(order).toBe(1);
+    });
+
+    it('should render the canvas and objects and the grid last if it is a background', function () {
+        var element = createDirective(commonTemplate),
+            iScope = element.isolateScope(),
+            order;
+
+        spyOn(DrawUtils, 'fillCanvas').and.callFake(function (canvas, color) {
+            expect(canvas).toBe(iScope.canvas);
+            expect(color).toBe(iScope.bgColor);
+        });
+        spyOn(iScope, 'renderGrid').and.callFake(function () {
+            order = 2;
+        });
+        spyOn(iScope, 'renderArrayOrObjectsArrays').and.callFake(function (objects) {
+            expect(objects).toBe(iScope.objects);
+            order = 1;
+        });
+
+        iScope.canvasGridIsBackground = true;
+
+        iScope.render();
+
+        expect(DrawUtils.fillCanvas).toHaveBeenCalled();
+        expect(iScope.renderGrid).toHaveBeenCalled();
+        expect(iScope.renderArrayOrObjectsArrays).toHaveBeenCalled();
+        expect(order).toBe(2);
     });
 
     it('should animate the scene', function () {

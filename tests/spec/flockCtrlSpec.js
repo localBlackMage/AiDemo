@@ -216,22 +216,18 @@ describe('Flock Controller', function () {
         var entity = new FlockEntity(),
             entities = [new FlockEntity(), new FlockEntity()];
 
+        scope.entities.prey = entities;
+        scope.entities.predators = entities;
+
         spyOn(entity, 'update').and.callFake(function (params) {
             expect(params.box).toBe(scope.box);
             expect(params.prey).toBe(entities);
             expect(params.predators).toBe(entities);
         });
-        spyOn(MathUtils, 'getNearestObjects').and.callFake(function (ents, obj, range) {
-            expect(ents).toBeDefined();
-            expect(obj).toBe(entity);
-            expect(range).toBe(50.0);
-            return entities;
-        });
 
         scope.updateEntity(entity);
 
         expect(entity.update).toHaveBeenCalled();
-        expect(MathUtils.getNearestObjects.calls.count()).toBe(2);
     });
 
     it("should update", function () {

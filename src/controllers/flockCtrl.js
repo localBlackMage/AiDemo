@@ -81,8 +81,7 @@
                         avoidWeight: parseFloat(stats.avoidWeight),
                         separateWeight: parseFloat(stats.separateWeight),
                         alignWeight: parseFloat(stats.alignWeight),
-                        type: type,
-                        color: type === FlockEntity.PREY ? DrawUtils.getRandomGreen() : DrawUtils.getRandomRed()
+                        type: type
                     })
                 };
 
@@ -123,8 +122,8 @@
                 $scope.updateEntity = function (entity) {
                     entity.update({
                         box: $scope.box,
-                        prey: MathUtils.getNearestObjects($scope.entities.prey, entity, 50.0),
-                        predators: MathUtils.getNearestObjects($scope.entities.predators, entity, 50.0)
+                        prey: $scope.entities.prey,
+                        predators: $scope.entities.predators
                     });
                 };
 

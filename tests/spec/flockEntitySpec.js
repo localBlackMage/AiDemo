@@ -21,8 +21,7 @@ describe("FlockEntity Model", function () {
                 separateWeight: 0.4,
                 alignWeight: 0.2,
                 avoidWeight: 1.0,
-                type: FlockEntity.PREY,
-                color: "#0F0"
+                type: FlockEntity.PREY
             };
             defaultOptionsPredator = {
                 position: new Vector({x: 10, y: 10}),
@@ -32,8 +31,7 @@ describe("FlockEntity Model", function () {
                 cohesionWeight: 0.2,
                 separateWeight: 0.2,
                 alignWeight: 0.1,
-                type: FlockEntity.PREDATOR,
-                color: "#F00"
+                type: FlockEntity.PREDATOR
             };
             defaultOptionsUpdate = {
                 box: {
@@ -68,7 +66,6 @@ describe("FlockEntity Model", function () {
         expect(entObj.position).toEqual(defaultOptionsPrey.position);
         expect(entObj.velocity).toEqual(defaultOptionsPrey.velocity);
         expect(entObj.radius).toEqual(defaultOptionsPrey.radius);
-        expect(entObj.color).toEqual(defaultOptionsPrey.color);
         expect(entObj.speed).toEqual(defaultOptionsPrey.speed);
 
         expect(entObj.cohesionWeight).toEqual(defaultOptionsPrey.cohesionWeight);
@@ -85,7 +82,6 @@ describe("FlockEntity Model", function () {
         expect(entObj.position).toEqual(defaultOptionsPrey.position);
         expect(entObj.velocity).toEqual(defaultOptionsPrey.velocity);
         expect(entObj.radius).toEqual(defaultOptionsPrey.radius);
-        expect(entObj.color).toEqual(defaultOptionsPrey.color);
         expect(entObj.speed).toEqual(defaultOptionsPrey.speed);
 
         expect(entObj.cohesionWeight).toEqual(defaultOptionsPrey.cohesionWeight);
@@ -107,8 +103,7 @@ describe("FlockEntity Model", function () {
                 separateWeight: 1.0,
                 alignWeight: 1.0,
                 avoidWeight: 0.0,
-                type: FlockEntity.PREDATOR,
-                color: "#F00"
+                type: FlockEntity.PREDATOR
             };
 
         entObj.updateStats(updatedStats);
@@ -116,7 +111,6 @@ describe("FlockEntity Model", function () {
         expect(entObj.position).toEqual(updatedStats.position);
         expect(entObj.velocity).toEqual(updatedStats.velocity);
         expect(entObj.radius).toEqual(updatedStats.radius);
-        expect(entObj.color).toEqual(updatedStats.color);
         expect(entObj.speed).toEqual(updatedStats.speed);
 
         expect(entObj.cohesionWeight).toEqual(updatedStats.cohesionWeight);
@@ -127,28 +121,22 @@ describe("FlockEntity Model", function () {
         expect(entObj.type).toEqual(updatedStats.type);
     });
 
-    it("should calculate the cohesion force for a given target", function () {
+    it("should calculate the separation force for a given target", function () {
         var entObj = new FlockEntity(defaultOptionsPrey), res;
 
-        res = entObj._calculateCohesionForceForTarget(prey[0], prey);
+        res = entObj._calculateSeparationForceForTarget(prey[0], prey);
 
-        expect(res.x).toEqual(prey[0].position.x);
-        expect(res.y).toEqual(prey[0].position.y);
+        expect(res.x).toEqual(0.7071067811865475);
+        expect(res.y).toEqual(0.7071067811865475);
     });
 
     it("should calculate cohesion", function () {
-        var entObj = new FlockEntity(defaultOptionsPrey),
-            target = new Vector({}),
-            res;
-
-        spyOn(entObj, '_calculateCohesionForceForTarget').and.callThrough();
+        var entObj = new FlockEntity(defaultOptionsPrey), res;
 
         res = entObj.calculateCohesion(prey);
 
         expect(res.x).toEqual(0.7071067811865475);
         expect(res.y).toEqual(0.7071067811865475);
-
-        expect(entObj._calculateCohesionForceForTarget.calls.count()).toBe(5);
 
         res = entObj.calculateCohesion([]);
 
@@ -156,21 +144,11 @@ describe("FlockEntity Model", function () {
         expect(res.y).toEqual(0);
     });
 
-    it("should calculate the separation force for a given target", function () {
-        var entObj = new FlockEntity(defaultOptionsPrey), res;
-
-        res = entObj._calculateSeparationForceForTarget(prey[0], prey);
-
-        expect(res.x).toEqual(2.2);
-        expect(res.y).toEqual(1.8);
-    });
-
     it("should calculate separation", function () {
         var entObj = new FlockEntity(defaultOptionsPrey),
             res;
 
-        spyOn(entObj, '_calculateSeparationForceForTarget').and.callFake(function(target, others) {
-            expect(others).toBe(prey);
+        spyOn(entObj, '_calculateSeparationForceForTarget').and.callFake(function(target) {
             expect(target.position).toBeDefined();
             return new Vector({
                 x: target.position.x
@@ -190,52 +168,24 @@ describe("FlockEntity Model", function () {
         expect(res.y).toEqual(0);
     });
 
-    it("should calculate the alignment force for a given target", function () {
-        var entObj = new FlockEntity(defaultOptionsPrey), res;
-
-        res = entObj._calculateAlignmentForceForTarget(prey[0], prey);
-
-        expect(res.x).toEqual(0);
-        expect(res.y).toEqual(0);
-    });
-
     it("should calculate alignment", function () {
         var entObj = new FlockEntity(defaultOptionsPrey), res;
 
-        spyOn(entObj, '_calculateAlignmentForceForTarget').and.callFake(function(target, others) {
-            expect(others).toBe(prey);
-            expect(target.position).toBeDefined();
-            return new Vector({
-                x: target.position.x
-            });
-        });
+        //spyOn(entObj, '_calculateAlignmentForceForTarget').and.callFake(function(target) {
+        //    expect(target.position).toBeDefined();
+        //    return new Vector({
+        //        x: target.position.x
+        //    });
+        //});
 
         res = entObj.calculateAlignment(prey);
 
-        expect(res.x).toEqual(1);
-        expect(res.y).toEqual(0);
+        expect(res.x).toEqual(0.7071067811865475);
+        expect(res.y).toEqual(-0.7071067811865475);
 
-        expect(entObj._calculateAlignmentForceForTarget.calls.count()).toBe(5);
+        //expect(entObj._calculateAlignmentForceForTarget.calls.count()).toBe(5);
 
         res = entObj.calculateAlignment([]);
-
-        expect(res.x).toEqual(0);
-        expect(res.y).toEqual(0);
-    });
-
-    it("should avoid predators if it is prey", function () {
-        var entObj = new FlockEntity(defaultOptionsPrey), target = new Vector({}), res;
-        predators.forEach(function (other) {
-            target.add(other.position);
-        });
-        target = target.divNew(predators.length).subNew(entObj.position).normalize(1).mulNew(-1);
-
-        res = entObj.avoidPredators(predators);
-
-        expect(res.x).toEqual(target.x);
-        expect(res.y).toEqual(target.y);
-
-        res = entObj.avoidPredators([]);
 
         expect(res.x).toEqual(0);
         expect(res.y).toEqual(0);
@@ -257,7 +207,7 @@ describe("FlockEntity Model", function () {
             return new Vector({x: 1});
         });
 
-        entObj.updateAsPredator(defaultOptionsUpdate);
+        var result = entObj.updateAsPredator(defaultOptionsUpdate);
 
         expect(entObj.calculateCohesion).toHaveBeenCalled();
         expect(entObj.calculateSeparation).toHaveBeenCalled();
@@ -265,47 +215,68 @@ describe("FlockEntity Model", function () {
         expect(entObj.avoidWalls).toHaveBeenCalled();
 
         expect(entObj.renderExclamation).toBe(false);
-        expect(entObj.velocity.x).toBe(1.6);
-        expect(entObj.velocity.y).toBe(0);
+        expect(result.x).toBe(1.6);
+        expect(result.y).toBe(0);
     });
 
-    it("should update as a PREY", function () {
+    it("should update as a PREY with predators present", function () {
         var entObj = new FlockEntity(defaultOptionsPrey);
         entObj.velocity = new Vector({x: 1});
-        spyOn(entObj, 'avoidPredators').and.callFake(function () {
+
+        spyOn(entObj, 'calculateSeparation').and.callFake(function (entities) {
             return new Vector({x: 1});
         });
+        spyOn(MathUtils, 'getNearestObjects').and.callFake(function (ents, obj, range) {
+            expect(ents).toBeDefined();
+            expect(obj).toBe(entObj);
+            expect(range).toBe(80.0);
+            return [{}];
+        });
 
-        entObj.updateAsPrey(defaultOptionsUpdate);
+        var result = entObj.updateAsPrey(defaultOptionsUpdate);
 
+        expect(MathUtils.getNearestObjects).toHaveBeenCalled();
+        expect(entObj.calculateSeparation).toHaveBeenCalled();
         expect(entObj.renderExclamation).toBe(true);
-        expect(entObj.velocity.x).toBe(2);
-        expect(entObj.velocity.y).toBe(0);
+        expect(result.x).toBe(2);
+        expect(result.y).toBe(0);
+    });
 
+    it("should update as a PREY with NO predators present", function () {
+        var entObj = new FlockEntity(defaultOptionsPrey);
+        entObj.velocity = new Vector({x: 1});
 
-        var entObjTwo = new FlockEntity(defaultOptionsPrey);
-        entObjTwo.velocity = new Vector({x: 1});
-        spyOn(entObjTwo, 'avoidPredators').and.callFake(function () {
-            return new Vector({});
+        spyOn(MathUtils, 'getNearestObjects').and.callFake(function (ents, obj, range) {
+            expect(ents).toBeDefined();
+            expect(obj).toBe(entObj);
+            expect(range).toBe(80.0);
+            return [];
         });
-        spyOn(entObjTwo, 'calculateCohesion').and.callFake(function () {
+        spyOn(entObj, 'calculateCohesion').and.callFake(function () {
             return new Vector({x: 1});
         });
-        spyOn(entObjTwo, 'calculateSeparation').and.callFake(function () {
+        spyOn(entObj, 'calculateSeparation').and.callFake(function () {
             return new Vector({x: 1});
         });
-        spyOn(entObjTwo, 'calculateAlignment').and.callFake(function () {
+        spyOn(entObj, 'calculateAlignment').and.callFake(function () {
             return new Vector({x: 1});
         });
-        spyOn(entObjTwo, 'avoidWalls').and.callFake(function () {
+        spyOn(entObj, 'avoidWalls').and.callFake(function () {
             return new Vector({x: 1});
         });
 
-        entObjTwo.updateAsPrey(defaultOptionsUpdate);
+        defaultOptionsUpdate.predators = [];
 
-        expect(entObjTwo.renderExclamation).toBe(false);
-        expect(entObjTwo.velocity.x).toBe(2.5);
-        expect(entObjTwo.velocity.y).toBe(0);
+        var result = entObj.updateAsPrey(defaultOptionsUpdate);
+
+        expect(MathUtils.getNearestObjects).toHaveBeenCalled();
+        expect(entObj.calculateCohesion).toHaveBeenCalled();
+        expect(entObj.calculateSeparation).toHaveBeenCalled();
+        expect(entObj.calculateAlignment).toHaveBeenCalled();
+        expect(entObj.avoidWalls).toHaveBeenCalled();
+        expect(entObj.renderExclamation).toBe(false);
+        expect(result.x).toBe(2.1);
+        expect(result.y).toBe(0);
     });
 
     it("should avoid walls", function () {
@@ -336,6 +307,7 @@ describe("FlockEntity Model", function () {
         newVel = entObj.velocity.normalize(1).mulNew(entObj.speed);
 
         spyOn(entObj, 'updateAsPrey').and.callFake(function (options) {
+            return entObj.velocity;
         });
 
         res = entObj.updateVelocity(defaultOptionsUpdate);
@@ -349,6 +321,7 @@ describe("FlockEntity Model", function () {
         entObj.velocity = new Vector({x: 1, y: 0});
         newVel = entObj.velocity.normalize(1).mulNew(entObj.speed);
         spyOn(entObj, 'updateAsPredator').and.callFake(function (options) {
+            return entObj.velocity;
         });
 
         res = entObj.updateVelocity(defaultOptionsUpdate);
