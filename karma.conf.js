@@ -25,6 +25,7 @@ module.exports = function (config) {
             //SCRIPT_ROOT + 'controllers/*.js',
             SCRIPT_ROOT + 'controllers/astarCtrl.js',
             SCRIPT_ROOT + 'controllers/flockCtrl.js',
+            SCRIPT_ROOT + 'controllers/antCtrl.js',
             SCRIPT_ROOT + 'controllers/lifeCtrl.js',
             SCRIPT_ROOT + '*.js',
 

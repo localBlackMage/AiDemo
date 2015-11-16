@@ -16,6 +16,7 @@
 
         // Controllers
         'aidemo.flock',
+        'aidemo.ant',
         'aidemo.life',
         'aidemo.astar'
     ]);
@@ -27,6 +28,7 @@
                 {state: 'app', name: 'Home', inactive: false},
                 {state: 'app.life', name: 'Life', inactive: false},
                 {state: 'app.flock', name: 'Flocking', inactive: false},
+                {state: 'app.ant', name: 'Ants', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: false}
                 //{state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
