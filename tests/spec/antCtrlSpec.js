@@ -32,7 +32,7 @@ describe('Ant Controller', function () {
     it("should have certain properties on the scope", function () {
         expect(scope.BACK_COLOR).toBe("#555555");
         expect(scope.GRID_COLOR).toBe("#8EAEC9");
-        expect(scope.step).toBe(1);
+        expect(scope.step).toBe(1.0);
         expect(scope.lastTime).toBe(0);
         expect(scope.cumulativeTime).toBe(0);
 
@@ -121,6 +121,7 @@ describe('Ant Controller', function () {
         expect(scope.environment.food.length).toBe(randAmt);
 
         expect(scope.spawnNest.calls.count()).toBe(1);
+        expect(scope.active).toBeTruthy();
     });
 
     it("should clear the environment", function() {
@@ -137,6 +138,7 @@ describe('Ant Controller', function () {
         expect(scope.environment.food.length).toBe(0);
         expect(scope.environment.pheromones.length).toBe(0);
         expect(scope.environment.nest).toBe(null);
+        expect(scope.active).toBeFalsy();
     });
 
     it("should reset and restart", function() {
@@ -148,25 +150,80 @@ describe('Ant Controller', function () {
         expect(scope.clear).toHaveBeenCalled();
         expect(scope.instantiate).toHaveBeenCalled();
     });
+
+    it("should call the environment's nest to spawn an ant and handle a null result", function() {
+        scope.environment.nest = new Nest();
+        spyOn(scope.environment.nest, 'attemptToSpawnAnt').and.callFake(function() {
+            return null;
+        });
+
+        scope.spawnAnt();
+
+        expect(scope.environment.nest.attemptToSpawnAnt).toHaveBeenCalled();
+        expect(scope.environment.ants.length).toBe(0);
+    });
+
+    it("should call the environment's nest to spawn an ant and add it to the Ants array", function() {
+        scope.environment.nest = new Nest();
+        spyOn(scope.environment.nest, 'attemptToSpawnAnt').and.callFake(function() {
+            return new Ant();
+        });
+
+        scope.spawnAnt();
+
+        expect(scope.environment.nest.attemptToSpawnAnt).toHaveBeenCalled();
+        expect(scope.environment.ants.length).toBe(1);
+    });
+
+    it("should update all ants", function() {
+        var ants = [new Ant()];
+
+        scope.environment.ants = ants;
+        scope.environment.food = [{}];
+        scope.environment.pheromones = [{}];
+        scope.environment.nest = new Nest();
+
+        spyOn(ants[0], 'update').and.callFake(function (params) {
+            expect(params.box).toBe(scope.box);
+            expect(params.ants).toBe(scope.environment.ants);
+            expect(params.food).toBe(scope.environment.food);
+            expect(params.pheromones).toBe(scope.environment.pheromones);
+            expect(params.nest).toBe(scope.environment.nest);
+        });
+
+        scope.updateAnts();
+
+        expect(ants[0].update).toHaveBeenCalled();
+    });
     
     it("should update", function () {
+        spyOn(scope, 'spawnAnt').and.callFake(function(){});
+        spyOn(scope, 'updateAnts').and.callFake(function(){});
+
+        scope.active = false;
+
         scope.update();
 
-        //expect(scope.nextGeneration.calls.count()).toBe(0);
+        expect(scope.spawnAnt.calls.count()).toBe(0);
+        expect(scope.updateAnts.calls.count()).toBe(0);
 
+        scope.active = true;
         scope.step = Number.MAX_VALUE;
         scope.lastTime = new Date().getTime();
 
         scope.update();
 
-        //expect(scope.nextGeneration.calls.count()).toBe(0);
+        expect(scope.spawnAnt.calls.count()).toBe(0);
+        expect(scope.updateAnts.calls.count()).toBe(1);
 
+        scope.active = true;
         scope.step = 0;
         scope.lastTime = 0;
 
         scope.update();
 
-        //expect(scope.nextGeneration.calls.count()).toBe(1);
+        expect(scope.spawnAnt.calls.count()).toBe(1);
         expect(scope.cumulativeTime).toBe(0);
+        expect(scope.updateAnts.calls.count()).toBe(2);
     });
 });

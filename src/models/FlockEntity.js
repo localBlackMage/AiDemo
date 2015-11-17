@@ -176,8 +176,8 @@
                  * @returns {Vector} - The entity's new velocity
                  */
                 FlockEntity.prototype.updateVelocity = function (options) {
-                    this.velocity = this['updateAs' + this.type](options);
-                    return this.velocity.normalize(1).mulNew(this.speed);
+                    var velocity = this['updateAs' + this.type](options);
+                    return velocity.normalize(1).mulNew(this.speed);
                 };
 
                 FlockEntity.prototype._bounceOffWalls = function (box) {
@@ -214,7 +214,7 @@
                 };
 
                 FlockEntity.prototype.calcNose = function () {
-                    this.nose = this.position.addNew(this.velocity);
+                    //this.nose = this.position.addNew(this.velocity);
                     this.nose = this.velocity.normalize(1);
                     this.nose = this.nose.mulNew(10);
                     this.nose = this.nose.addNew(this.position);
