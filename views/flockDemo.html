@@ -1,7 +1,7 @@
 <div class="app-flockdemo">
     <div class="demo-screen">
         <canvas-screen has-grid="t" grid-color="{{GRID_COLOR}}"
-                bg-color="{{BACK_COLOR}}" height="400" width="800"
+                bg-color="{{BACK_COLOR}}" height="625" width="1200"
                        objects="entities" box="box" on-update="update()">
         </canvas-screen>
     </div>
@@ -25,28 +25,28 @@
                 <input class="form-control"
                        type="number" id="preySpeed"
                        ng-model="preyStats.speed"
-                       step=".1" />
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Cohesion:</label>
                 <input class="form-control"
                        type="number" id="preyCohesion"
                        ng-model="preyStats.cohesionWeight"
-                       step=".1" />
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Separation:</label>
                 <input class="form-control"
                        type="number" id="preySeparation"
                        ng-model="preyStats.separateWeight"
-                       step=".1" />
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Alignment:</label>
                 <input class="form-control"
                        type="number" id="preyAlign"
                        ng-model="preyStats.alignWeight"
-                       step=".1" />
+                       step=".01" />
             </div>
         </div>
 

@@ -32,17 +32,17 @@ describe('Flock Controller', function () {
         expect(scope.entities.prey.length).toBe(0);
         expect(scope.entities.predators.length).toBe(0);
 
-        expect(scope.preyAmount).toBe(20);
-        expect(scope.predatorAmount).toBe(5);
-        expect(scope.predatorStats.speed).toBe(2.0);
+        expect(scope.preyAmount).toBe(200);
+        expect(scope.predatorAmount).toBe(2);
+        expect(scope.predatorStats.speed).toBe(0.7);
         expect(scope.predatorStats.cohesionWeight).toBe(.5);
         expect(scope.predatorStats.separateWeight).toBe(.5);
         expect(scope.predatorStats.alignWeight).toBe(.5);
 
-        expect(scope.preyStats.speed).toBe(2.2);
+        expect(scope.preyStats.speed).toBe(0.5);
         expect(scope.preyStats.cohesionWeight).toBe(.5);
-        expect(scope.preyStats.separateWeight).toBe(.5);
-        expect(scope.preyStats.alignWeight).toBe(.5);
+        expect(scope.preyStats.separateWeight).toBe(.51);
+        expect(scope.preyStats.alignWeight).toBe(.49);
         expect(scope.preyStats.avoidWeight).toBe(1.0);
         expect(scope.gameType).toBe('Wolves');
     });

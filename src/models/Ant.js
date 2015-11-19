@@ -19,6 +19,8 @@
                     this.id = _.isNumber(params.id) ? params.id : 0;
                     this.hasFood = params.hasFood;
                     this.color = this.hasFood ? "#FF00FF" : "#FFFFFF";
+                    this.distanceToFood = 0;
+                    this.distanceToNest = 0;
                 }
 
                 Pheromone.prototype.update = function (deltaTime) {
@@ -186,11 +188,11 @@
                 }
 
                 Nest.prototype.attemptToSpawnAnt = function () {
-                    if (this.foodStore === 0) {
+                    if (this.foodStore < 1.0) {
                         return null;
                     }
                     else {
-                        this.foodStore--;
+                        this.foodStore -= 1.0;
                         return new Ant({
                             position: new Vector(this.position),
                             velocity: new Vector({
@@ -209,7 +211,7 @@
                 };
 
                 Nest.prototype.addFood = function () {
-                    this.foodStore++;
+                    this.foodStore += 0.1;
                 };
 
                 Nest.prototype.render = function (ctx) {

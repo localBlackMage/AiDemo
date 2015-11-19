@@ -18,19 +18,19 @@
                     prey: [],
                     predators: []
                 };
-                $scope.preyAmount = 20;
-                $scope.predatorAmount = 5;
+                $scope.preyAmount = 200;
+                $scope.predatorAmount = 2;
                 $scope.predatorStats = {
-                    speed: 2.0,
+                    speed: 0.7,
                     cohesionWeight: 0.5,
                     separateWeight: 0.5,
                     alignWeight: 0.5
                 };
                 $scope.preyStats = {
-                    speed: 2.2,
+                    speed: 0.5,
                     cohesionWeight: 0.5,
-                    separateWeight: 0.5,
-                    alignWeight: 0.5,
+                    separateWeight: 0.51,
+                    alignWeight: 0.49,
                     avoidWeight: 1.0
                 };
                 $scope.gameType = WOLVES;

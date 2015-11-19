@@ -177,7 +177,7 @@
                  */
                 FlockEntity.prototype.updateVelocity = function (options) {
                     var velocity = this['updateAs' + this.type](options);
-                    return velocity.normalize(1).mulNew(this.speed);
+                    return velocity.normalize().mulNew(this.speed);
                 };
 
                 FlockEntity.prototype._bounceOffWalls = function (box) {
@@ -214,8 +214,7 @@
                 };
 
                 FlockEntity.prototype.calcNose = function () {
-                    //this.nose = this.position.addNew(this.velocity);
-                    this.nose = this.velocity.normalize(1);
+                    this.nose = this.velocity.normalize();
                     this.nose = this.nose.mulNew(10);
                     this.nose = this.nose.addNew(this.position);
                 };
