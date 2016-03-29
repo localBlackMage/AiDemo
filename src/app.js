@@ -4,9 +4,6 @@
     var app = ng.module('aidemo.app', [
         // Other dependencies
         'ui.router',
-        //'ngSanitize',
-        //'ui.bootstrap',
-        //'ngAnimate',
 
         // Templates
         'aidemo.templates',
@@ -18,7 +15,8 @@
         'aidemo.flock',
         'aidemo.ant',
         'aidemo.life',
-        'aidemo.astar'
+        'aidemo.astar',
+        'aidemo.chip'
     ]);
 
     app.controller('HeaderController', ['$rootScope', '$scope', '$state',
@@ -29,7 +27,8 @@
                 {state: 'app.life', name: 'Life', inactive: false},
                 {state: 'app.flock', name: 'Flocking', inactive: false},
                 {state: 'app.ant', name: 'Ants', inactive: false},
-                {state: 'app.astar', name: 'A Star', inactive: false}
+                {state: 'app.astar', name: 'A Star', inactive: false},
+                {state: 'app.chip', name: 'Chip\'s Challenge', inactive: false}
                 //{state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
 

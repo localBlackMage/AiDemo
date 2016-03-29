@@ -8,7 +8,7 @@ describe("Vector Model", function () {
         });
     });
 
-    it('should build a Vector object', function() {
+    it('should build a Vector object', function () {
         var vector = Vector.build(defaultVector);
 
         expect(vector.x).toBe(1);
@@ -43,6 +43,19 @@ describe("Vector Model", function () {
         expect(res).toBe(expected);
     });
 
+    it("should calculate it's magnitude (another name for length)", function () {
+        var vec = new Vector(defaultVector), res;
+
+        spyOn(vec, 'length').and.callFake(function () {
+            return 1;
+        });
+
+        res = vec.magnitude();
+
+        expect(res).toBe(1);
+        expect(vec.length).toHaveBeenCalled();
+    });
+
     it("should calculate it's normal", function () {
         var vec = new Vector(defaultVector), res, length = vec.length(),
             expected = new Vector({x: (defaultVector.x / length), y: (defaultVector.y / length)});
@@ -55,7 +68,7 @@ describe("Vector Model", function () {
 
     it("should add two vectors and return a new instance", function () {
         var vecOne = new Vector(defaultVector),
-            vecTwo = new Vector({x:-1, y:2}), res,
+            vecTwo = new Vector({x: -1, y: 2}), res,
             expected = {x: vecOne.x + vecTwo.x, y: vecOne.y + vecTwo.y};
 
         res = vecOne.addNew(vecTwo);
@@ -66,7 +79,7 @@ describe("Vector Model", function () {
 
     it("should add two vectors and mutate the original", function () {
         var vecOne = new Vector(defaultVector),
-            vecTwo = new Vector({x:-1, y:2}),
+            vecTwo = new Vector({x: -1, y: 2}),
             expected = {x: vecOne.x + vecTwo.x, y: vecOne.y + vecTwo.y};
 
         vecOne.add(vecTwo);
@@ -77,7 +90,7 @@ describe("Vector Model", function () {
 
     it("should subtract two vectors and return a new instance", function () {
         var vecOne = new Vector(defaultVector),
-            vecTwo = new Vector({x:-1, y:2}), res,
+            vecTwo = new Vector({x: -1, y: 2}), res,
             expected = {x: vecOne.x - vecTwo.x, y: vecOne.y - vecTwo.y};
 
         res = vecOne.subNew(vecTwo);
@@ -88,7 +101,7 @@ describe("Vector Model", function () {
 
     it("should subtract two vectors and mutate the original", function () {
         var vecOne = new Vector(defaultVector),
-            vecTwo = new Vector({x:-1, y:2}),
+            vecTwo = new Vector({x: -1, y: 2}),
             expected = {x: vecOne.x - vecTwo.x, y: vecOne.y - vecTwo.y};
 
         vecOne.sub(vecTwo);

@@ -20,13 +20,14 @@ module.exports = function (config) {
             DIST_ROOT + 'templates/aidemo-templates.js',
 
             SCRIPT_ROOT + 'services/*.js',
-            SCRIPT_ROOT + 'models/*.js',
+            SCRIPT_ROOT + 'models/**/*.js',
             SCRIPT_ROOT + 'directives/**/*.js',
             //SCRIPT_ROOT + 'controllers/*.js',
             SCRIPT_ROOT + 'controllers/astarCtrl.js',
             SCRIPT_ROOT + 'controllers/flockCtrl.js',
             SCRIPT_ROOT + 'controllers/antCtrl.js',
             SCRIPT_ROOT + 'controllers/lifeCtrl.js',
+            SCRIPT_ROOT + 'controllers/chipCtrl.js',
             SCRIPT_ROOT + '*.js',
 
             TEST_ROOT + '*.js'

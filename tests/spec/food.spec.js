@@ -1,14 +1,12 @@
 describe("Food Model", function () {
-    var Food, Utils, MathUtils, DrawUtils, Vector,
+    var Food, DrawUtils, Vector,
         defaultOptions;
 
     beforeEach(function () {
-        module('aidemo.service.utils', 'aidemo.service.mathUtils', 'aidemo.service.drawUtils', 'aidemo.models.vector', 'aidemo.models.ant');
+        module('aidemo.service.drawUtils', 'aidemo.models.vector', 'aidemo.models.ants.food');
 
-        inject(function (_Food_, _Utils_, _MathUtils_, _DrawUtils_, _Vector_) {
+        inject(function (_Food_, _DrawUtils_, _Vector_) {
             Food = _Food_;
-            Utils = _Utils_;
-            MathUtils = _MathUtils_;
             DrawUtils = _DrawUtils_;
             Vector = _Vector_;
 
@@ -18,10 +16,10 @@ describe("Food Model", function () {
         });
     });
 
-    it("should instantiate properly", function(){
+    it("should instantiate properly", function () {
         var green = '#00AA00';
 
-        spyOn(DrawUtils, 'getRandomGreen').and.callFake(function(min) {
+        spyOn(DrawUtils, 'getRandomGreen').and.callFake(function (min) {
             expect(min).toBe('A');
             return green;
         });
@@ -37,11 +35,12 @@ describe("Food Model", function () {
     it("should have a bite taken from it and return whether or not it is gone", function () {
         var food = new Food(defaultOptions);
 
+        food.radius = 0.2;
+
         var result = food.takeBite();
 
         expect(result).toBeFalsy();
 
-        food.radius = 0.1;
 
         result = food.takeBite();
 
@@ -51,7 +50,7 @@ describe("Food Model", function () {
     it("should render itself", function () {
         var green = '#00AA00';
 
-        spyOn(DrawUtils, 'getRandomGreen').and.callFake(function(min) {
+        spyOn(DrawUtils, 'getRandomGreen').and.callFake(function (min) {
             return green;
         });
 

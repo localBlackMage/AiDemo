@@ -9,42 +9,42 @@ var gulp = require('gulp'),
     Server = require('karma').Server;
 
 var PROJ_ROOT = '',
-    BOWER_COMP_ROOT = PROJ_ROOT + 'bower_components',
-    LESS_ROOT = PROJ_ROOT + 'less',
-    SCRIPTS_ROOT = PROJ_ROOT + 'src',
-    TESTS_ROOT = PROJ_ROOT + 'tests/spec',
-    TEMPLATES_ROOT = PROJ_ROOT + 'views',
-    DIST_ROOT = PROJ_ROOT + 'dist';
+    BOWER_COMP_ROOT = PROJ_ROOT + 'bower_components/',
+    LESS_ROOT = PROJ_ROOT + 'less/',
+    SCRIPTS_ROOT = PROJ_ROOT + 'src/',
+    TESTS_ROOT = PROJ_ROOT + 'tests/spec/',
+    TEMPLATES_ROOT = PROJ_ROOT + 'views/',
+    DIST_ROOT = PROJ_ROOT + 'dist/';
 
-var styles = [LESS_ROOT + '/*.less'],
-    stylesAll = [LESS_ROOT + '/**/*.less'],
+var styles = [LESS_ROOT + '**/*.less'],
     scripts = [
-        SCRIPTS_ROOT + '/services/*.js',
-        SCRIPTS_ROOT + '/models/*.js',
-        SCRIPTS_ROOT + '/directives/*.js',
-        SCRIPTS_ROOT + '/controllers/flockCtrl.js',
-        SCRIPTS_ROOT + '/controllers/lifeCtrl.js',
-        SCRIPTS_ROOT + '/controllers/astarCtrl.js',
-        SCRIPTS_ROOT + '/controllers/antCtrl.js',
+        SCRIPTS_ROOT + 'services/*.js',
+        SCRIPTS_ROOT + 'models/**/*.js',
+        SCRIPTS_ROOT + 'directives/*.js',
+        SCRIPTS_ROOT + 'controllers/flockCtrl.js',
+        SCRIPTS_ROOT + 'controllers/lifeCtrl.js',
+        SCRIPTS_ROOT + 'controllers/astarCtrl.js',
+        SCRIPTS_ROOT + 'controllers/antCtrl.js',
+        SCRIPTS_ROOT + 'controllers/chipCtrl.js',
         //SCRIPTS_ROOT + '/controllers/*.js',
-        SCRIPTS_ROOT + '/*.js'
+        SCRIPTS_ROOT + '*.js'
     ],
     css = [
-        DIST_ROOT + '/css/expanded/core.css',
-        BOWER_COMP_ROOT + '/angular-bootstrap/ui-bootstrap-csp.css'
+        DIST_ROOT + 'css/expanded/core.css',
+        BOWER_COMP_ROOT + 'angular-bootstrap/ui-bootstrap-csp.css'
     ],
     libs = [
-        BOWER_COMP_ROOT + '/jquery/dist/jquery.js',
-        BOWER_COMP_ROOT + '/angular/angular.js',
-        BOWER_COMP_ROOT + '/angular-ui-router/release/angular-ui-router.js',
-        BOWER_COMP_ROOT + '/angular-bootstrap/ui-bootstrap.js',
-        BOWER_COMP_ROOT + '/lodash/lodash.js'
+        BOWER_COMP_ROOT + 'jquery/dist/jquery.js',
+        BOWER_COMP_ROOT + 'angular/angular.js',
+        BOWER_COMP_ROOT + 'angular-ui-router/release/angular-ui-router.js',
+        BOWER_COMP_ROOT + 'angular-bootstrap/ui-bootstrap.js',
+        BOWER_COMP_ROOT + 'lodash/lodash.js'
         //BOWER_COMP_ROOT + '/threejs/build/three.js'
     ],
     templates = [
-        TEMPLATES_ROOT + '/**/*.html'
+        TEMPLATES_ROOT + '**/*.html'
     ],
-    tests = [TESTS_ROOT + '/*.js'];
+    tests = [TESTS_ROOT + '*.js'];
 
 /**
  * Run test once and exit
@@ -53,8 +53,11 @@ gulp.task('test', ['appscripts'], function(done) {
     Server.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
-    }, function() {
+    }, function(exitCode, error) {
         done();
+        if (exitCode !== 0) {
+            console.log('Karma has exited with ' + exitCode);
+        }
     });
 });
 
@@ -90,7 +93,7 @@ gulp.task('libs', function () {
 });
 
 // Concatenate & Minify JS -- APP
-gulp.task('appscripts', function () {
+gulp.task('appscripts', ['lint'], function () {
     return gulp.src(scripts)
         .pipe(concat('aidemo.js'))
         .pipe(gulp.dest(DIST_ROOT));
@@ -108,7 +111,7 @@ gulp.task('templates', function () {
 // Watch Files For Changes
 gulp.task('watch', function () {
     gulp.watch(scripts, ['appscripts', 'test']);
-    gulp.watch(stylesAll, ['styles', 'cssmin']);
+    gulp.watch(styles, ['styles', 'cssmin']);
     gulp.watch(templates, ['templates']);
     gulp.watch(tests, ['test']);
 });

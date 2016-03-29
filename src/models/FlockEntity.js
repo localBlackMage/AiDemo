@@ -72,12 +72,23 @@
                         .normalize();
                 };
 
+                /**
+                 *
+                 * @param target - Entity with a position field
+                 * @returns Vector
+                 * @private
+                 */
                 FlockEntity.prototype._calculateSeparationForceForTarget = function (target) {
                     return this.position
                         .subNew(target.position)
                         .normalize();
                 };
 
+                /**
+                 * Given an array of objects, calculates the separation force for the whole, normalizes the result,
+                 * and returns it
+                 * @param objects - Array of entities with a position field
+                 */
                 FlockEntity.prototype.calculateSeparation = function (objects) {
                     var self = this,
                         separationVector = new Vector();
@@ -118,6 +129,38 @@
                 };
 
                 /**
+                 * Given an array of predator entities, will calculate the force leading away from them
+                 * @param predators - Array of FlockEntity objects
+                 * @private
+                 */
+                FlockEntity.prototype._updateAsPreyWithPredators = function(predators) {
+                    this.renderExclamation = true;
+                    var avoidPredators = this.calculateSeparation(predators).mulNew(this.avoidWeight);
+                    return this.velocity.addNew(avoidPredators);
+                };
+
+                /**
+                 * Given an options object with prey and box properties, calculates the updated velocity, and returns it
+                 * @param options - Object with prey (Array of FlockEntity object) and box (has width and height properties)
+                 * @private
+                 */
+                FlockEntity.prototype._updateAsPreyNormal = function(options) {
+                    this.renderExclamation = false;
+                    var neighbors = MathUtils.getNearestObjects(options.prey, this, 80.0);
+
+                    var cohesion = this.calculateCohesion(neighbors).mulNew(this.cohesionWeight),
+                        separate = this.calculateSeparation(neighbors).mulNew(this.separateWeight),
+                        align = this.calculateAlignment(neighbors).mulNew(this.alignWeight),
+                        avoidWalls = this.avoidWalls(options.box).mulNew(0.1);
+
+                    var total = cohesion
+                        .addNew(separate)
+                        .addNew(align)
+                        .addNew(avoidWalls);
+                    return this.velocity.addNew(total);
+                };
+
+                /**
                  * Prey will try to group with other prey, stay away from other prey, align with
                  * other prey, and avoid walls IF there are NO predators nearby
                  * @param options - Object containing predators and prey arrays, as well as a box object
@@ -126,24 +169,10 @@
                 FlockEntity.prototype.updateAsPrey = function (options) {
                     var predators = MathUtils.getNearestObjects(options.predators, this, 80.0);
                     if (predators.length !== 0) {
-                        this.renderExclamation = true;
-                        var avoidPredators = this.calculateSeparation(predators).mulNew(this.avoidWeight);
-                        return this.velocity.addNew(avoidPredators);
+                        return this._updateAsPreyWithPredators(predators);
                     }
                     else {
-                        this.renderExclamation = false;
-                        var neighbors = MathUtils.getNearestObjects(options.prey, this, 80.0);
-
-                        var cohesion = this.calculateCohesion(neighbors).mulNew(this.cohesionWeight),
-                            separate = this.calculateSeparation(neighbors).mulNew(this.separateWeight),
-                            align = this.calculateAlignment(neighbors).mulNew(this.alignWeight),
-                            avoidWalls = this.avoidWalls(options.box).mulNew(0.1);
-
-                        var total = cohesion
-                            .addNew(separate)
-                            .addNew(align)
-                            .addNew(avoidWalls);
-                        return this.velocity.addNew(total);
+                        return this._updateAsPreyNormal(options);
                     }
                 };
 

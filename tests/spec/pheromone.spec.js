@@ -1,13 +1,12 @@
 describe("Pheromone Model", function () {
-    var Pheromone, Utils, MathUtils, DrawUtils, Vector,
+    var Pheromone, MathUtils, DrawUtils, Vector,
         defaultOptions;
 
     beforeEach(function () {
-        module('aidemo.service.utils', 'aidemo.service.mathUtils', 'aidemo.service.drawUtils', 'aidemo.models.vector', 'aidemo.models.ant');
+        module('aidemo.service.mathUtils', 'aidemo.service.drawUtils', 'aidemo.models.vector', 'aidemo.models.ants.pheromone');
 
         inject(function (_Pheromone_, _Utils_, _MathUtils_, _DrawUtils_, _Vector_) {
             Pheromone = _Pheromone_;
-            Utils = _Utils_;
             MathUtils = _MathUtils_;
             DrawUtils = _DrawUtils_;
             Vector = _Vector_;
@@ -26,7 +25,7 @@ describe("Pheromone Model", function () {
         expect(pheromone.position).toBe(defaultOptions.position);
         expect(pheromone.id).toBe(defaultOptions.id);
         expect(pheromone.hasFood).toBe(defaultOptions.hasFood);
-        expect(pheromone.timeToLive).toBe(20.0);
+        expect(pheromone.timeToLive).toBe(15.0);
         expect(pheromone.currentTime).toBe(0);
         expect(pheromone.color).toBe("#FFFFFF");
     });
@@ -43,19 +42,19 @@ describe("Pheromone Model", function () {
 
         result = pheromone.update(0.1);
 
-        expect(pheromone.currentTime).toBe(20.1);
+        expect(pheromone.currentTime).toBe(15.1);
         expect(result).toBeTruthy();
     });
 
-    //it("should calculate it's radius", function() {
-    //    var pheromone = new Pheromone(defaultOptions);
-    //
-    //    pheromone.currentTime = 1.0;
-    //
-    //    var result = pheromone.getRadius();
-    //
-    //    expect(result).toBe(2.8);
-    //});
+    it("should calculate it's age weight", function() {
+        var pheromone = new Pheromone(defaultOptions);
+
+        pheromone.currentTime = 7.5;
+
+        var result = pheromone.getAgeWeight();
+
+        expect(result).toBe(.5);
+    });
 
     it("should render itself", function () {
         var pheromone = new Pheromone(defaultOptions),

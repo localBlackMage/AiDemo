@@ -6,24 +6,25 @@
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
         'aidemo.models.vector',
-        'aidemo.models.ant'
+        'aidemo.models.ants.ant',
+        'aidemo.models.ants.food',
+        'aidemo.models.ants.nest'
     ])
         .controller("AntController", ['$scope', 'MathUtils', 'DrawUtils', 'Vector', 'Nest', 'Ant', 'Food',
             function ($scope, MathUtils, DrawUtils, Vector, Nest, Ant, Food) {
-                $scope.box = {};
-                $scope.BACK_COLOR = "#555555";
-                $scope.GRID_COLOR = "#8EAEC9";
-                $scope.environment = {
+                var vm = this;
+                vm.box = {};
+                vm.BACK_COLOR = "#555555";
+                vm.GRID_COLOR = "#8EAEC9";
+                vm.environment = {
                     food: [],
                     pheromones: [],
                     nest: null,
                     ants: []
                 };
-                $scope.active = false;
-                $scope.cumulativeTime = 0;
-                $scope.lastTime = 0;
-                $scope.step = 1.0;
-                $scope.antStats = {
+                vm.active = false;
+                vm.lastTime = 0;
+                vm.antStats = {
                     cohesionWeight: 0.25,
                     separateWeight: 0.25,
                     alignWeight: 0.01,
@@ -31,154 +32,149 @@
                     pheromoneWeight: 0.25
                 };
 
-                $scope.spawnFood = function () {
+                vm.spawnFood = function () {
                     return new Food({
                         position: new Vector({
-                            x: MathUtils.getRandomNumber(10.0, $scope.box.width - 10),
-                            y: MathUtils.getRandomNumber(10.0, $scope.box.height - 10)
+                            x: MathUtils.getRandomNumber(10.0, vm.box.width - 10),
+                            y: MathUtils.getRandomNumber(10.0, vm.box.height - 10)
                         })
                     });
                 };
 
-                $scope.spawnNest = function () {
+                vm.spawnNest = function () {
                     return new Nest({
                         position: new Vector({
-                            x: MathUtils.getRandomNumber(10.0, $scope.box.width - 10),
-                            y: MathUtils.getRandomNumber(10.0, $scope.box.height - 10)
+                            x: MathUtils.getRandomNumber(10.0, vm.box.width - 10),
+                            y: MathUtils.getRandomNumber(10.0, vm.box.height - 10)
                         }),
-                        weights: $scope.antStats,
+                        weights: vm.antStats,
                         foodStore: 30
                     });
                 };
 
-                $scope.instantiate = function () {
+                vm.createEnvironment = function () {
                     var foodAmt = Math.round(MathUtils.getRandomNumber(5, 10));
                     for (var idx = 0; idx < foodAmt; idx++) {
-                        $scope.environment.food.push($scope.spawnFood());
+                        vm.environment.food.push(vm.spawnFood());
                     }
 
-                    $scope.environment.nest = $scope.spawnNest();
-                    $scope.active = true;
+                    vm.environment.nest = vm.spawnNest();
+                    vm.active = true;
                 };
 
-                $scope.clear = function () {
-                    $scope.environment = {
+                vm.clear = function () {
+                    vm.environment = {
                         food: [],
                         pheromones: [],
                         nest: null,
                         ants: []
                     };
-                    $scope.active = false;
+                    vm.active = false;
                 };
 
-                $scope.reset = function () {
-                    $scope.clear();
-                    $scope.instantiate();
+                vm.reset = function () {
+                    vm.clear();
+                    vm.createEnvironment();
                 };
 
-                $scope.spawnAnt = function () {
-                    var newAnt = $scope.environment.nest.attemptToSpawnAnt();
+                vm.spawnAnt = function (delta) {
+                    var newAnt = vm.environment.nest.updateTimeAndAttemptToSpawnAnt(delta);
                     if (newAnt) {
-                        $scope.environment.ants.push(newAnt);
+                        vm.environment.ants.push(newAnt);
                     }
                 };
 
-                $scope.addPheromoneToEnvironment = function (pheromone) {
+                vm.addPheromoneToEnvironment = function (pheromone) {
                     if (pheromone) {
-                        $scope.environment.pheromones.push(pheromone);
+                        vm.environment.pheromones.push(pheromone);
                     }
                 };
 
-                $scope.getTouchedFood = function (ant) {
-                    var food = MathUtils.getNearestObjects($scope.environment.food, ant, 10);
-                    return food.length > 0 ? $scope.environment.food.indexOf(food[0]) : null;
+                vm.getTouchedFood = function (ant) {
+                    var food = MathUtils.getNearestObjects(vm.environment.food, ant, 10);
+                    return food.length > 0 ? vm.environment.food.indexOf(food[0]) : null;
                 };
 
-                $scope.antTouchedFood = function(foodIndex) {
+                vm.antTouchedFood = function(foodIndex) {
                     if (_.isNumber(foodIndex)) {
-                        if ($scope.environment.food[foodIndex].takeBite()) {
+                        if (vm.environment.food[foodIndex].takeBite()) {
                             // Remove the food from the environment
-                            $scope.environment.food.splice(foodIndex, 1);
+                            vm.environment.food.splice(foodIndex, 1);
                         }
                         return true;
                     }
                     return false;
                 };
 
-                $scope.getTouchedNest = function (ant) {
-                    var nest = MathUtils.getNearestObjects([$scope.environment.nest], ant, 10);
+                vm.getTouchedNest = function (ant) {
+                    var nest = MathUtils.getNearestObjects([vm.environment.nest], ant, 10);
                     return nest.length > 0 ? nest[0] : null;
                 };
 
-                $scope.antTouchedNest = function(nest, ant){
+                vm.antTouchedNest = function(nest, ant){
                     if (nest && ant.hasFood) {
-                        $scope.environment.nest.addFood();
+                        vm.environment.nest.addFood();
                         return false;
                     }
                     return true;
                 };
 
-                $scope.antTouchedEnvironment = function (ant) {
+                vm.antTouchedEnvironment = function (ant) {
                     if (!ant.hasFood) {
-                        var foodIndex = $scope.getTouchedFood(ant);
-                        return $scope.antTouchedFood(foodIndex);
+                        var foodIndex = vm.getTouchedFood(ant);
+                        return vm.antTouchedFood(foodIndex);
                     }
                     else {
-                        var nest = $scope.getTouchedNest(ant);
-                        return $scope.antTouchedNest(nest, ant);
+                        var nest = vm.getTouchedNest(ant);
+                        return vm.antTouchedNest(nest, ant);
                     }
                 };
 
-                $scope.updateAnts = function (delta) {
+                vm.updateAnts = function (delta) {
                     var pheromonesToAdd = [];
-                    for (var idx in $scope.environment.ants) {
-                        $scope.environment.ants[idx].update({
-                            box: $scope.box,
-                            ants: $scope.environment.ants,
-                            food: $scope.environment.food,
-                            pheromones: $scope.environment.pheromones,
-                            nest: $scope.environment.nest
+                    for (var idx in vm.environment.ants) {
+                        vm.environment.ants[idx].update({
+                            box: vm.box,
+                            ants: vm.environment.ants,
+                            food: vm.environment.food,
+                            pheromones: vm.environment.pheromones,
+                            nest: vm.environment.nest
                         });
 
-                        var pheromone = $scope.environment.ants[idx].attemptToSpawnPheromone(delta);
-                        $scope.addPheromoneToEnvironment(pheromone);
+                        var pheromone = vm.environment.ants[idx].attemptToSpawnPheromone(delta);
+                        vm.addPheromoneToEnvironment(pheromone);
 
-                        $scope.environment.ants[idx].hasFood = $scope.antTouchedEnvironment($scope.environment.ants[idx]);
+                        vm.environment.ants[idx].hasFood = vm.antTouchedEnvironment(vm.environment.ants[idx]);
                     }
 
                     pheromonesToAdd.forEach(function (pheromone) {
-                        $scope.spawnPheromone(pheromone);
+                        vm.spawnPheromone(pheromone);
                     });
                 };
 
-                $scope.updatePheromones = function (delta) {
+                vm.updatePheromones = function (delta) {
                     var deadPheromones = [];
-                    $scope.environment.pheromones.forEach(function (pheromone) {
+                    vm.environment.pheromones.forEach(function (pheromone) {
                         if (pheromone.update(delta)) {
                             deadPheromones.push(pheromone);
                         }
                     });
 
                     deadPheromones.forEach(function (dead) {
-                        $scope.environment.pheromones.splice($scope.environment.pheromones.indexOf(dead), 1);
+                        vm.environment.pheromones.splice(vm.environment.pheromones.indexOf(dead), 1);
                     });
                 };
 
-                $scope.update = function () {
-                    if ($scope.active) {
+                vm.update = function () {
+                    if (vm.active) {
                         var currTime = new Date().getTime(),
-                            delta = (currTime - $scope.lastTime) / 1000;
-                        delta = Math.min(delta, 1.0);
-                        $scope.cumulativeTime += delta;
-                        $scope.lastTime = currTime;
+                            delta = Math.min((currTime - vm.lastTime) / 1000, 1.0);
 
-                        if ($scope.cumulativeTime > $scope.step) {
-                            $scope.spawnAnt();
-                            $scope.cumulativeTime = 0;
-                        }
+                        vm.lastTime = currTime;
 
-                        $scope.updateAnts(delta);
-                        $scope.updatePheromones(delta);
+                        vm.spawnAnt(delta);
+                        vm.updateAnts(delta);
+                        vm.updatePheromones(delta);
                         $scope.$apply();
                     }
                 };
@@ -194,7 +190,8 @@
                     views: {
                         'main@': {
                             templateUrl: 'antDemo.html',
-                            controller: 'AntController'
+                            controller: 'AntController',
+                            controllerAs: 'antCtrl',
                         }
                     }
                 });

@@ -1,15 +1,15 @@
 <div class="app-flockdemo">
     <div class="demo-screen">
-        <canvas-screen has-grid="t" grid-color="{{GRID_COLOR}}"
-                bg-color="{{BACK_COLOR}}" height="625" width="1200"
-                       objects="entities" box="box" on-update="update()">
+        <canvas-screen has-grid="t" grid-color="{{FlockCtrl.GRID_COLOR}}"
+                bg-color="{{FlockCtrl.BACK_COLOR}}" height="400" width="1200"
+                       objects="FlockCtrl.entities" box="FlockCtrl.box" on-update="FlockCtrl.update()">
         </canvas-screen>
     </div>
     <div class="information">
-        <label>{{gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{entities.prey.length}}</label>
-        <button class="btn-default" ng-click="toggleGameType()">Game Type: {{gameType}}!</button>
-        <button class="btn-default" ng-click="clear()">Clear!</button>
-        <button class="btn-default" ng-click="reset()">Start!</button>
+        <label>{{FlockCtrl.gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{FlockCtrl.entities.prey.length}}</label>
+        <button class="btn-default" ng-click="FlockCtrl.toggleGameType()">Game Type: {{FlockCtrl.gameType}}!</button>
+        <button class="btn-default" ng-click="FlockCtrl.clear()">Clear!</button>
+        <button class="btn-default" ng-click="FlockCtrl.reset()">Start!</button>
     </div>
     <div class="statistics">
         <div class="statistics-container" id="preyStats">
@@ -17,35 +17,35 @@
                 <label class="form-label">Prey Amount:</label>
                 <input class="form-control"
                        type="number" id="preyAmount"
-                       ng-model="preyAmount"
+                       ng-model="FlockCtrl.preyAmount"
                        step="1" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Speed:</label>
                 <input class="form-control"
                        type="number" id="preySpeed"
-                       ng-model="preyStats.speed"
+                       ng-model="FlockCtrl.preyStats.speed"
                        step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Cohesion:</label>
                 <input class="form-control"
                        type="number" id="preyCohesion"
-                       ng-model="preyStats.cohesionWeight"
+                       ng-model="FlockCtrl.preyStats.cohesionWeight"
                        step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Separation:</label>
                 <input class="form-control"
                        type="number" id="preySeparation"
-                       ng-model="preyStats.separateWeight"
+                       ng-model="FlockCtrl.preyStats.separateWeight"
                        step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Prey Alignment:</label>
                 <input class="form-control"
                        type="number" id="preyAlign"
-                       ng-model="preyStats.alignWeight"
+                       ng-model="FlockCtrl.preyStats.alignWeight"
                        step=".01" />
             </div>
         </div>
@@ -55,36 +55,36 @@
                 <label class="form-label">Predator Amount:</label>
                 <input class="form-control"
                        type="number" id="predatorAmount"
-                       ng-model="predatorAmount"
+                       ng-model="FlockCtrl.predatorAmount"
                        step="1" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Speed:</label>
                 <input class="form-control"
                        type="number" id="predatorSpeed"
-                       ng-model="predatorStats.speed"
-                       step=".1" />
+                       ng-model="FlockCtrl.predatorStats.speed"
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Cohesion:</label>
                 <input class="form-control"
                        type="number" id="predatorCohesion"
-                       ng-model="predatorStats.cohesionWeight"
-                       step=".1" />
+                       ng-model="FlockCtrl.predatorStats.cohesionWeight"
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Separation:</label>
                 <input class="form-control"
                        type="number" id="predatorSeparation"
-                       ng-model="predatorStats.separateWeight"
-                       step=".1" />
+                       ng-model="FlockCtrl.predatorStats.separateWeight"
+                       step=".01" />
             </div>
             <div class="stat">
                 <label class="form-label">Predator Alignment:</label>
                 <input class="form-control"
                        type="number" id="predatorAlign"
-                       ng-model="predatorStats.alignWeight"
-                       step=".1" />
+                       ng-model="FlockCtrl.predatorStats.alignWeight"
+                       step=".01" />
             </div>
         </div>
     </div>

@@ -11,120 +11,121 @@
         'aidemo.models.node'
         //'aidemo.models.lifeCell'
     ])
-        .controller('AStarController', ['$scope', '$timeout', 'AStar', 'GridService', 'MathUtils', 'Vector', 'Node',
-            function ($scope, $timeout, AStar, GridService, MathUtils, Vector, Node) {
-                $scope.BACK_COLOR = "#555555";
-                $scope.GRID_COLOR = "#8EAEC9";
-                $scope.gridObj = {
+        .controller('AStarController', ['$timeout', 'AStar', 'GridService', 'MathUtils', 'Vector', 'Node',
+            function ($timeout, AStar, GridService, MathUtils, Vector, Node) {
+                var vm = this;
+                vm.BACK_COLOR = "#555555";
+                vm.GRID_COLOR = "#8EAEC9";
+                vm.gridObj = {
                     grid: [],
                     tileSize: 20.0
                 };
-                $scope.start = null;
-                $scope.end = null;
+                vm.start = null;
+                vm.end = null;
 
-                $scope.findNodeInGridAndPathSelect = function (node) {
-                    if ($scope.gridObj.grid) {
-                        var row = parseInt(node.id / $scope.gridObj.grid[0].length, 10),
-                            column = parseInt(node.id - (row * $scope.gridObj.grid[0].length), 10);
+                vm.findNodeInGridAndPathSelect = function (node) {
+                    if (vm.gridObj.grid) {
+                        var row = parseInt(node.id / vm.gridObj.grid[0].length, 10),
+                            column = parseInt(node.id - (row * vm.gridObj.grid[0].length), 10);
 
-                        $scope.gridObj.grid[row][column] = node;
-                        $scope.gridObj.grid[row][column].pathSelect();
+                        vm.gridObj.grid[row][column] = node;
+                        vm.gridObj.grid[row][column].pathSelect();
                     }
                 };
 
-                $scope.markPath = function (path) {
+                vm.markPath = function (path) {
                     if (!path) {
                         return;
                     }
                     while (!path.isEmpty()) {
                         var node = path.dequeue();
-                        $scope.findNodeInGridAndPathSelect(node);
+                        vm.findNodeInGridAndPathSelect(node);
                     }
                 };
 
-                $scope.createPath = function () {
-                    if ($scope.start && $scope.end) {
-                        $scope.markPath(
+                vm.createPath = function () {
+                    if (vm.start && vm.end) {
+                        vm.markPath(
                             AStar.aStarAlgorithm(
-                                $scope.start,
-                                $scope.end,
-                                $scope.gridObj.grid,
-                                $scope.gridObj.tileSize
+                                vm.start,
+                                vm.end,
+                                vm.gridObj.grid,
+                                vm.gridObj.tileSize
                             )
                         );
                     }
                 };
 
-                $scope.selectStartNode = function (position) {
-                    $scope.gridObj.grid.forEach(function (row) {
+                vm.selectStartNode = function (position) {
+                    vm.gridObj.grid.forEach(function (row) {
                         row.forEach(function (node) {
                             if (node) {
                                 node.reset();
                                 if (node.specialSelect(position)) {
-                                    $scope.start = node;
+                                    vm.start = node;
                                 }
                             }
                         });
                     });
                 };
 
-                $scope.selectEndNode = function (position) {
-                    $scope.gridObj.grid.forEach(function (row) {
+                vm.selectEndNode = function (position) {
+                    vm.gridObj.grid.forEach(function (row) {
                         row.forEach(function (node) {
                             if (node && node.eligibleForSelect(position)) {
-                                $scope.end = node;
+                                vm.end = node;
                             }
                         });
                     });
-                    $scope.createPath();
+                    vm.createPath();
                 };
 
-                $scope.reset = function () {
-                    $scope.start = null;
-                    $scope.end = null;
+                vm.reset = function () {
+                    vm.start = null;
+                    vm.end = null;
 
-                    for (var row = 0; row < $scope.gridObj.grid.length; row++) {
-                        for (var column = 0; column < $scope.gridObj.grid[row].length; column++) {
-                            if ($scope.gridObj.grid[row][column]) {
-                                $scope.gridObj.grid[row][column].reset();
+                    for (var row = 0; row < vm.gridObj.grid.length; row++) {
+                        for (var column = 0; column < vm.gridObj.grid[row].length; column++) {
+                            if (vm.gridObj.grid[row][column]) {
+                                vm.gridObj.grid[row][column].reset();
                             }
                         }
                     }
                 };
 
-                $scope.handleTouchPosition = function (position) {
-                    if ($scope.start === null) {
-                        $scope.selectStartNode(position);
+                vm.handleTouchPosition = function (position) {
+                    if (vm.start === null) {
+                        vm.selectStartNode(position);
                     }
-                    else if ($scope.end === null) {
-                        $scope.selectEndNode(position);
+                    else if (vm.end === null) {
+                        vm.selectEndNode(position);
                     }
                     else {
-                        $scope.reset();
+                        vm.reset();
                     }
                 };
 
-                $scope.generateNode = function (numberOfColumns, numberOfRows, column, row, offset, curId) {
+                vm.generateNode = function (numberOfColumns, numberOfRows, column, row, offset, curId) {
                     var spawn = MathUtils.getRandomNumber(0, 1) <= 0.7;
                     return spawn ? new Node({
                         box: {
-                            x: column * $scope.gridObj.tileSize,
-                            y: row * $scope.gridObj.tileSize,
-                            width: $scope.gridObj.tileSize,
-                            height: $scope.gridObj.tileSize
+                            x: column * vm.gridObj.tileSize,
+                            y: row * vm.gridObj.tileSize,
+                            width: vm.gridObj.tileSize,
+                            height: vm.gridObj.tileSize
                         },
                         id: curId.toString(),
                         position: new Vector({
-                            x: column * $scope.gridObj.tileSize + offset,
-                            y: row * $scope.gridObj.tileSize + offset
+                            x: column * vm.gridObj.tileSize + offset,
+                            y: row * vm.gridObj.tileSize + offset
                         })
                     }) : null;
                 };
 
-                $scope.generateGridRow = function (numberOfColumns, numberOfRows, row, offset, curId) {
+                vm.generateGridRow = function (numberOfColumns, numberOfRows, row, offset, curId) {
                     var rowArray = [];
                     for (var column = 0; column < numberOfColumns; column++) {
-                        rowArray.push($scope.generateNode(
+                        rowArray.push(vm.generateNode(
                             numberOfColumns, numberOfRows,
                             column, row, offset, curId
                         ));
@@ -133,27 +134,27 @@
                     return rowArray;
                 };
 
-                $scope.generateGrid = function () {
+                vm.generateGrid = function () {
                     var curId = 0,
-                        offset = $scope.gridObj.tileSize,
-                        xDifference = $scope.box.width - $scope.gridObj.tileSize,
-                        yDifference = $scope.box.height - $scope.gridObj.tileSize,
-                        numberOfColumns = xDifference / $scope.gridObj.tileSize,
-                        numberOfRows = yDifference / $scope.gridObj.tileSize;
+                        offset = vm.gridObj.tileSize,
+                        xDifference = vm.box.width - vm.gridObj.tileSize,
+                        yDifference = vm.box.height - vm.gridObj.tileSize,
+                        numberOfColumns = xDifference / vm.gridObj.tileSize,
+                        numberOfRows = yDifference / vm.gridObj.tileSize;
 
-                    $scope.gridObj.grid = [];
+                    vm.gridObj.grid = [];
 
                     for (var row = 0; row < numberOfRows; row++) {
-                        $scope.gridObj.grid.push(
-                            $scope.generateGridRow(numberOfColumns, numberOfRows, row, offset, curId)
+                        vm.gridObj.grid.push(
+                            vm.generateGridRow(numberOfColumns, numberOfRows, row, offset, curId)
                         );
                         curId += numberOfColumns;
                     }
-                    GridService.fillGridNeighbors($scope.gridObj.grid, true);
+                    GridService.fillGridNeighbors(vm.gridObj.grid, true);
                 };
 
-                $scope.touch = function (event) {
-                    if ($scope.gridObj.grid.length === 0 || (event.type !== 'mouseup' && event.type !== 'touchend')) {
+                vm.touch = function (event) {
+                    if (vm.gridObj.grid.length === 0 || (event.type !== 'mouseup' && event.type !== 'touchend')) {
                         return;
                     }
                     var position = new Vector({
@@ -161,10 +162,10 @@
                         y: event.offsetY - 1
                     });
 
-                    $scope.handleTouchPosition(position);
+                    vm.handleTouchPosition(position);
                 };
 
-                $timeout($scope.generateGrid, 100);
+                $timeout(vm.generateGrid, 100);
             }])
 
         .config(['$stateProvider', function ($stateProvider) {
@@ -177,7 +178,8 @@
                     views: {
                         'main@': {
                             templateUrl: 'astarDemo.html',
-                            controller: 'AStarController'
+                            controller: 'AStarController',
+                            controllerAs: 'AStarCtrl'
                         }
                     }
                 });

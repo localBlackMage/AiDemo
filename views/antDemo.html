@@ -1,91 +1,60 @@
 <div class="app-antdemo">
     <div class="demo-screen">
-        <canvas-screen has-grid="t" grid-color="{{GRID_COLOR}}"
-                       bg-color="{{BACK_COLOR}}" height="500" width="1200"
-                       objects="environment" box="box" on-update="update()">
+        <canvas-screen has-grid="t" grid-color="{{antCtrl.GRID_COLOR}}"
+                       bg-color="{{antCtrl.BACK_COLOR}}" height="400" width="1200"
+                       objects="antCtrl.environment" box="antCtrl.box" on-update="antCtrl.update()">
         </canvas-screen>
     </div>
     <div class="information">
-        <!--<label>{{gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{entities.prey.length}}</label>-->
+        <!--<label>{{gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{entities..length}}</label>-->
         <!--<button class="btn-default" ng-click="toggleGameType()">Game Type: {{gameType}}!</button>-->
-        <button class="btn-default" ng-click="clear()">Clear!</button>
-        <button class="btn-default" ng-click="reset()">Start!</button>
+        <button class="btn-default" ng-click="antCtrl.clear()">Clear!</button>
+        <button class="btn-default" ng-click="antCtrl.reset()">Start!</button>
     </div>
     <div class="statistics">
-        <!--<div class="statistics-container" id="preyStats">-->
+        <div class="statistics-container" id="antStats">
             <!--<div class="stat">-->
-                <!--<label class="form-label">Prey Amount:</label>-->
+                <!--<label class="form-label">Ant Speed:</label>-->
                 <!--<input class="form-control"-->
-                       <!--type="number" id="preyAmount"-->
-                       <!--ng-model="preyAmount"-->
-                       <!--step="1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Prey Speed:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="preySpeed"-->
-                       <!--ng-model="preyStats.speed"-->
+                       <!--type="number" id="Speed"-->
+                       <!--ng-model="antStats.speed"-->
                        <!--step=".1" />-->
             <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Prey Cohesion:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="preyCohesion"-->
-                       <!--ng-model="preyStats.cohesionWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Prey Separation:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="preySeparation"-->
-                       <!--ng-model="preyStats.separateWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Prey Alignment:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="preyAlign"-->
-                       <!--ng-model="preyStats.alignWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-        <!--</div>-->
-
-        <!--<div class="statistics-container" id="predatorStats">-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Predator Amount:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="predatorAmount"-->
-                       <!--ng-model="predatorAmount"-->
-                       <!--step="1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Predator Speed:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="predatorSpeed"-->
-                       <!--ng-model="predatorStats.speed"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Predator Cohesion:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="predatorCohesion"-->
-                       <!--ng-model="predatorStats.cohesionWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Predator Separation:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="predatorSeparation"-->
-                       <!--ng-model="predatorStats.separateWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-            <!--<div class="stat">-->
-                <!--<label class="form-label">Predator Alignment:</label>-->
-                <!--<input class="form-control"-->
-                       <!--type="number" id="predatorAlign"-->
-                       <!--ng-model="predatorStats.alignWeight"-->
-                       <!--step=".1" />-->
-            <!--</div>-->
-        <!--</div>-->
+            <div class="stat">
+                <label class="form-label">Ant Cohesion:</label>
+                <input class="form-control"
+                       type="number" id="cohesion"
+                       ng-model="antCtrl.antStats.cohesionWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Ant Separation:</label>
+                <input class="form-control"
+                       type="number" id="separation"
+                       ng-model="antCtrl.antStats.separateWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Ant Alignment:</label>
+                <input class="form-control"
+                       type="number" id="align"
+                       ng-model="antCtrl.antStats.alignWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Ant Avoid:</label>
+                <input class="form-control"
+                       type="number" id="avoid"
+                       ng-model="antCtrl.antStats.avoidWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Ant Pheromone:</label>
+                <input class="form-control"
+                       type="number" id="pheromone"
+                       ng-model="antCtrl.antStats.pheromoneWeight"
+                       step=".01" />
+            </div>
+        </div>
     </div>
 </div>

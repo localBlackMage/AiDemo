@@ -3,7 +3,12 @@ describe("Ant Model", function () {
         defaultOptions;
 
     beforeEach(function () {
-        module('aidemo.service.utils', 'aidemo.service.mathUtils', 'aidemo.service.drawUtils', 'aidemo.models.vector', 'aidemo.models.ant');
+        module('aidemo.service.utils',
+            'aidemo.service.mathUtils',
+            'aidemo.service.drawUtils',
+            'aidemo.models.vector',
+            'aidemo.models.ants.ant',
+            'aidemo.models.ants.pheromone');
 
         inject(function (_Ant_, _Utils_, _MathUtils_, _DrawUtils_, _Vector_, _Pheromone_) {
             Ant = _Ant_;
@@ -33,7 +38,15 @@ describe("Ant Model", function () {
         expect(ant.position).toEqual(defaultOptions.position);
         expect(ant.velocity).toEqual(defaultOptions.velocity);
         expect(ant.speed).toEqual(defaultOptions.speed);
-        expect(ant.color).toEqual("#FF9D00");
+        //expect(ant.color).toEqual("#FF9D00");
+        expect(ant.color).toEqual("#000000");
+
+
+        expect(ant.hasFood).toBeFalsy();
+        expect(ant.steps).toBe(0);
+        expect(ant.stepsToNextPheromone).toBe(40.0);
+        expect(ant.id).toBe(123);
+        expect(ant.previousPosition).toEqual(ant.position);
 
         expect(ant.cohesionWeight).toEqual(defaultOptions.cohesionWeight);
         expect(ant.separateWeight).toEqual(defaultOptions.separateWeight);
@@ -45,13 +58,15 @@ describe("Ant Model", function () {
     it("should attempt to spawn a pheromone", function () {
         var ant = new Ant(defaultOptions);
 
-        var result = ant.attemptToSpawnPheromone(0);
+        ant.steps = 0;
+
+        var result = ant.attemptToSpawnPheromone();
 
         expect(result).toBe(null);
 
-        ant.currentTime = ant.timeToNextPheromone;
+        ant.steps = ant.stepsToNextPheromone;
 
-        result = ant.attemptToSpawnPheromone(0.1);
+        result = ant.attemptToSpawnPheromone();
 
         expect(result instanceof Pheromone).toBeTruthy();
         expect(result.position.x).toBe(ant.position.x);
@@ -80,10 +95,11 @@ describe("Ant Model", function () {
         expect(result).toBe(0.2);
     });
 
-    it("should retrieve a weight a pheromone when it has food", function () {
+    it("should retrieve a weight a pheromone when the ant has food", function () {
         var ant = new Ant(defaultOptions),
             pheromone = new Pheromone({
-                hasFood: false
+                hasFood: false,
+                id: -1
             });
 
         ant.hasFood = true;
@@ -91,6 +107,15 @@ describe("Ant Model", function () {
         var result = ant._getPheromoneWeight(pheromone);
 
         expect(result).toBe(0.2);
+
+
+
+        pheromone.id = ant.id;
+
+        result = ant._getPheromoneWeight(pheromone);
+
+        expect(result).toBe(1.0);
+
 
 
         pheromone.hasFood = true;
@@ -110,11 +135,14 @@ describe("Ant Model", function () {
             expect(p).toBe(pheromone);
             return 1.0;
         });
+        spyOn(pheromone, 'getAgeWeight').and.callFake(function () {
+            return 1.0;
+        });
 
         var result = ant._calculatePheromoneForceForTarget(pheromone);
 
-        expect(result.x).toEqual(1);
-        expect(result.y).toEqual(0);
+        expect(result.x).toBe(1);
+        expect(result.y).toBe(0);
     });
 
     it("should calculate force for pheromones", function () {
@@ -184,7 +212,7 @@ describe("Ant Model", function () {
         spyOn(MathUtils, 'getNearestObjects').and.callFake(function (array, obj, range) {
             expect(array).toBeDefined();
             expect(obj).toBe(ant);
-            expect(range).toBe(50.0);
+            expect(range).toBe(100.0);
 
             return [{}];
         });
@@ -224,6 +252,20 @@ describe("Ant Model", function () {
         expect(result.y).toBe(0);
     });
 
+    it("should update steps and return an updated position", function () {
+        var ant = new Ant(defaultOptions);
+
+        ant.previousPosition = ant.position;
+
+        var result = ant._updateStepsAndGetNewPosition(ant.velocity);
+
+        expect(ant.previousPosition.x).toBe(11);
+        expect(ant.previousPosition.y).toBe(10);
+        expect(ant.steps).toBe(1);
+        expect(result.x).toBe(11);
+        expect(result.y).toBe(10);
+    });
+
     it("should update", function () {
         var ant = new Ant(defaultOptions),
             updateParams = {
@@ -233,6 +275,10 @@ describe("Ant Model", function () {
         spyOn(ant, 'updateVelocity').and.callFake(function (params) {
             expect(params).toBe(updateParams);
             return new Vector({x: 1});
+        });
+        spyOn(ant, '_updateStepsAndGetNewPosition').and.callFake(function (vel) {
+            expect(vel).toBe(ant.velocity);
+            return new Vector({x: 11, y:10});
         });
         spyOn(ant, '_bounceOffWalls').and.callFake(function (box) {
             expect(box).toBe(updateParams.box);
@@ -249,5 +295,51 @@ describe("Ant Model", function () {
         expect(ant._bounceOffWalls).toHaveBeenCalled();
         expect(ant._keepInBounds).toHaveBeenCalled();
     });
-})
-;
+
+    it("should calculate it's head", function () {
+        var ant = new Ant(defaultOptions),
+            head = new Vector({x: ant.position.x + 4, y: ant.position.y});
+        ant.velocity = new Vector({x: 1, y: 0});
+
+        var result = ant._calcHead();
+
+        expect(result.x).toEqual(head.x);
+        expect(result.y).toEqual(head.y);
+    });
+
+    it("should calculate it's rear", function () {
+        var ant = new Ant(defaultOptions),
+            rear = new Vector({x: ant.position.x - 4, y: ant.position.y});
+        ant.velocity = new Vector({x: 1, y: 0});
+
+        var result = ant._calcRear();
+
+        expect(result.x).toEqual(rear.x);
+        expect(result.y).toEqual(rear.y);
+    });
+
+    it("should render itself", function () {
+        var ant = new Ant(defaultOptions),
+            context = document.createElement("canvas").getContext('2d');
+
+        spyOn(ant, '_calcHead').and.callFake(function(){
+            return ant.position;
+        });
+        spyOn(ant, '_calcRear').and.callFake(function(){
+            return ant.position;
+        });
+        spyOn(DrawUtils, 'drawCircle').and.callFake(function (ctx, x, y, radius, color) {
+            expect(ctx).toBe(context);
+            expect(x).toBe(ant.position.x);
+            expect(y).toBe(ant.position.y);
+            expect(radius).toBe(2.0);
+            expect(color).toBe(ant.color);
+        });
+
+        ant.render(context);
+
+        expect(ant._calcHead.calls.count()).toBe(1);
+        expect(ant._calcRear.calls.count()).toBe(1);
+        expect(DrawUtils.drawCircle.calls.count()).toBe(3);
+    });
+});

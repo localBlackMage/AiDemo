@@ -42,11 +42,11 @@
                     this.path = false;
                 };
 
-                Node.prototype.eligibleForSelect = function(position) {
+                Node.prototype.eligibleForSelect = function (position) {
                     //return this.selected && !this.special && this.specialSelect(position);
                     return !this.special && this.specialSelect(position);
                 };
-                
+
                 Node.prototype.select = function (position) {
                     var dist = this.position.subNew(position).length();
                     this.selected = dist <= this.RANGE;
@@ -77,14 +77,18 @@
                 };
 
                 Node.prototype.getColor = function () {
-                    if (this.special)
+                    if (this.special) {
                         return this.SPECIAL_COLOR;
-                    else if (this.path)
+                    }
+                    else if (this.path) {
                         return this.PATH_COLOR;
-                    else if (this.selected)
+                    }
+                    else if (this.selected) {
                         return this.SELECTED_COLOR;
-                    else
+                    }
+                    else {
                         return this.RENDER_COLOR;
+                    }
                 };
 
                 Node.prototype.render = function (ctx) {

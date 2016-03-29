@@ -1,13 +1,13 @@
 describe('A Star Controller', function () {
     'use strict';
 
-    var scope, timeout, AStar, GridService, MathUtils, Vector, Node, Queue;
+    var ctrl, timeout, AStar, GridService, MathUtils, Vector, Node, Queue;
 
     beforeEach(function () {
         module('aidemo.astar', 'aidemo.models.queue');
 
         inject(function ($controller, $rootScope, $timeout, _AStar_, _GridService_, _MathUtils_, _Vector_, _Node_, _Queue_, $injector) {
-            scope = $rootScope.$new();
+            ctrl = $rootScope.$new();
             timeout = $timeout;
             AStar = $injector.get('AStar');
             GridService = $injector.get('GridService');
@@ -16,8 +16,7 @@ describe('A Star Controller', function () {
             Node = _Node_;
             Queue = _Queue_;
 
-            $controller('AStarController', {
-                $scope: scope,
+            ctrl = $controller('AStarController', {
                 $timeout: timeout,
                 AStar: AStar,
                 GridService: GridService,
@@ -27,17 +26,17 @@ describe('A Star Controller', function () {
             });
         });
 
-        spyOn(scope, '$emit');
+        //spyOn(ctrl, '$emit');
     });
 
-    it("should have certain properties on the scope", function () {
-        expect(scope.BACK_COLOR).toBe("#555555");
-        expect(scope.GRID_COLOR).toBe("#8EAEC9");
-        expect(scope.gridObj.grid).toBeDefined();
-        expect(scope.gridObj.grid.length).toBe(0);
-        expect(scope.gridObj.tileSize).toBe(20);
-        expect(scope.start).toBe(null);
-        expect(scope.end).toBe(null);
+    it("should have certain properties on the ctrl", function () {
+        expect(ctrl.BACK_COLOR).toBe("#555555");
+        expect(ctrl.GRID_COLOR).toBe("#8EAEC9");
+        expect(ctrl.gridObj.grid).toBeDefined();
+        expect(ctrl.gridObj.grid.length).toBe(0);
+        expect(ctrl.gridObj.tileSize).toBe(20);
+        expect(ctrl.start).toBe(null);
+        expect(ctrl.end).toBe(null);
     });
 
 
@@ -48,19 +47,19 @@ describe('A Star Controller', function () {
         spyOn(node, 'pathSelect').and.callFake(function () {
         });
 
-        scope.gridObj.grid = null;
+        ctrl.gridObj.grid = null;
 
-        scope.findNodeInGridAndPathSelect({});
+        ctrl.findNodeInGridAndPathSelect({});
 
         expect(node.pathSelect).not.toHaveBeenCalled();
 
 
-        scope.gridObj.grid = [[{}]];
+        ctrl.gridObj.grid = [[{}]];
 
-        scope.findNodeInGridAndPathSelect(node);
+        ctrl.findNodeInGridAndPathSelect(node);
 
         expect(node.pathSelect).toHaveBeenCalled();
-        expect(scope.gridObj.grid[0][0]).toBe(node);
+        expect(ctrl.gridObj.grid[0][0]).toBe(node);
     });
 
     it("should mark nodes in a path", function () {
@@ -71,60 +70,60 @@ describe('A Star Controller', function () {
 
         spyOn(queue, 'isEmpty').and.callThrough();
         spyOn(queue, 'dequeue').and.callThrough();
-        spyOn(scope, 'findNodeInGridAndPathSelect').and.callFake(function (node) {
+        spyOn(ctrl, 'findNodeInGridAndPathSelect').and.callFake(function (node) {
         });
 
-        scope.markPath(null);
+        ctrl.markPath(null);
 
         expect(queue.isEmpty).not.toHaveBeenCalled();
         expect(queue.dequeue).not.toHaveBeenCalled();
-        expect(scope.findNodeInGridAndPathSelect).not.toHaveBeenCalled();
+        expect(ctrl.findNodeInGridAndPathSelect).not.toHaveBeenCalled();
 
-        scope.markPath(queue);
+        ctrl.markPath(queue);
 
         expect(queue.isEmpty).toHaveBeenCalled();
         expect(queue.dequeue).toHaveBeenCalled();
-        expect(scope.findNodeInGridAndPathSelect).toHaveBeenCalled();
+        expect(ctrl.findNodeInGridAndPathSelect).toHaveBeenCalled();
     });
 
     it("should create a path if there is a start and end node", function () {
         var aStarPath = [];
 
-        scope.start = null;
-        scope.end = null;
+        ctrl.start = null;
+        ctrl.end = null;
 
         spyOn(AStar, 'aStarAlgorithm').and.callFake(function (start, end, grid, dist) {
-            expect(start).toBe(scope.start);
-            expect(end).toBe(scope.end);
-            expect(grid).toBe(scope.gridObj.grid);
-            expect(dist).toBe(scope.gridObj.tileSize);
+            expect(start).toBe(ctrl.start);
+            expect(end).toBe(ctrl.end);
+            expect(grid).toBe(ctrl.gridObj.grid);
+            expect(dist).toBe(ctrl.gridObj.tileSize);
 
             return aStarPath;
         });
-        spyOn(scope, 'markPath').and.callFake(function (path) {
+        spyOn(ctrl, 'markPath').and.callFake(function (path) {
             expect(path).toBe(aStarPath);
         });
 
-        scope.createPath();
+        ctrl.createPath();
 
         expect(AStar.aStarAlgorithm).not.toHaveBeenCalled();
-        expect(scope.markPath).not.toHaveBeenCalled();
+        expect(ctrl.markPath).not.toHaveBeenCalled();
 
 
-        scope.start = new Node();
-        scope.end = new Node();
+        ctrl.start = new Node();
+        ctrl.end = new Node();
 
-        scope.createPath();
+        ctrl.createPath();
 
         expect(AStar.aStarAlgorithm).toHaveBeenCalled();
-        expect(scope.markPath).toHaveBeenCalled();
+        expect(ctrl.markPath).toHaveBeenCalled();
     });
 
     it("should select an eligible start node and highlight eligible end nodes", function () {
         var node1 = new Node(),
             node2 = new Node(),
             position = new Vector();
-        scope.gridObj.grid = [[null, node1, node2]];
+        ctrl.gridObj.grid = [[null, node1, node2]];
 
         spyOn(node1, 'specialSelect').and.callFake(function (pos) {
             expect(pos).toBe(position);
@@ -140,93 +139,93 @@ describe('A Star Controller', function () {
         spyOn(node2, 'reset').and.callFake(function () {
         });
 
-        scope.selectStartNode(position);
+        ctrl.selectStartNode(position);
 
         expect(node1.specialSelect.calls.count()).toBe(1);
         expect(node1.reset.calls.count()).toBe(1);
         expect(node2.specialSelect.calls.count()).toBe(1);
         expect(node2.reset.calls.count()).toBe(1);
-        expect(scope.start).toBe(node2);
+        expect(ctrl.start).toBe(node2);
     });
 
     it("should select an eligible end node and call createPath", function () {
         var node = new Node(),
             position = new Vector();
-        scope.gridObj.grid = [[null]];
+        ctrl.gridObj.grid = [[null]];
 
-        spyOn(scope, 'createPath').and.callFake(function () {
+        spyOn(ctrl, 'createPath').and.callFake(function () {
         });
         spyOn(node, 'eligibleForSelect').and.callFake(function (pos) {
             expect(pos).toBe(position);
             return true;
         });
 
-        scope.selectEndNode(position);
+        ctrl.selectEndNode(position);
 
-        expect(scope.createPath.calls.count()).toBe(1);
+        expect(ctrl.createPath.calls.count()).toBe(1);
 
 
-        scope.gridObj.grid = [[node]];
+        ctrl.gridObj.grid = [[node]];
 
-        scope.selectEndNode(position);
+        ctrl.selectEndNode(position);
 
-        expect(scope.createPath.calls.count()).toBe(2);
+        expect(ctrl.createPath.calls.count()).toBe(2);
         expect(node.eligibleForSelect.calls.count()).toBe(1);
-        expect(scope.end).toBe(node);
+        expect(ctrl.end).toBe(node);
     });
 
     it("should reset", function () {
         var node = new Node();
 
-        scope.start = {};
-        scope.end = {};
-        scope.gridObj.grid = [[node]];
+        ctrl.start = {};
+        ctrl.end = {};
+        ctrl.gridObj.grid = [[node]];
 
         spyOn(node, 'reset').and.callFake(function () {
         });
 
-        scope.reset();
+        ctrl.reset();
 
         expect(node.reset).toHaveBeenCalled();
-        expect(scope.start).toBe(null);
-        expect(scope.end).toBe(null);
+        expect(ctrl.start).toBe(null);
+        expect(ctrl.end).toBe(null);
     });
 
     it("should handle a touch position", function () {
         var position = new Vector();
 
-        spyOn(scope, 'selectStartNode').and.callFake(function (pos) {
+        spyOn(ctrl, 'selectStartNode').and.callFake(function (pos) {
             expect(pos).toBe(position);
         });
-        spyOn(scope, 'selectEndNode').and.callFake(function (pos) {
+        spyOn(ctrl, 'selectEndNode').and.callFake(function (pos) {
             expect(pos).toBe(position);
         });
-        spyOn(scope, 'reset').and.callFake(function () {
+        spyOn(ctrl, 'reset').and.callFake(function () {
         });
 
 
-        scope.start = null;
-        scope.handleTouchPosition(position);
+        ctrl.start = null;
+        ctrl.handleTouchPosition(position);
 
-        expect(scope.selectStartNode.calls.count()).toBe(1);
-        expect(scope.selectEndNode.calls.count()).toBe(0);
-        expect(scope.reset.calls.count()).toBe(0);
-
-
-        scope.start = {};
-        scope.handleTouchPosition(position);
-
-        expect(scope.selectStartNode.calls.count()).toBe(1);
-        expect(scope.selectEndNode.calls.count()).toBe(1);
-        expect(scope.reset.calls.count()).toBe(0);
+        expect(ctrl.selectStartNode.calls.count()).toBe(1);
+        expect(ctrl.selectEndNode.calls.count()).toBe(0);
+        expect(ctrl.reset.calls.count()).toBe(0);
 
 
-        scope.end = {};
-        scope.handleTouchPosition(position);
+        ctrl.start = {};
+        ctrl.handleTouchPosition(position);
 
-        expect(scope.selectStartNode.calls.count()).toBe(1);
-        expect(scope.selectEndNode.calls.count()).toBe(1);
-        expect(scope.reset.calls.count()).toBe(1);
+        expect(ctrl.selectStartNode.calls.count()).toBe(1);
+        expect(ctrl.selectEndNode.calls.count()).toBe(1);
+        expect(ctrl.reset.calls.count()).toBe(0);
+
+
+        ctrl.end = {};
+        ctrl.handleTouchPosition(position);
+
+        expect(ctrl.selectStartNode.calls.count()).toBe(1);
+        expect(ctrl.selectEndNode.calls.count()).toBe(1);
+        expect(ctrl.reset.calls.count()).toBe(1);
     });
 
     it("should generate a Node", function () {
@@ -237,8 +236,8 @@ describe('A Star Controller', function () {
             offset = 10,
             curId = 0;
 
-        scope.gridObj.tileSize = 10;
-        scope.box = {
+        ctrl.gridObj.tileSize = 10;
+        ctrl.box = {
             width: 20,
             height: 20
         };
@@ -247,7 +246,7 @@ describe('A Star Controller', function () {
             return 0;
         });
 
-        var result = scope.generateNode(numberOfColumns, numberOfRows, column, row, offset, curId);
+        var result = ctrl.generateNode(numberOfColumns, numberOfRows, column, row, offset, curId);
 
         expect(result.box.x).toBe(10);
         expect(result.box.y).toBe(0);
@@ -263,13 +262,13 @@ describe('A Star Controller', function () {
             offset = 10,
             curId = 0;
 
-        scope.gridObj.tileSize = 10;
-        scope.box = {
+        ctrl.gridObj.tileSize = 10;
+        ctrl.box = {
             width: 20,
             height: 20
         };
 
-        spyOn(scope, 'generateNode').and.callFake(function (numCols, numRows, curCol, curRow, off, currentId) {
+        spyOn(ctrl, 'generateNode').and.callFake(function (numCols, numRows, curCol, curRow, off, currentId) {
             expect(numCols).toBe(numberOfColumns);
             expect(numRows).toBe(numberOfRows);
             expect(curRow).toBe(row);
@@ -278,20 +277,20 @@ describe('A Star Controller', function () {
             return new Node();
         });
 
-        var result = scope.generateGridRow(numberOfColumns, numberOfRows, row, offset, curId);
+        var result = ctrl.generateGridRow(numberOfColumns, numberOfRows, row, offset, curId);
 
         expect(result.length).toBe(2);
-        expect(scope.generateNode.calls.count()).toBe(2);
+        expect(ctrl.generateNode.calls.count()).toBe(2);
     });
 
     it("should generate a grid of Nodes", function () {
-        scope.gridObj.tileSize = 10;
-        scope.box = {
+        ctrl.gridObj.tileSize = 10;
+        ctrl.box = {
             width: 20,
             height: 20
         };
 
-        spyOn(scope, 'generateGridRow').and.callFake(function (cols, rows, rowNum, offset, curId) {
+        spyOn(ctrl, 'generateGridRow').and.callFake(function (cols, rows, rowNum, offset, curId) {
             expect(cols).toBe(1);
             expect(rows).toBe(1);
             expect(rowNum).toBe(0);
@@ -300,15 +299,15 @@ describe('A Star Controller', function () {
             return [new Node()];
         });
         spyOn(GridService, 'fillGridNeighbors').and.callFake(function (grid, noDiagonal) {
-            expect(grid).toBe(scope.gridObj.grid);
+            expect(grid).toBe(ctrl.gridObj.grid);
             expect(noDiagonal).toBeTruthy();
         });
 
-        scope.generateGrid();
+        ctrl.generateGrid();
 
-        expect(scope.gridObj.grid.length).toBe(1);
-        expect(scope.gridObj.grid[0].length).toBe(1);
-        expect(scope.generateGridRow.calls.count()).toBe(1);
+        expect(ctrl.gridObj.grid.length).toBe(1);
+        expect(ctrl.gridObj.grid[0].length).toBe(1);
+        expect(ctrl.generateGridRow.calls.count()).toBe(1);
         expect(GridService.fillGridNeighbors).toHaveBeenCalled();
     });
 
@@ -319,22 +318,22 @@ describe('A Star Controller', function () {
             type: ''
         };
 
-        scope.gridObj.grid = [];
+        ctrl.gridObj.grid = [];
 
-        spyOn(scope, 'handleTouchPosition').and.callFake(function (position) {
+        spyOn(ctrl, 'handleTouchPosition').and.callFake(function (position) {
             expect(position.x).toBe(0);
             expect(position.y).toBe(0);
         });
 
-        scope.touch(event);
+        ctrl.touch(event);
 
-        expect(scope.handleTouchPosition).not.toHaveBeenCalled();
+        expect(ctrl.handleTouchPosition).not.toHaveBeenCalled();
 
 
-        scope.gridObj.grid = [[]];
+        ctrl.gridObj.grid = [[]];
         event.type = 'mouseup';
 
-        scope.touch(event);
-        expect(scope.handleTouchPosition).toHaveBeenCalled();
+        ctrl.touch(event);
+        expect(ctrl.handleTouchPosition).toHaveBeenCalled();
     });
 });

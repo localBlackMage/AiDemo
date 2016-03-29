@@ -40,10 +40,10 @@
                     return grid;
                 };
 
-                service.deepCopyGrid = function (grid, gridObjectType, noDiagonal) {
-                    if (!_.isFunction(gridObjectType)) {
+                service.deepCopyGrid = function (grid, GridObjectType, noDiagonal) {
+                    if (!_.isFunction(GridObjectType)) {
                         $log.error("gridObjectType MUST be a function!");
-                        $log.log(gridObjectType);
+                        $log.log(GridObjectType);
                         return;
                     }
                     noDiagonal = _.isBoolean(noDiagonal) ? noDiagonal : false;
@@ -52,7 +52,7 @@
                         var currentRow = [];
                         row.forEach(function(node){
                             if (node) {
-                                currentRow.push(new gridObjectType({
+                                currentRow.push(new GridObjectType({
                                     box: node.box,
                                     status: node.status
                                 }));

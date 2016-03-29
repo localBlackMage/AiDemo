@@ -14,7 +14,7 @@
                     this.status = params.status === this.DEAD || params.status === this.ALIVE ? params.status : this.DEAD;
                     this.DEAD_COLOR = params.DEAD_COLOR || this.DEAD_COLOR;
                     this.ALIVE_COLOR = params.ALIVE_COLOR || this.ALIVE_COLOR;
-                    this.color = this.status == this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
+                    this.color = this.status === this.DEAD ? this.DEAD_COLOR : this.ALIVE_COLOR;
                 }
 
                 LifeCell.prototype.DEAD_COLOR = "#222222";

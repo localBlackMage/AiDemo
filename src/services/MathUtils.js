@@ -63,14 +63,6 @@
                         return self._isDistanceWithinTolerance(originObject, otherObject, tolerance) ? array.concat(otherObject) : array;
                     }, []);
                 };
-
-                //return {
-                //    _isDistanceWithinTolerance: _isDistanceWithinTolerance,
-                //    _isSameObject: _isSameObject,
-                //
-                //    getRandomNumber: getRandomNumber,
-                //    getNearestObjects: getNearestObjects
-                //};
             }
         ]);
 })(angular);

@@ -18,6 +18,10 @@
                     return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
                 };
 
+                Vector.prototype.magnitude = function() {
+                    return this.length();
+                };
+
                 Vector.prototype.normalize = function (scalar) {
                     scalar = scalar || 1;
                     var length = this.length();
