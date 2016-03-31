@@ -20,6 +20,7 @@ module.exports = function (config) {
             DIST_ROOT + 'templates/aidemo-templates.js',
 
             SCRIPT_ROOT + 'services/*.js',
+            SCRIPT_ROOT + 'models/*.js',
             SCRIPT_ROOT + 'models/**/*.js',
             SCRIPT_ROOT + 'directives/**/*.js',
             //SCRIPT_ROOT + 'controllers/*.js',
@@ -61,7 +62,8 @@ module.exports = function (config) {
         // list of files / patterns to exclude
         exclude: [
             SCRIPT_ROOT + 'models/Neuron.js',
-            TEST_ROOT + 'neuronSpec.js'
+            //TEST_ROOT + 'antCtrl.spec.js',
+            TEST_ROOT + 'neuron.spec.js'
         ],
 
         // test results reporter to use

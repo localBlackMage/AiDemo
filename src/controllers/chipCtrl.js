@@ -6,12 +6,13 @@
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
         'aidemo.models.vector',
+        'aidemo.models.chip.globals',
         'aidemo.models.chip.player',
         'aidemo.models.chip.item',
         'aidemo.models.chip.tile'
     ])
-        .controller("ChipController", ['MathUtils', 'DrawUtils', 'Vector', 'Player', 'Item', 'Tile',
-            function (MathUtils, DrawUtils, Vector, Player, Item, Tile) {
+        .controller("ChipController", ['MathUtils', 'DrawUtils', 'Vector', 'Globals', 'Player', 'Item', 'Tile',
+            function (MathUtils, DrawUtils, Vector, Globals, Player, Item, Tile) {
                 var vm = this;
                 vm.BACK_COLOR = "#555555";
                 vm.GRID_COLOR = "#8EAEC9";
@@ -189,15 +190,19 @@
                 });
 
                 vm.handleKeyPress = function (keyEvent) {
-                    if (vm.player.getStatus() === ALIVE) {
-                        if (keyEvent === 's')
-                            vm.moveAll(DOWN);
-                        else if (keyEvent === 'a')
-                            vm.moveAll(LEFT);
-                        else if (keyEvent === 'w')
-                            vm.moveAll(UP);
-                        else if (keyEvent === 'd')
-                            vm.moveAll(RIGHT);
+                    if (vm.player.getStatus() === Globals.ALIVE) {
+                        if (keyEvent === 's'){
+                            vm.moveAll(Globals.DOWN);
+                        }
+                        else if (keyEvent === 'a'){
+                            vm.moveAll(Globals.LEFT);
+                        }
+                        else if (keyEvent === 'w'){
+                            vm.moveAll(Globals.UP);
+                        }
+                        else if (keyEvent === 'd') {
+                            vm.moveAll(Globals.RIGHT);
+                        }
 
                         // DEBUG KEYS
                         if (keyEvent === 'p') {
@@ -207,12 +212,12 @@
                 };
 
                 vm.moveAll = function (direction) {
-                    var dirIndex = direction.divNew(64).addNew(vm.player.getIndex()),
+                    var dirIndex = direction.divNew(64).addNew(vm.player.getTileIndex()),
                         dirTile = vm.world.grid[dirIndex.y][dirIndex.x];
 
                     if (handleObstacle(dirTile, direction)) {
                         vm.player.move(direction);
-                        vm.moveWorld(direction.mulnew -1));
+                        vm.moveWorld(direction.mulNew(-1));
 
                         vm.grabMicrochip(dirTile);
 
@@ -230,7 +235,7 @@
 
                 vm.grabMicrochip = function (tile) {
                     var item = tile.getItem();
-                    if (item !== null && item.getType() === MICROCHIP) {
+                    if (item !== null && item.getType() === Item.MICRO_CHIP) {
                         vm.gameStats.chipsRemaining--;
                     }
                 };

@@ -2,21 +2,32 @@
     'use strict';
 
     ng.module('aidemo.models.chip.tile', [
-        'aidemo.service.drawUtils'
+        'aidemo.service.utils',
+        'aidemo.service.drawUtils',
+        'aidemo.models.vector'
     ])
-        .factory('Tile', ['DrawUtils'], function (DrawUtils) {
+        .factory('Tile', ['Utils', 'DrawUtils', 'Vector'],
+        function (Utils, DrawUtils, Vector) {
 
-
+            /**
+             * Class that represents the tiles in the world the player can interact with and move on
+             * @param params - Object with options, MUST HAVE A 'type' PROPERTY
+             * @constructor
+             */
             function Tile(params) {
                 params = params || {};
 
-                this.type = params.type ? params.type : this.params.type;
-                this.worldPos = params.worldPos ? params.worldPos : this.params.worldPos;
-                this.screenPos = params.screenPos ? params.screenPos : this.params.screenPos;
-                this.image = this.createImage(this.type);
-                this.item = params.item ? params.item : this.params.item;
-                this.obstacle = params.obstacle ? params.obstacle : this.params.obstacle;
-                this.neighbors = params.neighbors ? params.neighbors : this.params.neighbors;
+                if (!params.type) {
+                    throw new Error("ERROR INSTANTIATING TILE");
+                }
+
+                this.type = params.type;
+                this.worldPos = params.worldPos ? params.worldPos : new Vector();
+                this.screenPos = params.screenPos ? params.screenPos : new Vector();
+                this.image = Utils.generateImageFromURLObject(Tile.TILE_IMAGES, this.type);
+                this.item = params.item ? params.item : null;
+                this.obstacle = params.obstacle ? params.obstacle : null;
+                this.neighbors = params.neighbors ? params.neighbors : [];
             }
 
             var tileRoot = "images/chipsChallenge/tiles/";
@@ -64,12 +75,6 @@
 
             Tile.prototype.fillNeighbors = function (neighbors) {
                 this.neighbors = neighbors ? neighbors : [];
-            };
-
-            Tile.prototype.createImage = function (type) {
-                var image = new Image();
-                image.src = Tile.TILE_IMAGES[type];
-                return image;
             };
 
             Tile.prototype.move = function (dir) {

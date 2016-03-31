@@ -2,7 +2,7 @@ describe("Neuron Tests", function () {
     beforeEach(module("DemoApp"));
 
     it("should instantiate properly", function () {
-        var neuron = New (Neuron, {});
+        var neuron = new Neuron();
 
         expect(neuron.constructor).toBeDefined();
     });

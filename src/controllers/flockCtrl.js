@@ -48,17 +48,40 @@
                     }
                 };
 
-                $scope.$watch('preyStats', function (newVal, oldVal) {
-                    if (newVal !== oldVal) {
-                        vm.updateStats(newVal, 'prey');
+                //$scope.$watch('vm.preyStats', function (newVal, oldVal) {
+                //    if (newVal !== oldVal) {
+                //        vm.updateStats(newVal, 'prey');
+                //    }
+                //}, true);
+                $scope.$watch(
+                    function watchPreyStats( scope ) {
+                        // Return the "result" of the watch expression.
+                        return( vm.preyStats );
+                    },
+                    function handlePreyStatsChange( newValue, oldValue ) {
+                        if (newValue !== oldValue) {
+                            vm.updateStats(newValue, 'prey');
+                        }
                     }
-                }, true);
+                );
 
-                $scope.$watch('predatorStats', function (newVal, oldVal) {
-                    if (newVal !== oldVal) {
-                        vm.updateStats(newVal, 'predators');
+
+                //$scope.$watch('vm.predatorStats', function (newVal, oldVal) {
+                //    if (newVal !== oldVal) {
+                //        vm.updateStats(newVal, 'predators');
+                //    }
+                //}, true);
+                $scope.$watch(
+                    function watchPredatorStats( scope ) {
+                        // Return the "result" of the watch expression.
+                        return( vm.preyStats );
+                    },
+                    function handlePredatorStatsChange( newValue, oldValue ) {
+                        if (newValue !== oldValue) {
+                            vm.updateStats(newValue, 'predators');
+                        }
                     }
-                }, true);
+                );
 
                 /**
                  * Changes gameType from WOLVES to ZOMBIES or vice versa

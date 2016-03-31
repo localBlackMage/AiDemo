@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp'),
     less = require('gulp-less'),
     jshint = require('gulp-jshint'),
@@ -49,11 +51,11 @@ var styles = [LESS_ROOT + '**/*.less'],
 /**
  * Run test once and exit
  */
-gulp.task('test', ['appscripts'], function(done) {
+gulp.task('test', ['appscripts'], function (done) {
     Server.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
-    }, function(exitCode, error) {
+    }, function(exitCode) {
         done();
         if (exitCode !== 0) {
             console.log('Karma has exited with ' + exitCode);
@@ -97,9 +99,9 @@ gulp.task('appscripts', ['lint'], function () {
     return gulp.src(scripts)
         .pipe(concat('aidemo.js'))
         .pipe(gulp.dest(DIST_ROOT));
-        //.pipe(rename('aidemo.min.js'))
-        //.pipe(uglify())
-        //.pipe(gulp.dest(DIST_ROOT));
+    //.pipe(rename('aidemo.min.js'))
+    //.pipe(uglify())
+    //.pipe(gulp.dest(DIST_ROOT));
 });
 
 gulp.task('templates', function () {

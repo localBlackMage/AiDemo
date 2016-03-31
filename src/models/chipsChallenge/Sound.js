@@ -4,14 +4,18 @@
     ng.module('aidemo.models.chip.sound', [])
         .factory('Sound', [], function () {
 
-
+            /**
+             * Class that loads a mp3 file and stores it for play later
+             * @param params - Object with params, MUST HAVE A 'soundFile' PROPERTY
+             * @constructor
+             */
             function Sound(params) {
                 params = params || {};
 
-                this.soundFile = params.soundFile ? params.soundFile : null;
-                if (this.soundFile === null) {
-                    return "ERROR INSTANTIATING SOUND";
+                if (!params.soundFile) {
+                    throw new Error("ERROR INSTANTIATING SOUND");
                 }
+                this.soundFile = params.soundFile ? params.soundFile : null;
 
                 this.audioElement = document.createElement("audio");
                 this.audioElement.preload = "auto";
@@ -23,13 +27,20 @@
                 this.audioElement.volume = 1.0;
             }
 
+            /**
+             * A collection of sound URLs related to Item type
+             */
             var soundRoot = "sounds/";
             Sound.SOUNDS = {
                 DEATH: soundRoot + "death"
             };
 
+            /**
+             * Given a time, sets the audioElement's current time then calls play
+             * @param when - Number
+             */
             Sound.prototype.play = function (when) {
-                this.audioElement.currentTime = when !== null ? when : 0.01;
+                this.audioElement.currentTime = _.isNumber(when) ? when : 0.01;
 
 //        setTimeout(function(){
                 this.audioElement.play();

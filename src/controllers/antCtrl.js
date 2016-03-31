@@ -95,7 +95,7 @@
                     return food.length > 0 ? vm.environment.food.indexOf(food[0]) : null;
                 };
 
-                vm.antTouchedFood = function(foodIndex) {
+                vm.antTouchedFood = function (foodIndex) {
                     if (_.isNumber(foodIndex)) {
                         if (vm.environment.food[foodIndex].takeBite()) {
                             // Remove the food from the environment
@@ -111,7 +111,7 @@
                     return nest.length > 0 ? nest[0] : null;
                 };
 
-                vm.antTouchedNest = function(nest, ant){
+                vm.antTouchedNest = function (nest, ant) {
                     if (nest && ant.hasFood) {
                         vm.environment.nest.addFood();
                         return false;
@@ -133,22 +133,24 @@
                 vm.updateAnts = function (delta) {
                     var pheromonesToAdd = [];
                     for (var idx in vm.environment.ants) {
-                        vm.environment.ants[idx].update({
-                            box: vm.box,
-                            ants: vm.environment.ants,
-                            food: vm.environment.food,
-                            pheromones: vm.environment.pheromones,
-                            nest: vm.environment.nest
-                        });
+                        if (vm.environment.ants[idx]) {
+                            vm.environment.ants[idx].update({
+                                box: vm.box,
+                                ants: vm.environment.ants,
+                                food: vm.environment.food,
+                                pheromones: vm.environment.pheromones,
+                                nest: vm.environment.nest
+                            });
 
-                        var pheromone = vm.environment.ants[idx].attemptToSpawnPheromone(delta);
-                        vm.addPheromoneToEnvironment(pheromone);
+                            var pheromone = vm.environment.ants[idx].attemptToSpawnPheromone(delta);
+                            vm.addPheromoneToEnvironment(pheromone);
 
-                        vm.environment.ants[idx].hasFood = vm.antTouchedEnvironment(vm.environment.ants[idx]);
+                            vm.environment.ants[idx].hasFood = vm.antTouchedEnvironment(vm.environment.ants[idx]);
+                        }
                     }
 
                     pheromonesToAdd.forEach(function (pheromone) {
-                        vm.spawnPheromone(pheromone);
+                        //vm.spawnPheromone(pheromone);
                     });
                 };
 
@@ -191,7 +193,7 @@
                         'main@': {
                             templateUrl: 'antDemo.html',
                             controller: 'AntController',
-                            controllerAs: 'antCtrl',
+                            controllerAs: 'antCtrl'
                         }
                     }
                 });

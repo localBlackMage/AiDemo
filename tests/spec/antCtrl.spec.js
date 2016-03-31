@@ -174,7 +174,8 @@ describe('Ant Controller', function () {
     });
 
     it("should update all ants", function() {
-        var ants = [new Ant()];
+        var ants = [new Ant()],
+            delta = 0.1;
 
         ctrl.environment.ants = ants;
         ctrl.environment.food = [{}];
@@ -188,10 +189,18 @@ describe('Ant Controller', function () {
             expect(params.pheromones).toBe(ctrl.environment.pheromones);
             expect(params.nest).toBe(ctrl.environment.nest);
         });
+        spyOn(ants[0], 'attemptToSpawnPheromone').and.callFake(function (d) {
+            expect(d).toBe(delta);
+        });
+        spyOn(ctrl, 'antTouchedEnvironment').and.callFake(function(ant) {
+            expect(ant).toBe(ants[0]);
+        });
 
-        ctrl.updateAnts();
+        ctrl.updateAnts(delta);
 
         expect(ants[0].update).toHaveBeenCalled();
+        expect(ants[0].attemptToSpawnPheromone).toHaveBeenCalled();
+        expect(ctrl.antTouchedEnvironment).toHaveBeenCalled();
     });
     
     it("should update", function () {

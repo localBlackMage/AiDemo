@@ -11,9 +11,16 @@
                     return parseInt(obj, 10) > min || _.isNaN(parseInt(obj, 10));
                 };
 
+                var generateImageFromURLObject = function (urlObject, which) {
+                    var image = new Image();
+                    image.src = urlObject[which];
+                    return image;
+                };
+
                 return {
                     isNullOrUndefined: isNullOrUndefined,
-                    isGreaterThanOrNaN: isGreaterThanOrNaN
+                    isGreaterThanOrNaN: isGreaterThanOrNaN,
+                    generateImageFromURLObject: generateImageFromURLObject
                 };
             }
         ]);

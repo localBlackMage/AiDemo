@@ -61,6 +61,25 @@
                     ctx.fillStyle = c;
                     ctx.fillText(s, x, y);
                 };
+                service.drawImage = function (ctx, x, y, img) {
+                    ctx.drawImage(img, x, y);
+                };
+                /**
+                 * Draws a sprite from a sprite sheet
+                 * @param ctx - Canvas element's context property
+                 * @param img - Image, spriteSheet
+                 * @param sX - x offset into the spriteSheet
+                 * @param sY - y offset into the spriteSheet
+                 * @param sW - width of the sprite
+                 * @param sH - height of the sprite
+                 * @param dX - x coordinate to draw the sprite at
+                 * @param dY - y coordinate to draw the sprite at
+                 * @param dW - width to draw the sprite at
+                 * @param dH - height to draw the sprite at
+                 */
+                service.drawSprite = function (ctx, img, sX, sY, sW, sH, dX, dY, dW, dH) {
+                    ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH);
+                };
                 service.getColorValueForHex = function(value) {
                     value = !_.isNumber(value) && value ? value.toUpperCase() : value;
                     var hexColors = {

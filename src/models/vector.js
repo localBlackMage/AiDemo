@@ -6,26 +6,35 @@
             function () {
                 function Vector(params) {
                     params = params || {};
-                    this.x = params.x || 0;
-                    this.y = params.y || 0;
+                    this.x = _.isNumber(params.x) ? params.x : 0;
+                    this.y = _.isNumber(params.y) ? params.y : 0;
                 }
 
                 Vector.build = function (data) {
                     return new Vector(data);
                 };
 
+                Vector.prototype.compare = function (other) {
+                    return this.x === other.x && this.y === other.y;
+                };
+
                 Vector.prototype.length = function () {
                     return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
                 };
 
-                Vector.prototype.magnitude = function() {
+                Vector.prototype.magnitude = function () {
                     return this.length();
                 };
 
                 Vector.prototype.normalize = function (scalar) {
                     scalar = scalar || 1;
                     var length = this.length();
-                    return new Vector({x: (this.x / length) * scalar, y: (this.y / length) * scalar});
+                    if (length === 0) {
+                        return this;
+                    }
+                    else {
+                        return new Vector({x: (this.x / length) * scalar, y: (this.y / length) * scalar});
+                    }
                 };
 
                 Vector.prototype.addNew = function (other) {
