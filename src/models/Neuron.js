@@ -1,20 +1,14 @@
+(function (ng) {
+    'use strict';
 
-var Neuron = {
-    options: {
+    ng.module('aidemo.models.neuron', [])
+        .factory('Neuron', [
+            function () {
+                function Neuron(params) {
+                    params = params || {};
+                }
 
-    },
-
-    constructor: function (options) {
-
-        return this;
-    },
-
-
-    update: function () {
-
-    },
-
-    render: function () {
-
-    }
-};
+                return Neuron;
+            }
+        ]);
+})(angular);

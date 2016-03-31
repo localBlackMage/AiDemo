@@ -1,217 +1,263 @@
-var PREY = "prey", PREDATOR = "pred", EXC_COLOR = "#FF0";
-var Entity = {
-    pos: null,
-    radius: 0, color: "",
-    vel: null,
-    nose: New(Vector, {}),
-    speed: 0,
-    cohW: 0, sepW: 0, aliW: 0, avoW: 0, wanW: 0,
-    type: "",
-    exc: false,
-    options: {
-        pos: New(Vector, {}),
-        radius: 5, color: "#FFF",
-        vel: New(Vector, {}),
-        speed: 3,
-        cohW: 0.0, sepW: 0.0, aliW: 0.0, avoW: 0.0, wanW: 0.5,
-        type: PREY
-    },
+(function (ng) {
+    'use strict';
 
-    constructor: function (options) {
-        this.pos = IsNotNullOrUndefined(options.pos) ? options.pos : this.options.pos;
-        this.vel = IsNotNullOrUndefined(options.vel) ? options.vel : this.options.vel;
+    ng.module('aidemo.models.flockEntity', [
+        'aidemo.service.utils',
+        'aidemo.service.mathUtils',
+        'aidemo.service.drawUtils',
+        'aidemo.models.vector'
+    ])
+        .factory('FlockEntity', ['Utils', 'DrawUtils', 'MathUtils', 'Vector',
+            function (Utils, DrawUtils, MathUtils, Vector) {
 
-        this.radius = IsNotNullOrUndefined(options.radius) ? options.radius : this.options.radius;
-        this.color = IsNotNullOrUndefined(options.color) ? options.color : this.options.color;
-        this.speed = IsNotNullOrUndefined(options.speed) ? options.speed : this.options.speed;
+                function FlockEntity(params) {
+                    params = params || {};
 
-        this.cohW = IsNotNullOrUndefined(options.cohW) ? options.cohW : this.options.cohW;
-        this.sepW = IsNotNullOrUndefined(options.sepW) ? options.sepW : this.options.sepW;
-        this.aliW = IsNotNullOrUndefined(options.aliW) ? options.aliW : this.options.aliW;
-        this.avoW = IsNotNullOrUndefined(options.avoW) ? options.avoW : this.options.avoW;
-        this.wanW = IsNotNullOrUndefined(options.wanW) ? options.wanW : this.options.wanW;
+                    // Basic statistics for this entity
+                    this.position = params.position || new Vector();
+                    this.velocity = params.velocity || new Vector();
+                    this.speed = _.isNumber(params.speed) ? params.speed : 3;
 
-        this.type = IsNotNullOrUndefined(options.type) ? options.type : this.options.type;
-        return this;
-    },
+                    // Characteristics about this entity
+                    this.radius = _.isNumber(params.radius) ? params.radius : 5;
+                    this.type = _.isString(params.type) ? params.type : FlockEntity.PREY;
+                    this.color = this.type === FlockEntity.PREY ? DrawUtils.getRandomGreen('D') : DrawUtils.getRandomRed('D');
+                    this.renderExclamation = false;
 
-    cohesion: function (herd) {
-        var target = New(Vector, {});
-        herd.forEach(function (other) {
-            target.add(other.pos);
-        });
+                    // This entity's weight factors
+                    this.cohesionWeight = _.isNumber(params.cohesionWeight) ? params.cohesionWeight : 0.0;
+                    this.separateWeight = _.isNumber(params.separateWeight) ? params.separateWeight : 0.0;
+                    this.alignWeight = _.isNumber(params.alignWeight) ? params.alignWeight : 0.0;
+                    this.avoidWeight = _.isNumber(params.avoidWeight) ? params.avoidWeight : 0.0;
+                }
 
-        if (target.length() !== 0) {
-            return target.divNew(herd.length).subNew(this.pos).normalize(1);
-        }
-        else {
-            return target;
-        }
-    },
+                FlockEntity.PREY = 'Prey';
+                FlockEntity.PREDATOR = 'Predator';
+                FlockEntity.EXCLAMATION_COLOR = '#FFFF00';
 
-    separation: function (herd) {
-        var target = New(Vector, {});
-        herd.forEach(function (other) {
-            target.add(other.pos);
-        });
+                FlockEntity.prototype.updateStats = function (params) {
+                    params = params || {};
 
-        if (target.length() !== 0) {
-            return target.divNew(herd.length).subNew(this.pos).normalize(1).mulNew(-1);
-        }
-        else {
-            return target;
-        }
-    },
+                    // Basic statistics for this entity
+                    this.position = params.position || this.position;
+                    this.velocity = params.velocity || this.velocity;
+                    this.speed = _.isNumber(params.speed) ? params.speed : this.speed;
 
-    alignment: function (herd) {
-        var target = New(Vector, {});
-        herd.forEach(function (other) {
-            target.add(other.vel);
-        });
+                    // Characteristics about this entity
+                    this.radius = _.isNumber(params.radius) ? params.radius : this.radius;
+                    this.type = _.isString(params.type) ? params.type : this.type;
+                    this.color = this.type === FlockEntity.PREY ? DrawUtils.getRandomGreen('D') : DrawUtils.getRandomRed('D');
 
-        if (target.length() !== 0) {
-            return target.divNew(herd.length).normalize(1);
-        }
-        else {
-            return target;
-        }
-    },
+                    // This entity's weight factors
+                    this.cohesionWeight = _.isNumber(params.cohesionWeight) ? params.cohesionWeight : this.cohesionWeight;
+                    this.separateWeight = _.isNumber(params.separateWeight) ? params.separateWeight : this.separateWeight;
+                    this.alignWeight = _.isNumber(params.alignWeight) ? params.alignWeight : this.alignWeight;
+                    this.avoidWeight = _.isNumber(params.avoidWeight) ? params.avoidWeight : this.avoidWeight;
+                };
 
-    wander: function () {
-        var angle = MathUtils.vectorToAngle(this.vel) + MathUtils.getRand(-0.5,0.5);
-        return MathUtils.angleToVector(angle).normalize(1);
-    },
+                FlockEntity.prototype.calculateCohesion = function (objects) {
+                    if (objects.length === 0) {
+                        return new Vector();
+                    }
 
-    avoidWalls: function(box) {
-        var target = New(Vector, {});
-        if (this.pos.x < 50) {
-            target.x = 1;
-        }
-        else if (this.pos.x > box.width - 50) {
-            target.x = -1;
-        }
+                    var cohesionVector = new Vector();
 
-        if (this.pos.y < 50) {
-            target.y = 1;
-        }
-        else if (this.pos.y > box.height - 50) {
-            target.y = -1;
-        }
-        return target;
-    },
+                    objects.forEach(function (other) {
+                        cohesionVector.add(other.position);
+                    });
 
-    avoidPredators: function(pred) {
-        var target = New(Vector, {});
-        pred.forEach(function (other) {
-            target.add(other.pos);
-        });
-        if (target.length() !== 0) {
-            return target.divNew(pred.length).subNew(this.pos).normalize(1).mulNew(-1);
-        }
-        else {
-            return target;
-        }
-    },
+                    return cohesionVector
+                        .divNew(objects.length)
+                        .subNew(this.position)
+                        .normalize();
+                };
 
-    updatePrey: function(options) {
-        var coh = New(Vector, {}), sep = New(Vector, {}),
-            ali = New(Vector, {}), avo = New(Vector, {}),
-            wan = New(Vector, {}), wal = New(Vector, {});
-        avo = this.avoidPredators(options.pred).mulNew(this.avoW);
-        if (avo.length() > 0){
-            this.exc = true;
-            this.vel.add(avo);
-        }
-        else {
-            this.exc = false;
-            coh = this.cohesion(options.herd).mulNew(this.cohW);
-            sep = this.separation(options.herd).mulNew(this.sepW);
-            ali = this.alignment(options.herd).mulNew(this.aliW);
-            wan = this.wander().mulNew(this.wanW);
-            wal = this.avoidWalls(options.box).mulNew(0.5);
+                /**
+                 *
+                 * @param target - Entity with a position field
+                 * @returns Vector
+                 * @private
+                 */
+                FlockEntity.prototype._calculateSeparationForceForTarget = function (target) {
+                    return this.position
+                        .subNew(target.position)
+                        .normalize();
+                };
 
-            var total = coh.addNew(sep).addNew(ali).addNew(wan).addNew(wal);
-            this.vel.add(total);
-        }
-    },
+                /**
+                 * Given an array of objects, calculates the separation force for the whole, normalizes the result,
+                 * and returns it
+                 * @param objects - Array of entities with a position field
+                 */
+                FlockEntity.prototype.calculateSeparation = function (objects) {
+                    var self = this,
+                        separationVector = new Vector();
 
-    updatePredator: function(options) {
-        var coh = New(Vector, {}), sep = New(Vector, {}),
-            ali = New(Vector, {}), wan = New(Vector, {}),
-            wal = New(Vector, {});
+                    objects.forEach(function (other) {
+                        separationVector.add(self._calculateSeparationForceForTarget(other));
+                    });
 
-        coh = this.cohesion(options.herd).mulNew(this.cohW);
-        sep = this.separation(options.pred).mulNew(this.sepW);
-        ali = this.alignment(options.pred).mulNew(this.aliW);
-        wan = this.wander().mulNew(this.wanW);
-        wal = this.avoidWalls(options.box).mulNew(0.5);
+                    return separationVector.normalize();
+                };
 
-        var total = coh.addNew(sep).addNew(ali).addNew(wan).addNew(wal);
-        this.vel.add(total);
-    },
+                FlockEntity.prototype.calculateAlignment = function (objects) {
+                    var alignmentVector = new Vector();
 
-    updateVelocity: function (options) {
-        if (this.type === PREY) {
-            this.updatePrey(options);
-        }
-        else {
-            this.updatePredator(options);
-        }
-        return this.vel.normalize(1).mulNew(this.speed);
-    },
+                    objects.forEach(function (other) {
+                        alignmentVector.add(other.velocity);
+                    });
 
-    avoidWall: function (box) {
-        if (this.pos.x < 0) {
-            this.vel.x *= -1;
-        }
-        else if (this.pos.x > box.width) {
-            this.vel.x *= -1;
-        }
+                    return alignmentVector.normalize();
+                };
 
-        if (this.pos.y < 0) {
-            this.vel.y *= -1;
-        }
-        else if (this.pos.y > box.height) {
-            this.vel.y *= -1;
-        }
-    },
+                FlockEntity.prototype.avoidWalls = function (box) {
+                    var target = new Vector();
+                    if (this.position.x < 50) {
+                        target.x = 1;
+                    }
+                    else if (this.position.x > box.width - 50) {
+                        target.x = -1;
+                    }
 
-    keepInBounds: function (box) {
-        if (this.pos.x < 0) {
-            this.pos.x = 0;
-        }
-        else if (this.pos.x > box.width) {
-            this.pos.x = box.width;
-        }
+                    if (this.position.y < 50) {
+                        target.y = 1;
+                    }
+                    else if (this.position.y > box.height - 50) {
+                        target.y = -1;
+                    }
+                    return target;
+                };
 
-        if (this.pos.y < 0) {
-            this.pos.y = 0;
-        }
-        else if (this.pos.y > box.height) {
-            this.pos.y = box.height;
-        }
-    },
+                /**
+                 * Given an array of predator entities, will calculate the force leading away from them
+                 * @param predators - Array of FlockEntity objects
+                 * @private
+                 */
+                FlockEntity.prototype._updateAsPreyWithPredators = function(predators) {
+                    this.renderExclamation = true;
+                    var avoidPredators = this.calculateSeparation(predators).mulNew(this.avoidWeight);
+                    return this.velocity.addNew(avoidPredators);
+                };
 
-    update: function (options) {
-        this.vel = this.updateVelocity(options);
-        this.pos = this.vel.addNew(this.pos);
-        this.avoidWall(options.box);
-        this.keepInBounds(options.box);
-    },
+                /**
+                 * Given an options object with prey and box properties, calculates the updated velocity, and returns it
+                 * @param options - Object with prey (Array of FlockEntity object) and box (has width and height properties)
+                 * @private
+                 */
+                FlockEntity.prototype._updateAsPreyNormal = function(options) {
+                    this.renderExclamation = false;
+                    var neighbors = MathUtils.getNearestObjects(options.prey, this, 80.0);
 
-    calcNose: function () {
-        this.nose = this.pos.addNew(this.vel);
-        this.nose = this.vel.normalize(1);
-        this.nose = this.nose.mulNew(10);
-        this.nose = this.nose.addNew(this.pos);
-    },
+                    var cohesion = this.calculateCohesion(neighbors).mulNew(this.cohesionWeight),
+                        separate = this.calculateSeparation(neighbors).mulNew(this.separateWeight),
+                        align = this.calculateAlignment(neighbors).mulNew(this.alignWeight),
+                        avoidWalls = this.avoidWalls(options.box).mulNew(0.1);
 
-    render: function (ctx) {
-        this.calcNose();
-        if (this.exc) {
-            DrawUtils.drawExclamation(ctx, this.pos.x, this.pos.y - 10, EXC_COLOR);
-        }
-        DrawUtils.drawCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
-        DrawUtils.drawLine(ctx, this.pos.x, this.pos.y, this.nose.x, this.nose.y, this.color);
-    }
-};
+                    var total = cohesion
+                        .addNew(separate)
+                        .addNew(align)
+                        .addNew(avoidWalls);
+                    return this.velocity.addNew(total);
+                };
+
+                /**
+                 * Prey will try to group with other prey, stay away from other prey, align with
+                 * other prey, and avoid walls IF there are NO predators nearby
+                 * @param options - Object containing predators and prey arrays, as well as a box object
+                 * @returns Vector - updated velocity of this entity
+                 */
+                FlockEntity.prototype.updateAsPrey = function (options) {
+                    var predators = MathUtils.getNearestObjects(options.predators, this, 80.0);
+                    if (predators.length !== 0) {
+                        return this._updateAsPreyWithPredators(predators);
+                    }
+                    else {
+                        return this._updateAsPreyNormal(options);
+                    }
+                };
+
+                /**
+                 * Predators will try to group with the prey, stay away from other predators, align with
+                 * other predators, and avoid walls
+                 * @param options - Object with prey, predators, and box properties
+                 * @returns Vector - updated velocity of this entity
+                 */
+                FlockEntity.prototype.updateAsPredator = function (options) {
+                    var preyCloseEnough = MathUtils.getNearestObjects(options.prey, this, 80.0),
+                        predatorsCloseEnough = MathUtils.getNearestObjects(options.predators, this, 80.0);
+
+                    var cohesion = this.calculateCohesion(preyCloseEnough).mulNew(this.cohesionWeight),
+                        separate = this.calculateSeparation(predatorsCloseEnough).mulNew(this.separateWeight),
+                        align = this.calculateAlignment(predatorsCloseEnough).mulNew(this.alignWeight),
+                        avoidWalls = this.avoidWalls(options.box).mulNew(0.1);
+
+                    var total = cohesion
+                        .addNew(separate)
+                        .addNew(align)
+                        .addNew(avoidWalls);
+                    return this.velocity.addNew(total);
+                };
+
+                /**
+                 * Calls the appropriate update function depending on this FlockEntity's type field,
+                 * normalizes the velocity, multiplies it by this entity's spead field and returns it
+                 * @param options - Object with prey, predators, and box properties
+                 * @returns {Vector} - The entity's new velocity
+                 */
+                FlockEntity.prototype.updateVelocity = function (options) {
+                    var velocity = this['updateAs' + this.type](options);
+                    return velocity.normalize().mulNew(this.speed);
+                };
+
+                FlockEntity.prototype._bounceOffWalls = function (box) {
+                    if ((this.position.x < this.radius) || (this.position.x > box.width - this.radius)) {
+                        this.velocity.x *= -1;
+                    }
+
+                    if ((this.position.y < this.radius) || (this.position.y > box.height - this.radius)) {
+                        this.velocity.y *= -1;
+                    }
+                };
+
+                FlockEntity.prototype._keepInBounds = function (box) {
+                    if (this.position.x < this.radius) {
+                        this.position.x = this.radius;
+                    }
+                    else if (this.position.x > box.width - this.radius) {
+                        this.position.x = box.width - this.radius;
+                    }
+
+                    if (this.position.y < this.radius) {
+                        this.position.y = this.radius;
+                    }
+                    else if (this.position.y > box.height - this.radius) {
+                        this.position.y = box.height - this.radius;
+                    }
+                };
+
+                FlockEntity.prototype.update = function (options) {
+                    this.velocity = this.updateVelocity(options);
+                    this.position = this.velocity.addNew(this.position);
+                    this._bounceOffWalls(options.box);
+                    this._keepInBounds(options.box);
+                };
+
+                FlockEntity.prototype.calcNose = function () {
+                    this.nose = this.velocity.normalize();
+                    this.nose = this.nose.mulNew(10);
+                    this.nose = this.nose.addNew(this.position);
+                };
+
+                FlockEntity.prototype.render = function (ctx) {
+                    this.calcNose();
+                    if (this.renderExclamation) {
+                        DrawUtils.drawExclamation(ctx, this.position.x, this.position.y - 10, FlockEntity.EXCLAMATION_COLOR);
+                    }
+                    DrawUtils.drawCircle(ctx, this.position.x, this.position.y, this.radius, this.color);
+                    DrawUtils.drawLine(ctx, this.position.x, this.position.y, this.nose.x, this.nose.y, this.color);
+                };
+
+                return FlockEntity;
+            }
+        ]);
+})(angular);

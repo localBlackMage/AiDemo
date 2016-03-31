@@ -1,129 +1,91 @@
-<!doctype html>
-    <html ng-app="DemoApp">
-        <head>
-            <script type="text/javascript" src="../js/bower_components/angular/angular.min.js"></script>
-            <script type="text/javascript" src="../js/bower_components/jquery/dist/jquery.min.js"></script>
-            <script type="text/javascript" src="../js/dist/aidemo.min.js"></script>
-            <link rel="stylesheet" type="text/css" href="../js/bower_components/bootstrap/dist/css/bootstrap.css">
-            <link rel="stylesheet" type="text/css" href="../less/dist/app.min.css">
-
-            <title>Flocking Demo</title>
-        </head>
-        <body>
-            <div ng-controller="FlockCtrl">
-                <span class="left canvas-span">
-                    <canvas class="canvas down" id="flockCanvas" width="800" height="600"></canvas>
-                    <div>
-                        <label class="form-label">Prey remaining: {{herd.length}}</label>
-                    </div>
-                </span>
-                <span class="left down">
-                    <form name="amountForm" role="form" class="flock-form" width="40%">
-                        <span id="preyStats" class="left">
-                            <div class="form-group">
-                                <label for="preyAmount" class="form-label">Prey Amount:</label>
-                                <input class="form-control"
-                                       type="text" id="preyAmount"
-                                       ng-model="preyAmt"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="preySpeed" class="form-label">Prey Speed:</label>
-                                <input class="form-control"
-                                       type="text" id="preySpeed"
-                                       ng-model="preyStats.speed"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="preyCoh" class="form-label">Prey Cohesion:</label>
-                                <input class="form-control"
-                                       type="text" id="preyCoh"
-                                       ng-model="preyStats.cohW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="preySep" class="form-label">Prey Separation:</label>
-                                <input class="form-control"
-                                       type="text" id="preySep"
-                                       ng-model="preyStats.sepW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="preyAli" class="form-label">Prey Alignment:</label>
-                                <input class="form-control"
-                                       type="text" id="preyAli"
-                                       ng-model="preyStats.aliW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="preyWan" class="form-label">Prey Wander:</label>
-                                <input class="form-control"
-                                       type="text" id="preyWan"
-                                       ng-model="preyStats.wanW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                        </span>
-
-                        <span id="predStats" class="left">
-                            <div class="form-group">
-                                <label for="predAmount" class="form-label">Predator Amount:</label>
-                                <input class="form-control"
-                                    type="text" id="predAmount"
-                                    ng-model="predAmt"
-                                    ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="predSpeed" class="form-label">Predator Speed:</label>
-                                <input class="form-control"
-                                       type="text" id="predSpeed"
-                                       ng-model="predStats.speed"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="predCoh" class="form-label">Predator Cohesion:</label>
-                                <input class="form-control"
-                                       type="text" id="predCoh"
-                                       ng-model="predStats.cohW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="predSep" class="form-label">Predator Separation:</label>
-                                <input class="form-control"
-                                       type="text" id="predSep"
-                                       ng-model="predStats.sepW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="predAli" class="form-label">Predator Alignment:</label>
-                                <input class="form-control"
-                                       type="text" id="predAli"
-                                       ng-model="predStats.aliW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                            <div class="form-group">
-                                <label for="predWan" class="form-label">Predator Wander:</label>
-                                <input class="form-control"
-                                       type="text" id="predWan"
-                                       ng-model="predStats.wanW"
-                                       ng-model-options="{ getterSetter: true }" />
-                            </div>
-                        </span>
-
-                        <div class="form-group">
-                            <span class="left">
-                                <p><a class="btn btn-primary" role="button" ng-click="reset();">Spawn</a></p>
-                            </span>
-                            <span class="left">
-                                <p><a class="btn btn-primary" role="button" ng-click="clear();">Clear</a></p>
-                            </span>
-                            <div class="toggleControl">
-                                <label class="form-label">{{wozDisplay}}</label>
-                                <p><a class="btn btn-primary" role="button" ng-click="toggleWolfOrZombie();">Wolves or Zombies</a></p>
-                            </div>
-                        </div>
-                    </form>
-                </span>
+<div class="app-flockdemo">
+    <div class="demo-screen">
+        <canvas-screen has-grid="t" grid-color="{{FlockCtrl.GRID_COLOR}}"
+                bg-color="{{FlockCtrl.BACK_COLOR}}" height="400" width="1200"
+                       objects="FlockCtrl.entities" box="FlockCtrl.box" on-update="FlockCtrl.update()">
+        </canvas-screen>
+    </div>
+    <div class="information">
+        <label>{{FlockCtrl.gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{FlockCtrl.entities.prey.length}}</label>
+        <button class="btn-default" ng-click="FlockCtrl.toggleGameType()">Game Type: {{FlockCtrl.gameType}}!</button>
+        <button class="btn-default" ng-click="FlockCtrl.clear()">Clear!</button>
+        <button class="btn-default" ng-click="FlockCtrl.reset()">Start!</button>
+    </div>
+    <div class="statistics">
+        <div class="statistics-container" id="preyStats">
+            <div class="stat">
+                <label class="form-label">Prey Amount:</label>
+                <input class="form-control"
+                       type="number" id="preyAmount"
+                       ng-model="FlockCtrl.preyAmount"
+                       step="1" />
             </div>
-        </body>
-    </html>
-</doctype>
+            <div class="stat">
+                <label class="form-label">Prey Speed:</label>
+                <input class="form-control"
+                       type="number" id="preySpeed"
+                       ng-model="FlockCtrl.preyStats.speed"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Prey Cohesion:</label>
+                <input class="form-control"
+                       type="number" id="preyCohesion"
+                       ng-model="FlockCtrl.preyStats.cohesionWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Prey Separation:</label>
+                <input class="form-control"
+                       type="number" id="preySeparation"
+                       ng-model="FlockCtrl.preyStats.separateWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Prey Alignment:</label>
+                <input class="form-control"
+                       type="number" id="preyAlign"
+                       ng-model="FlockCtrl.preyStats.alignWeight"
+                       step=".01" />
+            </div>
+        </div>
+
+        <div class="statistics-container" id="predatorStats">
+            <div class="stat">
+                <label class="form-label">Predator Amount:</label>
+                <input class="form-control"
+                       type="number" id="predatorAmount"
+                       ng-model="FlockCtrl.predatorAmount"
+                       step="1" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Predator Speed:</label>
+                <input class="form-control"
+                       type="number" id="predatorSpeed"
+                       ng-model="FlockCtrl.predatorStats.speed"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Predator Cohesion:</label>
+                <input class="form-control"
+                       type="number" id="predatorCohesion"
+                       ng-model="FlockCtrl.predatorStats.cohesionWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Predator Separation:</label>
+                <input class="form-control"
+                       type="number" id="predatorSeparation"
+                       ng-model="FlockCtrl.predatorStats.separateWeight"
+                       step=".01" />
+            </div>
+            <div class="stat">
+                <label class="form-label">Predator Alignment:</label>
+                <input class="form-control"
+                       type="number" id="predatorAlign"
+                       ng-model="FlockCtrl.predatorStats.alignWeight"
+                       step=".01" />
+            </div>
+        </div>
+    </div>
+</div>

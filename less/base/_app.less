@@ -1,0 +1,137 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+button.btn-default {
+  color: @theme-dark;
+  background-color: @theme-light;
+  border-radius: 5px;
+  min-height: 44px;
+  min-width: 100px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: @default-font;
+  cursor: pointer;
+  border: 2px solid @theme-main-fade;
+
+  &:hover {
+    background-color: #DDDDDD;
+  }
+
+  &:active {
+    color: @theme-light;
+    background-color: @theme-dark;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    color: @theme-light;
+    background-color: @theme-main;
+    cursor: default;
+    border: 2px solid @theme-main-fade;
+
+    &:hover {
+      background-color: @theme-main;
+    }
+
+    &:active {
+      color: @theme-light;
+      background-color: @theme-main;
+    }
+  }
+}
+
+a {
+  color: @theme-highlight;
+
+  &:focus, &:active{
+    color: @theme-highlight-dark;
+  }
+}
+
+label, input {
+  font-family: @default-font;
+  font-size: 16px;
+}
+
+input {
+  margin-left: 10px;
+  border: solid 1px @theme-light;
+  border-radius: 5px;
+  padding: 2px 4px;
+
+  &:focus {
+    outline: @theme-highlight-dark auto 5px;
+  }
+
+  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  &[type='number'] {
+    -moz-appearance:textfield;
+  }
+}
+
+div {
+  display: flex;
+}
+
+.highlight {
+  color: @theme-highlight;
+}
+
+body.app-container {
+  display: flex;
+  position: relative;
+
+  &::after {
+    content: "";
+    // BG from http://i.stack.imgur.com/iULOS.jpg
+    background: url('../../images/iULOS.jpg');
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  div.app-body {
+    width: 100%;
+    justify-content: center;
+    padding: 30px;
+  }
+}
+
+.canvas {
+  margin-left: 1em;
+  border: 5px solid black;
+}
+
+.form-label {
+  color: @theme-light;
+}
+
+.form-control {
+  width: 10em;
+  background-color: @theme-dark;
+  color: @theme-light;
+  border-color: @theme-light;
+}
+
+//.left {
+//  float: left;
+//  margin-right: 1em;
+//}
+
+.down {
+  margin-top: 1em;
+}

@@ -1,0 +1,30 @@
+header.app-header {
+  background-color:rgba(0,0,0,0.75);
+  flex: 0 0 100px;
+  padding: 8px;
+  box-shadow: 4px 4px 8px @theme-main;
+
+  div.app-header-container {
+    height: inherit;
+    justify-content: space-between;
+
+    ul {
+      list-style-type: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      flex-direction: column;
+
+      li {
+        display: inline-flex;
+        margin: 4px 0;
+
+        button.active {
+          background-color: @theme-highlight;
+          border: 2px solid @theme-highlight-dark;
+          color: @theme-highlight-dark;
+        }
+      }
+    }
+  }
+}
