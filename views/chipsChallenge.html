@@ -1,0 +1,25 @@
+<div>
+    <!--keypress-events>-->
+    <span class="left canvas-span">
+        <div class="item-canvas-container" >
+            <canvas class="canvas down item-canvas" id="itemCanvas" width="512px" height="64px"></canvas>
+        </div>
+        <div>
+            <!--<canvas class="canvas down" id="gameCanvas" width="576px" height="576px"></canvas>-->
+            <canvas-screen has-grid="f"
+                           bg-color="{{chipCtrl.BACK_COLOR}}" height="576" width="576"
+                           objects="antCtrl.chipCtrl" box="antCtrl.box" on-update="antCtrl.update()">
+            </canvas-screen>
+        </div>
+        <div class="down">
+            <button type="button" class="btn btn-success left" ng-click="toHome()">Home</button>
+        </div>
+    </span>
+    <span class="left down">
+        <div class="left">
+            <label class="form-label">Level: {{chipCtrl.gameStats.level}}</label><br/>
+            <label class="form-label">Time: {{chipCtrl.gameStats.timeRemaining}}</label><br/>
+            <label class="form-label">Chips: {{chipCtrl.gameStats.chipsRemaining}}</label>
+        </div>
+    </span>
+</div>

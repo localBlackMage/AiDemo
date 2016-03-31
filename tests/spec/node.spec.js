@@ -1,4 +1,5 @@
 describe("Node Model", function () {
+    'use strict';
     var box, defaultOptions, Node, Utils, MathUtils, DrawUtils, Vector,
         SELECTED_COLOR = "#FFFFFF", SPECIAL_COLOR = "#FF0000",
         RENDER_COLOR = "#000000", PATH_COLOR = "#00FF00", RANGE = 10;

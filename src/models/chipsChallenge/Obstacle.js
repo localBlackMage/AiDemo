@@ -5,7 +5,7 @@
         'aidemo.service.utils',
         'aidemo.service.drawUtils'
     ])
-        .factory('Obstacle', ['Utils', 'DrawUtils'],
+        .factory('Obstacle', ['Utils', 'DrawUtils',
         function (Utils, DrawUtils) {
 
             /**
@@ -80,5 +80,7 @@
             Obstacle.prototype.render = function (context, x, y) {
                 DrawUtils.drawImage(context, x, y, this.image);
             };
-        });
+
+            return Obstacle;
+        }]);
 })(angular);

@@ -15,6 +15,20 @@ describe("Vector Model", function () {
         expect(vector.y).toBe(1);
     });
 
+    it('should compare the x and y of two vectors and return whether or not both match', function () {
+        var vectorA = new Vector(defaultVector),
+            vectorB = new Vector(defaultVector),
+            vectorC = new Vector();
+
+        var resultA = vectorA.compare(vectorA),
+            resultB = vectorA.compare(vectorB),
+            resultC = vectorA.compare(vectorC);
+
+        expect(resultA).toBeTruthy();
+        expect(resultB).toBeTruthy();
+        expect(resultC).toBeFalsy();
+    });
+
     it("should instantiate properly", function () {
         var vecOne = new Vector(),
             vecTwo = new Vector({x: 1}),

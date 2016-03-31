@@ -274,9 +274,9 @@
 
                     views: {
                         'main@': {
-                            templateUrl: 'chip.html',
+                            templateUrl: 'chipsChallenge.html',
                             controller: 'ChipController',
-                            controllerAs: 'ChipCtrl'
+                            controllerAs: 'chipCtrl'
                         }
                     }
                 });

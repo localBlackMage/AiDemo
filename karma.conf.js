@@ -19,16 +19,10 @@ module.exports = function (config) {
 
             DIST_ROOT + 'templates/aidemo-templates.js',
 
-            SCRIPT_ROOT + 'services/*.js',
-            SCRIPT_ROOT + 'models/*.js',
+            SCRIPT_ROOT + 'services/**/*.js',
             SCRIPT_ROOT + 'models/**/*.js',
             SCRIPT_ROOT + 'directives/**/*.js',
-            //SCRIPT_ROOT + 'controllers/*.js',
-            SCRIPT_ROOT + 'controllers/astarCtrl.js',
-            SCRIPT_ROOT + 'controllers/flockCtrl.js',
-            SCRIPT_ROOT + 'controllers/antCtrl.js',
-            SCRIPT_ROOT + 'controllers/lifeCtrl.js',
-            SCRIPT_ROOT + 'controllers/chipCtrl.js',
+            SCRIPT_ROOT + 'controllers/**/*.js',
             SCRIPT_ROOT + '*.js',
 
             TEST_ROOT + '*.js'
@@ -40,7 +34,6 @@ module.exports = function (config) {
             '**/models/**/*.js': 'coverage',
             '**/services/**/*.js': 'coverage'
             //'src/app.js': 'coverage'
-            //'exampleSvg.html': ['ng-html2js']
         },
 
         ngHtml2JsPreprocessor: {
@@ -62,7 +55,7 @@ module.exports = function (config) {
         // list of files / patterns to exclude
         exclude: [
             SCRIPT_ROOT + 'models/Neuron.js',
-            //TEST_ROOT + 'antCtrl.spec.js',
+            SCRIPT_ROOT + 'controllers/threeCtrl.js',
             TEST_ROOT + 'neuron.spec.js'
         ],
 

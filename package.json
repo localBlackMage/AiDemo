@@ -27,7 +27,6 @@
     "karma-phantomjs-launcher": "^0.2.3",
     "phantomjs": "^2.1.3"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "gulp test"
   },

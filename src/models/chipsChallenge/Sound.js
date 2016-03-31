@@ -2,7 +2,7 @@
     'use strict';
 
     ng.module('aidemo.models.chip.sound', [])
-        .factory('Sound', [], function () {
+        .factory('Sound', [function () {
 
             /**
              * Class that loads a mp3 file and stores it for play later
@@ -46,5 +46,7 @@
                 this.audioElement.play();
 //        },1);
             };
-        });
+
+            return Sound;
+        }]);
 })(angular);

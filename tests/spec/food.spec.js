@@ -1,4 +1,5 @@
 describe("Food Model", function () {
+    'use strict';
     var Food, DrawUtils, Vector,
         defaultOptions;
 
