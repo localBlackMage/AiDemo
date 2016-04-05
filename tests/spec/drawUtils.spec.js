@@ -150,6 +150,43 @@ describe("DrawUtils Service", function () {
         expect(context.fillText).toHaveBeenCalledWith(txt, x, y);
     });
 
+    it("should draw an image on the canvas", function() {
+        var image = "image/url.png",
+            x = 10, y = 20;
+        spyOn(context, 'drawImage').and.callFake(function(url, xCoord, yCoord) {
+            expect(url).toBe(image);
+            expect(xCoord).toBe(x);
+            expect(yCoord).toBe(y);
+        });
+
+        DrawUtils.drawImage(context, x, y, image);
+
+        expect(context.drawImage).toHaveBeenCalled();
+    });
+
+    it("should draw a section of an image on the canvas", function() {
+        var image = "image/url.png",
+            x = 10, y = 20, xOffset = 5, yOffset = 6, width = 2, height = 3,
+            drawWidth = 3, drawHeight = 4;
+        spyOn(context, 'drawImage').and.callFake(function(url, spriteX, spriteY, spriteW, spriteH, destX, destY, destW, destH) {
+            expect(url).toBe(image);
+            
+            expect(spriteX).toBe(xOffset);
+            expect(spriteY).toBe(yOffset);
+            expect(spriteW).toBe(width);
+            expect(spriteH).toBe(height);
+            
+            expect(destX).toBe(x);
+            expect(destY).toBe(y);
+            expect(destW).toBe(drawWidth);
+            expect(destH).toBe(drawHeight);
+        });
+
+        DrawUtils.drawSprite(context, image, xOffset, yOffset, width, height, x, y, drawWidth, drawHeight);
+
+        expect(context.drawImage).toHaveBeenCalled();
+    });
+
     it("should return if a value is an acceptable numeric hex value", function () {
         spyOn(_, 'isNumber').and.callThrough();
 
