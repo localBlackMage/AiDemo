@@ -100,9 +100,6 @@
                     else if (!parent && parentIndex >= 0) {
                         this.swap(parentIndex, element);
                     }
-                    else {
-                        return;
-                    }
                 };
 
                 MinHeapNodes.prototype.swap = function (a, b) {
