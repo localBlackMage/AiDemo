@@ -42,7 +42,7 @@
                     this.waterSprites = Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.WATER_SPRITE_SHEET);
 
                     this.activeSpriteSheet = this.normalSprites;
-                    this.curSprite = params.curSprite ? params.curSprite : {x: 0, y: 0, w: 64, h: 64};
+                    this.curSprite = params.curSprite ? params.curSprite : {x: 0, y: 0, w: Globals.TILE_SIZE, h: Globals.TILE_SIZE};
 
                     this.itemsBack = Utils.generateImageFromURLObject(Tile.TILE_IMAGES, Tile.EMPTY);
 
@@ -72,12 +72,12 @@
 
                 /**
                  * Given a tileSize, finds the grid index the player is currently at
-                 * @param tileSize - Number, default of 64
+                 * @param tileSize - Number, default of Globals.TILE_SIZE
                  * @returns {{x: number, y: number}}
                  */
                 Player.prototype.getTileIndex = function (tileSize) {
                     if (!tileSize) {
-                        tileSize = 64;
+                        tileSize = Globals.TILE_SIZE;
                     }
                     return {
                         x: this.worldPos.x / tileSize,
@@ -213,9 +213,9 @@
                  */
                 Player.prototype.renderItems = function (context) {
                     for (var x = 0; x < 8; x++) {
-                        DrawUtils.drawImage(ctx, x * 64, 0, this.itemsBack);
+                        DrawUtils.drawImage(ctx, x * Globals.TILE_SIZE, 0, this.itemsBack);
                         if (this.specialSlots[this.ssKeys[x]] !== null) {
-                            this.specialSlots[this.ssKeys[x]].render(context, x * 64, 0);
+                            this.specialSlots[this.ssKeys[x]].render(context, x * Globals.TILE_SIZE, 0);
                         }
                     }
                 };

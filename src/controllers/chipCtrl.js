@@ -69,7 +69,7 @@
                 };
 
                 var handleObstacle = function (dirTile, direction) {
-                    var nDirTile = dirTile.getNeighborInDir(direction);
+                    var nDirTile = dirTile.getNeighborTileInDirection(direction);
                     if (dirTile.getType() === BLOCK) {
                         return false;
                     }
@@ -142,8 +142,8 @@
                     }
 
                     return new Tile({
-                        screenPos: new Vector({x: x * 64, y: y * 64}),
-                        worldPos: new Vector({x: x * 64, y: y * 64}),
+                        screenPos: new Vector({x: x * Globals.TILE_SIZE, y: y * Globals.TILE_SIZE}),
+                        worldPos: new Vector({x: x * Globals.TILE_SIZE, y: y * Globals.TILE_SIZE}),
                         type: type,
                         item: item
                     });
@@ -168,7 +168,7 @@
                 vm.presetWorld = {
                     grid: [],
                     x: 20, y: 20,
-                    tileSize: 64,
+                    tileSize: Globals.TILE_SIZE,
                     lower: 3, upper: 16
                 };
                 var sxy = vm.presetWorld.tileSize * 4,
@@ -212,7 +212,7 @@
                 };
 
                 vm.moveAll = function (direction) {
-                    var dirIndex = direction.divNew(64).addNew(vm.player.getTileIndex()),
+                    var dirIndex = direction.divNew(Globals.TILE_SIZE).addNew(vm.player.getTileIndex()),
                         dirTile = vm.world.grid[dirIndex.y][dirIndex.x];
 
                     if (handleObstacle(dirTile, direction)) {

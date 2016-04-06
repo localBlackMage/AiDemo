@@ -10,6 +10,8 @@ describe("Globals", function () {
     });
 
     it('should have several global objects defined', function () {
+        expect(Globals.TILE_SIZE).toBeDefined();
+
         expect(Globals.UP).toBeDefined();
         expect(Globals.DOWN).toBeDefined();
         expect(Globals.LEFT).toBeDefined();

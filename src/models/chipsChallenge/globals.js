@@ -13,12 +13,17 @@
             var globals = this;
 
             /**
+             * Tile Size
+             */
+            globals.TILE_SIZE = 64;
+
+            /**
              * Cardinal Directions
              */
-            globals.UP = new Vector({y: -64});
-            globals.DOWN = new Vector({y: 64});
-            globals.LEFT = new Vector({x: -64});
-            globals.RIGHT = new Vector({x: 64});
+            globals.UP = new Vector({y: -globals.TILE_SIZE});
+            globals.DOWN = new Vector({y: globals.TILE_SIZE});
+            globals.LEFT = new Vector({x: -globals.TILE_SIZE});
+            globals.RIGHT = new Vector({x: globals.TILE_SIZE});
 
             /**
              * Status Types

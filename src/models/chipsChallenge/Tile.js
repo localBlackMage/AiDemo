@@ -4,10 +4,11 @@
     ng.module('aidemo.models.chip.tile', [
         'aidemo.service.utils',
         'aidemo.service.drawUtils',
+        'aidemo.models.chip.globals',
         'aidemo.models.vector'
     ])
-        .factory('Tile', ['Utils', 'DrawUtils', 'Vector',
-            function (Utils, DrawUtils, Vector) {
+        .factory('Tile', ['Utils', 'DrawUtils', 'Globals', 'Vector',
+            function (Utils, DrawUtils, Globals, Vector) {
 
                 /**
                  * Class that represents the tiles in the world the player can interact with and move on
@@ -59,11 +60,13 @@
                 Tile.ICE_RU = "ICE_RU";
                 Tile.EXIT = "EXIT";
 
-                Tile.prototype.getNeighborInDir = function (dir) {
-                    dir = dir.length() !== 64 ? dir.mulNew(64) : dir;
-                    var which = this.worldPos.addNew(dir);
+                Tile.prototype.getNeighborTileInDirection = function (direction) {
+                    if (direction.length() !== Globals.TILE_SIZE) {
+                        throw new Error("ERROR GETTING NEIGHBOR FOR TILE: DIRECTION X OR Y MUST MATCH GLOBALS.TILE_SIZE");
+                    }
+                    var neighborPosition = this.worldPos.addNew(direction);
                     for (var idx = 0; idx < this.neighbors.length; idx++) {
-                        if (which.compare(this.neighbors[idx].worldPos)) {
+                        if (neighborPosition.compare(this.neighbors[idx].worldPos)) {
                             return this.neighbors[idx];
                         }
                     }
@@ -107,7 +110,7 @@
 
                 Tile.prototype.setType = function (type) {
                     this.type = type;
-                    this.image = this.createImage(this.type);
+                    this.image = Utils.generateImageFromURLObject(Tile.TILE_IMAGES, this.type);
                 };
 
                 Tile.prototype._iceGetDir = function (type) {
@@ -124,22 +127,36 @@
                 Tile.prototype.update = function () {
                 };
 
-                Tile.prototype._renderItem = function (ctx) {
-                    if (this.item !== null) {
-                        this.item.render(ctx, this.screenPos.x, this.screenPos.y);
+                /**
+                 * If the tile has an item, calls item.render
+                 * @param context - Canvas element's context property
+                 * @private
+                 */
+                Tile.prototype._renderItem = function (context) {
+                    if (this.item) {
+                        this.item.render(context, this.screenPos.x, this.screenPos.y);
                     }
                 };
 
-                Tile.prototype._renderObstacle = function (ctx) {
-                    if (this.obstacle !== null) {
-                        this.obstacle.render(ctx, this.screenPos.x, this.screenPos.y);
+                /**
+                 * If the tile has an obstacle, calls obstacle.render
+                 * @param context - Canvas element's context property
+                 * @private
+                 */
+                Tile.prototype._renderObstacle = function (context) {
+                    if (this.obstacle) {
+                        this.obstacle.render(context, this.screenPos.x, this.screenPos.y);
                     }
                 };
 
-                Tile.prototype.render = function (ctx) {
-                    DrawUtils.drawImage(ctx, this.screenPos.x, this.screenPos.y, this.image);
-                    this._renderItem(ctx);
-                    this._renderObstacle(ctx);
+                /**
+                 * Given a canvas context, renders this tile then calls _renderItem and _renderObstacle
+                 * @param context - Canvas element's context property
+                 */
+                Tile.prototype.render = function (context) {
+                    DrawUtils.drawImage(context, this.screenPos.x, this.screenPos.y, this.image);
+                    this._renderItem(context);
+                    this._renderObstacle(context);
                 };
 
                 return Tile;
