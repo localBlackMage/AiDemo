@@ -18,7 +18,7 @@
                     params = params || {};
 
                     if (!params.type) {
-                        throw new Error("ERROR INSTANTIATING TILE");
+                        throw new Error("ERROR INSTANTIATING TILE: MUST HAVE A TYPE");
                     }
 
                     this.type = params.type;

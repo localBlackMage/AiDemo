@@ -29,12 +29,12 @@
              */
             var obstacleRoot = "images/chipsChallenge/obstacles/";
             Obstacle.OBSTACLE_IMAGES = {
-                CHIP_DOOR: obstacleRoot + "images/obstacles/chipdoorLarge.png",
-                PUSH_BLOCK: obstacleRoot + "pushblockLarge.png",
-                BLUE_DOOR: obstacleRoot + "bluedoorLarge.png",
-                GREEN_DOOR: obstacleRoot + "greendoorLarge.png",
-                RED_DOOR: obstacleRoot + "reddoorLarge.png",
-                YELLOW_DOOR: obstacleRoot + "yellowdoorLarge.png"
+                CHIP_DOOR: obstacleRoot + "chipDoorLarge.png",
+                PUSH_BLOCK: obstacleRoot + "pushBlockLarge.png",
+                BLUE_DOOR: obstacleRoot + "blueDoorLarge.png",
+                GREEN_DOOR: obstacleRoot + "greenDoorLarge.png",
+                RED_DOOR: obstacleRoot + "redDoorLarge.png",
+                YELLOW_DOOR: obstacleRoot + "yellowDoorLarge.png"
             };
 
             /**
@@ -49,7 +49,7 @@
             Obstacle.RED_DOOR = "RED_DOOR";
             Obstacle.YELLOW_DOOR = "YELLOW_DOOR";
 
-            Obstacle.prototype.isDoor = function () {
+            Obstacle.prototype.isColoredDoor = function () {
                 return this.type !== Obstacle.CHIP_DOOR && this.type.slice(-4) === Obstacle.DOOR;
             };
 

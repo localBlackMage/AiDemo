@@ -9,7 +9,7 @@
      * Globally known variables common to multiple models.
      * This is a service and not a value purely because it has dependencies.
      */
-        .service('Globals', ['Vector'], function (Vector) {
+        .service('Globals', ['Vector', function (Vector) {
             var globals = this;
 
             /**
@@ -26,6 +26,6 @@
             globals.DEAD = 'DEAD';
             globals.ALIVE = 'ALIVE';
             globals.COMPLETE = 'COMPLETE';
-        });
+        }]);
 
 })(angular);

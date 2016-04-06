@@ -13,14 +13,14 @@
                 params = params || {};
 
                 if (!params.soundFile) {
-                    throw new Error("ERROR INSTANTIATING SOUND");
+                    throw new Error("ERROR INSTANTIATING SOUND: MUST HAVE A SOUNDFILE");
                 }
-                this.soundFile = params.soundFile ? params.soundFile : null;
+                this.soundFile = params.soundFile;
 
-                this.audioElement = document.createElement("audio");
+                this.audioElement = ng.element('<audio />');//document.createElement("audio");
                 this.audioElement.preload = "auto";
 
-                var src = document.createElement("source");
+                var src = ng.element('<source />');//document.createElement("source");
                 src.src = this.soundFile + ".mp3";
                 this.audioElement.appendChild(src);
                 this.audioElement.load();
@@ -31,9 +31,7 @@
              * A collection of sound URLs related to Item type
              */
             var soundRoot = "sounds/";
-            Sound.SOUNDS = {
-                DEATH: soundRoot + "death"
-            };
+            Sound.DEATH = soundRoot + "death";
 
             /**
              * Given a time, sets the audioElement's current time then calls play
@@ -42,9 +40,7 @@
             Sound.prototype.play = function (when) {
                 this.audioElement.currentTime = _.isNumber(when) ? when : 0.01;
 
-//        setTimeout(function(){
                 this.audioElement.play();
-//        },1);
             };
 
             return Sound;

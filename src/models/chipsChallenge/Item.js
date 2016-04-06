@@ -30,14 +30,14 @@
                 var itemRoot = "images/chipsChallenge/items/";
                 Item.ITEM_IMAGES = {
                     FLIPPERS: itemRoot + "flippersLarge.png",
-                    FIRE_BOOTS: itemRoot + "firebootsLarge.png",
-                    ROLLER_SKATES: itemRoot + "rollerskatesLarge.png",
-                    ICE_SKATES: itemRoot + "iceskatesLarge.png",
-                    BLUE_KEY: itemRoot + "bluekeyLarge.png",
-                    RED_KEY: itemRoot + "redkeyLarge.png",
-                    GREEN_KEY: itemRoot + "greenkeyLarge.png",
-                    YELLOW_KEY: itemRoot + "yellowkeyLarge.png",
-                    MICRO_CHIP: itemRoot + "microchipLarge.png"
+                    FIRE_BOOTS: itemRoot + "fireBootsLarge.png",
+                    ROLLER_SKATES: itemRoot + "rollerSkatesLarge.png",
+                    ICE_SKATES: itemRoot + "iceSkatesLarge.png",
+                    BLUE_KEY: itemRoot + "blueKeyLarge.png",
+                    RED_KEY: itemRoot + "redKeyLarge.png",
+                    GREEN_KEY: itemRoot + "greenKeyLarge.png",
+                    YELLOW_KEY: itemRoot + "yellowKeyLarge.png",
+                    MICRO_CHIP: itemRoot + "microChipLarge.png"
                 };
 
                 /**
