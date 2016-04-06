@@ -25,14 +25,14 @@ module.exports = function (config) {
             SCRIPT_ROOT + 'controllers/**/*.js',
             SCRIPT_ROOT + '*.js',
 
-            TEST_ROOT + '*.js'
+            TEST_ROOT + '**/*.js'
         ],
 
         preprocessors: {
-            '**/directives/**/*.js': 'coverage',
-            '**/controllers/**/*.js': 'coverage',
-            '**/models/**/*.js': 'coverage',
-            '**/services/**/*.js': 'coverage'
+            'src/**/directives/**/*.js': 'coverage',
+            'src/**/controllers/**/*.js': 'coverage',
+            'src/**/models/**/*.js': 'coverage',
+            'src/**/services/**/*.js': 'coverage'
             //'src/app.js': 'coverage'
         },
 
@@ -56,7 +56,7 @@ module.exports = function (config) {
         exclude: [
             SCRIPT_ROOT + 'models/Neuron.js',
             SCRIPT_ROOT + 'controllers/threeCtrl.js',
-            TEST_ROOT + 'neuron.spec.js'
+            TEST_ROOT + 'models/neuron.spec.js'
         ],
 
         // test results reporter to use
