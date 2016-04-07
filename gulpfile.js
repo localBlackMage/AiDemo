@@ -98,10 +98,10 @@ gulp.task('libs', function () {
 gulp.task('appscripts', ['lint'], function () {
     return gulp.src(scripts)
         .pipe(concat('aidemo.js'))
+        .pipe(gulp.dest(DIST_ROOT))
+        .pipe(rename('aidemo.min.js'))
+        .pipe(uglify())
         .pipe(gulp.dest(DIST_ROOT));
-    //.pipe(rename('aidemo.min.js'))
-    //.pipe(uglify())
-    //.pipe(gulp.dest(DIST_ROOT));
 });
 
 gulp.task('templates', function () {
