@@ -1,13 +1,14 @@
 describe('Ant Controller', function () {
     'use strict';
 
-    var scope, ctrl, MathUtils, DrawUtils, Vector, Nest, Ant, Food;
+    var scope, ctrl, ScreenSize, MathUtils, DrawUtils, Vector, Nest, Ant, Food;
 
     beforeEach(function () {
         module('aidemo.ant');
 
-        inject(function ($controller, $rootScope, _MathUtils_, _DrawUtils_, _Vector_, _Nest_, _Ant_, _Food_, $injector) {
+        inject(function ($controller, $rootScope, _ScreenSize_, _MathUtils_, _DrawUtils_, _Vector_, _Nest_, _Ant_, _Food_, $injector) {
             scope = $rootScope.$new();
+            ScreenSize = $injector.get('ScreenSize');
             MathUtils = $injector.get('MathUtils');
             DrawUtils = $injector.get('DrawUtils');
             Vector = _Vector_;
@@ -17,6 +18,7 @@ describe('Ant Controller', function () {
 
             ctrl = $controller('AntController', {
                 $scope: scope,
+                ScreenSize: ScreenSize,
                 MathUtils: MathUtils,
                 DrawUtils: DrawUtils,
                 Vector: Vector,

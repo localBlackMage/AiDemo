@@ -2,40 +2,46 @@
 
 div.app-lifedemo {
   .common-container;
+  flex-direction: row;
 
-  div.demo-screen {
-    flex-shrink: 1;
-    justify-content: center;
-
-    canvas.screen {
-      border: solid @theme-highlight-dark 2px;
-      display: flex;
-      cursor: pointer;
-    }
+  div.info-container {
   }
 
-  div.information {
-    flex-grow: 1;
-    justify-content: space-around;
-    align-items: center;
+  div.game-container {
 
-    label {
-      color: white;
+    div.demo-screen {
+      flex-shrink: 1;
+      justify-content: center;
+
+      canvas.screen {
+        border: solid @theme-highlight-dark 2px;
+        display: flex;
+        cursor: pointer;
+      }
     }
-  }
 
-  div.statistics {
-    flex-grow: .2;
-    justify-content: space-around;
+    div.information {
+      flex-grow: 1;
+      justify-content: space-around;
+      align-items: center;
 
-    div.statistics-container {
-      flex-direction: column;
+      label {
+        color: white;
+      }
+    }
+
+    div.statistics {
+      flex-grow: .2;
       justify-content: space-around;
 
-      div.stat {
-        justify-content: space-between;
+      div.statistics-container {
+        flex-direction: column;
+        justify-content: space-around;
 
+        div.stat {
+          justify-content: space-between;
 
+        }
       }
     }
   }

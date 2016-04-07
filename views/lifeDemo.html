@@ -1,24 +1,34 @@
 <div class="app-lifedemo">
-    <div class="demo-screen">
-        <canvas-screen has-grid="y" grid-spacing="gridObj.tileSize" grid-color="{{GRID_COLOR}}"
-                       bg-color="{{BACK_COLOR}}" height="600" width="800"
-                       objects="gridObj.grid" box="box" on-update="update()"
-                       touch="touch(event)" grid-bg="true">
-        </canvas-screen>
+    <div class="info-container">
+        <h3>Conway's Game of Life</h3>
+        <p>
+            This is a recreation of the <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life.</a>
+            Despite being called a "game," you don't actually play anything aside from starting the simulation up. In
+            my demo here, however, you can pause the game and "paint" new cells to life while it's running.
+        </p>
     </div>
-    <div class="information">
-        <label>Generation: {{generation}}</label>
-        <button class="btn-default" ng-click="pauseToggle()">{{pause ? 'Resume' : 'Pause'}}</button>
-        <button class="btn-default" ng-click="reset()">Reset</button>
-    </div>
-    <div class="statistics">
-        <div class="statistics-container" id="gameStats">
-            <div class="stat">
-                <label class="form-label">Step Speed:</label>
-                <input class="form-control"
-                       type="number" id="step"
-                       ng-model="step"
-                       step=".01" />
+    <div class="game-container">
+        <div class="demo-screen">
+            <canvas-screen has-grid="y" grid-spacing="lifeCtrl.gridObj.tileSize" grid-color="{{lifeCtrl.GRID_COLOR}}"
+                           bg-color="{{lifeCtrl.BACK_COLOR}}" height="lifeCtrl.viewport.height" width="lifeCtrl.viewport.width"
+                           objects="lifeCtrl.gridObj.grid" box="lifeCtrl.box" on-update="lifeCtrl.update()"
+                           touch="lifeCtrl.touch(event)" grid-bg="true">
+            </canvas-screen>
+        </div>
+        <div class="information">
+            <label>Generation: {{lifeCtrl.generation}}</label>
+            <button class="btn-default" ng-click="lifeCtrl.pauseToggle()">{{lifeCtrl.pause ? 'Resume' : 'Pause'}}</button>
+            <button class="btn-default" ng-click="lifeCtrl.reset()">Reset</button>
+        </div>
+        <div class="statistics">
+            <div class="statistics-container" id="gameStats">
+                <div class="stat">
+                    <label class="form-label">Step Speed:</label>
+                    <input class="form-control"
+                           type="number" id="step"
+                           ng-model="lifeCtrl.step"
+                           step=".01" />
+                </div>
             </div>
         </div>
     </div>

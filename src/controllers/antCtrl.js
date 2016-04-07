@@ -3,6 +3,7 @@
 
     ng.module('aidemo.ant', [
         'ui.router',
+        'aidemo.service.screenSize',
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
         'aidemo.models.vector',
@@ -10,8 +11,8 @@
         'aidemo.models.ants.food',
         'aidemo.models.ants.nest'
     ])
-        .controller("AntController", ['$scope', 'MathUtils', 'DrawUtils', 'Vector', 'Nest', 'Ant', 'Food',
-            function ($scope, MathUtils, DrawUtils, Vector, Nest, Ant, Food) {
+        .controller("AntController", ['$scope', 'MathUtils', 'DrawUtils', 'ScreenSize', 'Vector', 'Nest', 'Ant', 'Food',
+            function ($scope, MathUtils, DrawUtils, ScreenSize, Vector, Nest, Ant, Food) {
                 var vm = this;
                 vm.box = {};
                 vm.BACK_COLOR = "#555555";
@@ -30,6 +31,12 @@
                     alignWeight: 0.01,
                     avoidWeight: 0.1,
                     pheromoneWeight: 0.25
+                };
+
+                var viewport = ScreenSize.getViewPort();
+                vm.viewport = {
+                    height: (viewport.height / 2.2),
+                    width: (viewport.width / 2)
                 };
 
                 vm.spawnFood = function () {

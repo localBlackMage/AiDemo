@@ -2,28 +2,39 @@
 
 div.app-flockdemo {
   .common-container;
+  flex-direction: row;
 
-  div.demo-screen {
-    flex-shrink: 1;
-    justify-content: center;
+  div.info-container {
+    font-size: 12px;
 
-    canvas.screen {
-      border: solid @theme-highlight-dark 2px;
-      display: flex;
+    li {
+      margin-bottom: 5px;
     }
   }
 
-  div.information {
-    flex-grow: 1;
-    justify-content: space-around;
-    align-items: center;
+  div.game-container {
 
-    label {
-      color: white;
+    div.demo-screen {
+      flex-shrink: 1;
+      justify-content: center;
+
+      canvas.screen {
+        border: solid @theme-highlight-dark 2px;
+        display: flex;
+      }
     }
-  }
 
-  div.statistics {
+    div.information {
+      flex-grow: 1;
+      justify-content: space-around;
+      align-items: center;
+
+      label {
+        color: white;
+      }
+    }
+
+    div.statistics {
     flex-grow: .2;
     justify-content: space-around;
 
@@ -37,5 +48,6 @@ div.app-flockdemo {
 
       }
     }
+  }
   }
 }

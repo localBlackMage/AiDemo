@@ -121,4 +121,6 @@ gulp.task('watch', function () {
 // Default Task
 gulp.task('default', ['templates', 'appscripts', 'styles', 'cssmin', 'test']);
 
+gulp.task('non-scripts', ['templates', 'styles', 'cssmin']);
+
 gulp.task('build-all', ['templates', 'libs', 'appscripts', 'styles', 'cssmin', 'test']);

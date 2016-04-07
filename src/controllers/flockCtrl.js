@@ -3,13 +3,14 @@
 
     ng.module('aidemo.flock', [
         'ui.router',
+        'aidemo.service.screenSize',
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
         'aidemo.models.vector',
         'aidemo.models.flockEntity'
     ])
-        .controller("FlockController", ['$scope', 'MathUtils', 'DrawUtils', 'Vector', 'FlockEntity',
-            function ($scope, MathUtils, DrawUtils, Vector, FlockEntity) {
+        .controller("FlockController", ['$scope', 'ScreenSize', 'MathUtils', 'DrawUtils', 'Vector', 'FlockEntity',
+            function ($scope, ScreenSize, MathUtils, DrawUtils, Vector, FlockEntity) {
                 var vm = this, WOLVES = 'Wolves', ZOMBIES = 'Zombies';
                 vm.box = {};
                 vm.BACK_COLOR = "#555555";
@@ -18,7 +19,7 @@
                     prey: [],
                     predators: []
                 };
-                vm.preyAmount = 200;
+                vm.preyAmount = 50;
                 vm.predatorAmount = 2;
                 vm.predatorStats = {
                     speed: 0.7,
@@ -35,6 +36,12 @@
                 };
                 vm.gameType = WOLVES;
 
+                var viewport = ScreenSize.getViewPort();
+                vm.viewport = {
+                    height: (viewport.height / 2.2),
+                    width: (viewport.width / 2)
+                };
+
                 vm.updateStats = function (newStats, entityType) {
                     for (var entity in vm.entities[entityType]) {
                         if (vm.entities[entityType][entity]) {
@@ -48,35 +55,22 @@
                     }
                 };
 
-                //$scope.$watch('vm.preyStats', function (newVal, oldVal) {
-                //    if (newVal !== oldVal) {
-                //        vm.updateStats(newVal, 'prey');
-                //    }
-                //}, true);
                 $scope.$watch(
-                    function watchPreyStats( scope ) {
-                        // Return the "result" of the watch expression.
-                        return( vm.preyStats );
+                    function watchPreyStats(scope) {
+                        return ( vm.preyStats );
                     },
-                    function handlePreyStatsChange( newValue, oldValue ) {
+                    function handlePreyStatsChange(newValue, oldValue) {
                         if (newValue !== oldValue) {
                             vm.updateStats(newValue, 'prey');
                         }
                     }
                 );
 
-
-                //$scope.$watch('vm.predatorStats', function (newVal, oldVal) {
-                //    if (newVal !== oldVal) {
-                //        vm.updateStats(newVal, 'predators');
-                //    }
-                //}, true);
                 $scope.$watch(
-                    function watchPredatorStats( scope ) {
-                        // Return the "result" of the watch expression.
-                        return( vm.preyStats );
+                    function watchPredatorStats(scope) {
+                        return ( vm.preyStats );
                     },
-                    function handlePredatorStatsChange( newValue, oldValue ) {
+                    function handlePredatorStatsChange(newValue, oldValue) {
                         if (newValue !== oldValue) {
                             vm.updateStats(newValue, 'predators');
                         }
@@ -199,7 +193,7 @@
                         'main@': {
                             templateUrl: 'flockDemo.html',
                             controller: 'FlockController',
-                            controllerAs: 'FlockCtrl'
+                            controllerAs: 'flockCtrl'
                         }
                     }
                 });

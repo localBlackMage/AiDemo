@@ -1,4 +1,5 @@
 describe("Utils Service", function () {
+    'use strict';
     var Utils;
 
     beforeEach(function () {

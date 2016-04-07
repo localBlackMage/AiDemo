@@ -1,13 +1,14 @@
 describe('Flock Controller', function () {
     'use strict';
 
-    var ctrl, scope, MathUtils, DrawUtils, Vector, FlockEntity;
+    var ctrl, scope, ScreenSize, MathUtils, DrawUtils, Vector, FlockEntity;
 
     beforeEach(function () {
         module('aidemo.flock');
 
-        inject(function ($controller, $rootScope, _MathUtils_, _DrawUtils_, _Vector_, _FlockEntity_, $injector) {
+        inject(function ($controller, $rootScope, _ScreenSize_, _MathUtils_, _DrawUtils_, _Vector_, _FlockEntity_, $injector) {
             scope = $rootScope.$new();
+            ScreenSize = $injector.get('ScreenSize');
             MathUtils = $injector.get('MathUtils');
             DrawUtils = $injector.get('DrawUtils');
             Vector = _Vector_;
@@ -15,6 +16,7 @@ describe('Flock Controller', function () {
 
             ctrl = $controller('FlockController', {
                 $scope: scope,
+                ScreenSize: ScreenSize,
                 MathUtils: MathUtils,
                 DrawUtils: DrawUtils,
                 Vector: Vector,
@@ -32,7 +34,7 @@ describe('Flock Controller', function () {
         expect(ctrl.entities.prey.length).toBe(0);
         expect(ctrl.entities.predators.length).toBe(0);
 
-        expect(ctrl.preyAmount).toBe(200);
+        expect(ctrl.preyAmount).toBe(50);
         expect(ctrl.predatorAmount).toBe(2);
         expect(ctrl.predatorStats.speed).toBe(0.7);
         expect(ctrl.predatorStats.cohesionWeight).toBe(.5);
