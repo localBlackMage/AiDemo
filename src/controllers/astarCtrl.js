@@ -3,16 +3,16 @@
 
     ng.module('aidemo.astar', [
         'ui.router',
+        'aidemo.service.screenSize',
         'aidemo.service.utils',
         'aidemo.service.mathUtils',
         'aidemo.service.aStar',
         'aidemo.service.gridService',
         'aidemo.models.vector',
         'aidemo.models.node'
-        //'aidemo.models.lifeCell'
     ])
-        .controller('AStarController', ['$timeout', 'AStar', 'GridService', 'MathUtils', 'Vector', 'Node',
-            function ($timeout, AStar, GridService, MathUtils, Vector, Node) {
+        .controller('AStarController', ['$timeout', 'ScreenSize', 'AStar', 'GridService', 'MathUtils', 'Vector', 'Node',
+            function ($timeout, ScreenSize, AStar, GridService, MathUtils, Vector, Node) {
                 var vm = this;
                 vm.BACK_COLOR = "#555555";
                 vm.GRID_COLOR = "#8EAEC9";
@@ -22,6 +22,12 @@
                 };
                 vm.start = null;
                 vm.end = null;
+
+                var viewport = ScreenSize.getViewPort();
+                vm.viewport = {
+                    height: (viewport.height / 1.5) + (viewport.height % vm.gridObj.tileSize) + (vm.gridObj.tileSize / 2),
+                    width: (viewport.width / 1.5) + (viewport.width % vm.gridObj.tileSize) + (vm.gridObj.tileSize / 2)
+                };
 
                 vm.findNodeInGridAndPathSelect = function (node) {
                     if (vm.gridObj.grid) {

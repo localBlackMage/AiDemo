@@ -2,8 +2,8 @@
     <div class="info-container">
         <h3>Swarm Intelligence: Borrowing From Nature</h3>
         <p>
-            Simulating a force of nature, this demonstration sets out to portray how herd animals and insects in the
-            form of predators chasing down prey. Swarming intelligence has many different uses ranging from visual effects and
+            Simulating a force of nature, this demonstration emulates the driving force behind herds of animals and swarms
+            of insects. Swarming intelligence has many different uses ranging from visual effects and
             problem solution optimization all the way to driving a collection of robots or video game characters.
         </p>
         <p>
@@ -15,19 +15,17 @@
             Zombie mode will have the predators shambling toward the humans and biting them, turning them into even more
             zombies until nothing but zombies remain!
         </p>
+        <h3>Stats</h3>
+        <ul>
+            <li><b>Amount:</b> Amount of Predators/Prey at the start of a game</li>
+            <li><b>Speed:</b> The velocity at which the predator/prey travels</li>
+            <li><b>Cohesion:</b> The "glue" force, or what draws the predators/prey toward one another</li>
+            <li><b>Separation:</b> The repelling force, or what drives the predators/prey away from one another</li>
+            <li><b>Alignment:</b> The force that keeps the predators/prey headed in the same direction</li>
+        </ul>
         <p>
-            <h3>Stats</h3>
-            <ul>
-                <li><b>Amount:</b> Amount of Predators/Prey at the start of a game</li>
-                <li><b>Speed:</b> The velocity at which the predator/prey travels</li>
-                <li><b>Cohesion:</b> The "glue" force, or what draws the predators/prey toward one another</li>
-                <li><b>Separation:</b> The repelling force, or what drives the predators/prey away from one another</li>
-                <li><b>Alignment:</b> The force that keeps the predators/prey headed in the same direction</li>
-            </ul>
+            For more details and an in depth look at how these forces look, please view my <a href="/presentations/swarmIntelligence.html">presentation</a>!
         </p>
-        <!--<p>-->
-            <!--For more details and an in depth look at how these forces look, please view my <a href="">presentation</a>!-->
-        <!--</p>-->
     </div>
     <div class="game-container">
         <div class="demo-screen">
@@ -37,7 +35,9 @@
             </canvas-screen>
         </div>
         <div class="information">
-            <label>{{flockCtrl.gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{flockCtrl.entities.prey.length}}</label>
+            <div class="label">
+                {{flockCtrl.gameType==='Wolves' ? 'Sheep' : 'Humans'}} Remaining: {{flockCtrl.entities.prey.length}}
+            </div>
             <button class="btn-default" ng-click="flockCtrl.toggleGameType()">Game Type: {{flockCtrl.gameType}}!</button>
             <button class="btn-default" ng-click="flockCtrl.clear()">Clear!</button>
             <button class="btn-default" ng-click="flockCtrl.reset()">Start!</button>

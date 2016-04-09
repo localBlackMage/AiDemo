@@ -1,8 +1,25 @@
 <div class="app-astardemo">
-    <div class="demo-screen">
-        <canvas-screen has-grid="n" bg-color="{{AStarCtrl.BACK_COLOR}}" height="600" width="700"
-                       objects="AStarCtrl.gridObj.grid" box="AStarCtrl.box"
-                       touch="AStarCtrl.touch(event)">
-        </canvas-screen>
+    <div class="info-container">
+        <h1>A*</h1>
+        <p>
+            A common problem in computer science is the need to find the shortest distance between two points over a
+            series of nodes. <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a> is but one of several
+            different path finding algorithms designed to find the shortest, fastest path from one given node to another.
+        </p>
+        <p>
+            Select a node on the grid and it will be highlighted, then selected a second node. If there is a possible
+            path between the two nodes, the algorithm will find the shortest path from start to finish and highlight
+            it in green. Simply click again to reset it.
+        </p>
+    </div>
+
+    <div class="game-container">
+        <div class="demo-screen">
+            <canvas-screen has-grid="n" bg-color="{{AStarCtrl.BACK_COLOR}}"
+                           height="AStarCtrl.viewport.height" width="AStarCtrl.viewport.height"
+                           objects="AStarCtrl.gridObj.grid" box="AStarCtrl.box"
+                           touch="AStarCtrl.touch(event)">
+            </canvas-screen>
+        </div>
     </div>
 </div>

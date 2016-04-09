@@ -27,7 +27,7 @@
 
                 var viewport = ScreenSize.getViewPort();
                 vm.viewport = {
-                    height: (viewport.height / 1.5) - (viewport.height % vm.gridObj.tileSize),
+                    height: (viewport.height / 2.0) - (viewport.height % vm.gridObj.tileSize),
                     width: (viewport.width / 2.0) - (viewport.width % vm.gridObj.tileSize)
                 };
 

@@ -1,4 +1,4 @@
-@theme-dark: #333333;
+@theme-dark: #161117;//#333333;
 @theme-main-fade: #666666;
 @theme-main: #777777;
 @theme-light: #CCCCCC;
@@ -35,33 +35,14 @@
 
 .common-container {
   padding: 30px;
-  background-color:rgba(0,0,0,0.75);
-  border-radius: 25px;
-  box-shadow: 0 0 20px black;
+  //background-color:rgba(0,0,0,0.75);
+  //border-radius: 25px;
+  //box-shadow: 0 0 20px black;
   flex: 1 0 0;
   flex-direction: column;
   justify-content: space-around;
+  display: flex;
 }
-
-.info-container {
-  width: 30%;
-  color: white;
-  flex-direction: column;
-  font-family: @default-font;
-
-  p {
-    line-height: 1.5;
-  }
-}
-
-.game-container {
-  width: 70%;
-  flex: 1 0 0;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-
 
 @ipad-landscape: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape)";
 @ipad-portrait: ~"only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait)";

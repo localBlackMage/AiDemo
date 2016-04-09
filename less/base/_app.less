@@ -1,7 +1,13 @@
 @import "_variables.less";
 
-html, body {
+html {
   height: 100%;
+  background: url('../../images/acrylicorner_dot_com_wallpaper.jpg');
+  //background: url('../../images/chipsChallenge/tiles/emptyLarge.png');
+  background-repeat: repeat;
+}
+
+html, body {
   margin: 0;
 }
 
@@ -81,8 +87,9 @@ input {
   }
 }
 
-div {
-  display: flex;
+ul, h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  color: @theme-light;
 }
 
 .highlight {
@@ -92,24 +99,12 @@ div {
 body.app-container {
   display: flex;
   position: relative;
-
-  &::after {
-    content: "";
-    // BG from http://i.stack.imgur.com/iULOS.jpg
-    background: url('../../images/iULOS.jpg');
-    opacity: 0.5;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -1;
-  }
+  height: 100%;
+  padding: 10px 10px 10px 126px;
 
   div.app-body {
-    width: 100%;
-    justify-content: center;
-    padding: 30px;
+    //width: 100%;
+    //justify-content: center;
   }
 }
 
@@ -123,17 +118,88 @@ body.app-container {
 }
 
 .form-control {
-  width: 10em;
+  width: 2.5em;
   background-color: @theme-dark;
   color: @theme-light;
   border-color: @theme-light;
 }
 
-//.left {
-//  float: left;
-//  margin-right: 1em;
-//}
 
 .down {
   margin-top: 1em;
+}
+
+div.info-container {
+  display: flex;
+  width: 30%;
+  color: @theme-light;
+  flex-direction: column;
+  font-family: @default-font;
+  padding-right: 10px;
+
+  p {
+    line-height: 1.5;
+    margin-top: 0;
+    color: @theme-light;
+  }
+
+  li {
+    margin-bottom: 5px;
+  }
+}
+
+div.game-container {
+  display: flex;
+  width: 70%;
+  min-width: 600px;
+  min-height: 500px;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 10px;
+
+
+  div.demo-screen {
+    //flex-shrink: 1;
+    justify-content: flex-end;
+    display:flex;
+
+    canvas.screen {
+      border: solid @theme-highlight-dark 2px;
+      display: flex;
+    }
+  }
+
+  div.information {
+    padding: 10px 0;
+    display: flex;
+    justify-content: flex-end;
+
+    div.label {
+      color: @theme-light;
+      font-family: @default-font;
+      display: flex;
+      align-items: center;
+    }
+    button {
+      margin-left: 15px;
+    }
+  }
+
+  div.statistics {
+    justify-content: flex-end;
+    display: flex;
+
+    div.statistics-container {
+      flex-direction: column;
+      justify-content: space-around;
+      display: flex;
+      margin-left: 20px;
+
+      div.stat {
+        justify-content: space-between;
+        display: flex;
+      }
+    }
+  }
 }
