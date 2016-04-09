@@ -47,6 +47,8 @@
                         var node = path.dequeue();
                         vm.findNodeInGridAndPathSelect(node);
                     }
+                    // Make sure each node has the latest reference to it's neighbor
+                    GridService.fillGridNeighbors(vm.gridObj.grid, true);
                 };
 
                 vm.createPath = function () {
@@ -63,26 +65,26 @@
                 };
 
                 vm.selectStartNode = function (position) {
-                    vm.gridObj.grid.forEach(function (row) {
-                        row.forEach(function (node) {
-                            if (node) {
-                                node.reset();
-                                if (node.specialSelect(position)) {
-                                    vm.start = node;
-                                }
-                            }
-                        });
-                    });
+                    for(var row = 0; row < vm.gridObj.grid.length; row++) {
+                       for (var node = 0; node < vm.gridObj.grid[row].length; node++) {
+                           if (vm.gridObj.grid[row][node]) {
+                               vm.gridObj.grid[row][node].reset();
+                               if (vm.gridObj.grid[row][node].specialSelect(position)) {
+                                   vm.start = vm.gridObj.grid[row][node];
+                               }
+                           }
+                       }
+                    }
                 };
 
                 vm.selectEndNode = function (position) {
-                    vm.gridObj.grid.forEach(function (row) {
-                        row.forEach(function (node) {
-                            if (node && node.eligibleForSelect(position)) {
-                                vm.end = node;
+                    for(var row = 0; row < vm.gridObj.grid.length; row++) {
+                        for (var node = 0; node < vm.gridObj.grid[row].length; node++) {
+                            if (vm.gridObj.grid[row][node] && vm.gridObj.grid[row][node].eligibleForSelect(position)) {
+                                vm.end = vm.gridObj.grid[row][node];
                             }
-                        });
-                    });
+                        }
+                    }
                     vm.createPath();
                 };
 
@@ -91,19 +93,19 @@
                     vm.end = null;
 
                     for (var row = 0; row < vm.gridObj.grid.length; row++) {
-                        for (var column = 0; column < vm.gridObj.grid[row].length; column++) {
-                            if (vm.gridObj.grid[row][column]) {
-                                vm.gridObj.grid[row][column].reset();
+                        for (var node = 0; node < vm.gridObj.grid[row].length; node++) {
+                            if (vm.gridObj.grid[row][node]) {
+                                vm.gridObj.grid[row][node].reset();
                             }
                         }
                     }
                 };
 
                 vm.handleTouchPosition = function (position) {
-                    if (vm.start === null) {
+                    if (!vm.start) {
                         vm.selectStartNode(position);
                     }
-                    else if (vm.end === null) {
+                    else if (!vm.end) {
                         vm.selectEndNode(position);
                     }
                     else {
@@ -145,8 +147,8 @@
                         offset = vm.gridObj.tileSize,
                         xDifference = vm.box.width - vm.gridObj.tileSize,
                         yDifference = vm.box.height - vm.gridObj.tileSize,
-                        numberOfColumns = xDifference / vm.gridObj.tileSize,
-                        numberOfRows = yDifference / vm.gridObj.tileSize;
+                        numberOfColumns = Math.floor(xDifference / vm.gridObj.tileSize),
+                        numberOfRows = Math.floor(yDifference / vm.gridObj.tileSize);
 
                     vm.gridObj.grid = [];
 
@@ -169,6 +171,24 @@
                     });
 
                     vm.handleTouchPosition(position);
+                };
+
+                vm.render = function (context) {
+                    vm.gridObj.grid.forEach(function (row){
+                        row.forEach(function (node){
+                            if (node && !(node.selected || node.special || node.path)) {
+                                node.render(context);
+                            }
+                        });
+                    });
+
+                    vm.gridObj.grid.forEach(function (row){
+                        row.forEach(function (node){
+                            if (node && (node.selected || node.special || node.path)) {
+                                node.render(context);
+                            }
+                        });
+                    });
                 };
 
                 $timeout(vm.generateGrid, 100);

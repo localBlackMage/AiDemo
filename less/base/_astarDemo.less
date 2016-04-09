@@ -2,12 +2,15 @@
 
 div.app-astardemo {
   .common-container;
-  flex-direction: row;
+  flex-direction: column;
+
+  div.info-container {
+    width: 100%;
+  }
 
   div.game-container {
-    justify-content: flex-start;
-    min-width: 0;
-    min-height: 0;
+    width: 100%;
+    align-items: center;
 
     div.demo-screen {
       canvas.screen {

@@ -33,7 +33,7 @@
                     params = params || {};
                     this._index = 0;
                     this._currentIndex = null;
-                    this._currentCapacity = params.capacity ? params.capacity : 20;
+                    this._currentCapacity = !_.isUndefined(params.capacity) ? params.capacity : 20;
                     this._collection = [];
                     for (var i = 0; i < this._currentCapacity; i++) {
                         this._collection.push(null);
@@ -243,10 +243,10 @@
                     }
                 };
 
-                service._isNodeInArray = function(array, node) {
+                service._isNodeInArray = function (array, node) {
                     return _.findIndex(array, function (otherNode) {
-                        return otherNode.id === node.id;
-                    }) > -1;
+                            return otherNode.id === node.id;
+                        }) > -1;
                 };
 
                 service.aStarAlgorithm = function (startNode, endNode, nodeMap, distBetween) {

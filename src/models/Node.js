@@ -9,6 +9,22 @@
     ])
         .factory('Node', ['Utils', 'DrawUtils', 'MathUtils', 'Vector',
             function (Utils, DrawUtils, MathUtils, Vector) {
+
+                /**
+                 * Node object
+                 {{
+                    id: id of the node, each is unique,
+                    position: Vector, position in the world,
+                    distance: Number, distance calculation for A*,
+                    box: Object,
+                    neighbors: Array, each neighboring node,
+                    selected: Boolean,
+                    special: Boolean, represents whether this node is the beginning or end of a path,
+                    path: Boolean, represents whether this node is part of a path (beginning and end exclusive)
+                 }}
+                 * @param params
+                 * @constructor
+                 */
                 function Node(params) {
                     params = params || {};
                     this.id = params.id ? params.id : null;
@@ -92,9 +108,11 @@
                 };
 
                 Node.prototype.render = function (ctx) {
+                    this.renderPaths(ctx);
+
                     DrawUtils.drawCircle(ctx, this.position.x, this.position.y, 5, this.getColor());
 
-                    this.renderPaths(ctx);
+                    //DrawUtils.drawText(ctx, this.position.x, this.position.y, '#fff', this.id);
                 };
 
                 return Node;

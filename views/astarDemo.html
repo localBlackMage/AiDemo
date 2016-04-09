@@ -15,9 +15,11 @@
 
     <div class="game-container">
         <div class="demo-screen">
+            <!--objects="AStarCtrl.gridObj.grid"-->
             <canvas-screen has-grid="n" bg-color="{{AStarCtrl.BACK_COLOR}}"
                            height="AStarCtrl.viewport.height" width="AStarCtrl.viewport.height"
-                           objects="AStarCtrl.gridObj.grid" box="AStarCtrl.box"
+                           custom-render="AStarCtrl.render(context)"
+                           box="AStarCtrl.box"
                            touch="AStarCtrl.touch(event)">
             </canvas-screen>
         </div>

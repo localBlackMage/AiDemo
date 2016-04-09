@@ -22,6 +22,7 @@
                         minHeight: '=?',
                         minWidth: '=?',
                         objects: '=?',
+                        customRender: '&?',
                         onUpdate: '&?',
                         touch: '&?'
                     },
@@ -133,7 +134,14 @@
                                 scope.renderGrid();
                             }
 
-                            scope.renderArrayOrObjectsArrays(scope.objects);
+                            if (_.isFunction(scope.customRender)) {
+                                scope.customRender({
+                                    context: scope.canvasContext
+                                });
+                            }
+                            else {
+                                scope.renderArrayOrObjectsArrays(scope.objects);
+                            }
 
                             if (scope.canvasGridIsBackground) {
                                 scope.renderGrid();
