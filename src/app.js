@@ -19,11 +19,12 @@
         'aidemo.chip'
     ]);
 
-    app.controller('HeaderController', ['$rootScope', '$scope', '$state',
-        function ($rootScope, $scope, $state) {
-            $scope.currentState = $state.current.name;
-            $scope.links = [
-                {state: 'app', name: 'Home', inactive: false},
+    app.controller('HeaderController', ['$rootScope', '$state', '$window',
+        function ($rootScope, $state, $window) {
+            var vm = this;
+            vm.currentState = $state.current.name;
+            vm.homeLink = {state: 'app', name: 'Home', inactive: false};
+            vm.links = [
                 {state: 'app.life', name: 'Life', inactive: false},
                 {state: 'app.flock', name: 'Swarming', inactive: false},
                 {state: 'app.ant', name: 'Ants', inactive: false},
@@ -34,8 +35,12 @@
 
             $rootScope.$on('$stateChangeStart',
                 function (event, toState, toParams, fromState, fromParams) {
-                    $scope.currentState = toState.name;
+                    vm.currentState = toState.name;
                 });
+
+            vm.goToBlog = function() {
+                $window.location.href = "http://acrylicorner.com/";
+            };
         }
     ]);
 
@@ -46,8 +51,6 @@
 
     app.config(['$stateProvider', '$urlRouterProvider',
         function ($stateProvider, $urlRouterProvider) {
-
-            //$urlRouterProvider.when('/', '/dashboard');
             $urlRouterProvider.when('', '/');
 
             $stateProvider
@@ -56,7 +59,8 @@
                     views: {
                         'header@': {
                             templateUrl: 'header.html',
-                            controller: 'HeaderController'
+                            controller: 'HeaderController',
+                            controllerAs: 'headCtrl'
                         },
                         'main@': {
                             templateUrl: 'dashboard.html',

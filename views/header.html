@@ -1,12 +1,26 @@
 <div class="app-header-container">
     <ul>
-        <li ng-repeat="link in links">
+        <li>
             <button class="btn-default"
-                    ng-class="{'active': link.state === currentState}"
+                    ng-class="{'active': headCtrl.homeLink.state === headCtrl.currentState}"
+                    ui-sref="{{headCtrl.homeLink.state}}"
+                    ng-disabled="headCtrl.homeLink.inactive">
+                {{headCtrl.homeLink.name}}
+            </button>
+        </li>
+        <li>
+            <button class="btn-default"
+                    ng-click="headCtrl.goToBlog()">
+                Blog
+            </button>
+        </li>
+        <li ng-repeat="link in headCtrl.links">
+            <button class="btn-default"
+                    ng-class="{'active': link.state === headCtrl.currentState}"
                     ui-sref="{{link.state}}"
-                    ng-disabled="link.inactive">{{link.name}}</button>
-            <!--ui-sref-active="active"-->
-
+                    ng-disabled="link.inactive">
+                {{link.name}}
+            </button>
         </li>
     </ul>
 </div>
