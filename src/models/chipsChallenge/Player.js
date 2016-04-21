@@ -7,10 +7,11 @@
         'aidemo.models.chip.globals',
         'aidemo.models.chip.item',
         'aidemo.models.chip.tile',
-        'aidemo.models.chip.sound'
+        'aidemo.models.chip.sound',
+        'aidemo.models.vector'
     ])
-        .factory('Player', ['Utils', 'DrawUtils', 'Globals', 'Item', 'Tile', 'Sound',
-            function (Utils, DrawUtils, Globals, Item, Tile, Sound) {
+        .factory('Player', ['Utils', 'DrawUtils', 'Globals', 'Item', 'Tile', 'Sound', 'Vector',
+            function (Utils, DrawUtils, Globals, Item, Tile, Sound, Vector) {
 
                 /**
                  * Class that represents the player, Chip. Contains location data, what special items the player is holding,
@@ -33,7 +34,7 @@
 
                     this.worldPos = params.worldPos ? params.worldPos : new Vector();
                     this.screenPos = params.screenPos ? params.screenPos : new Vector();
-                    this.specialSlots = null;
+                    this.specialSlots = specialSlotsDefault;
                     _.merge(this.specialSlots, specialSlotsDefault, params.specialSlots);
 
                     this.numberOfMicrochips = _.isNumber(params.numberOfMicrochips) ? params.numberOfMicrochips : 0;
@@ -42,11 +43,16 @@
                     this.waterSprites = Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.WATER_SPRITE_SHEET);
 
                     this.activeSpriteSheet = this.normalSprites;
-                    this.curSprite = params.curSprite ? params.curSprite : {x: 0, y: 0, w: Globals.TILE_SIZE, h: Globals.TILE_SIZE};
+                    this.curSprite = params.curSprite ? params.curSprite : {
+                        x: 0,
+                        y: 0,
+                        w: Globals.TILE_SIZE,
+                        h: Globals.TILE_SIZE
+                    };
 
                     this.itemsBack = Utils.generateImageFromURLObject(Tile.TILE_IMAGES, Tile.EMPTY);
 
-                    this.ssKeys = Object.keys(this.specialSlots);
+                    this.specialSlotsKeys = Object.keys(this.specialSlots);
 
                     this.deathSound = new Sound({soundFile: Sound.DEATH});
 
@@ -88,6 +94,8 @@
                 /**
                  * Moves the player's worldPos in the given direction
                  * @param direction
+                 *
+                 * @see Vector
                  */
                 Player.prototype.move = function (direction) {
                     this.worldPos.add(direction);
@@ -95,11 +103,30 @@
                 };
 
                 /**
+                 * Given an item type string, returns a boolean that is true
+                 * if the item type string exists within specialSlotKeys and
+                 * false if not
+                 * @param item - String, Item.type
+                 * @returns {boolean} - True if item exists in specialSlotKeys, false if not
+                 * @private
+                 *
+                 * @see Item
+                 */
+                Player.prototype._doesItemExist = function(item) {
+                    return _.findIndex(this.specialSlotsKeys, function(key){
+                            return key === item;
+                        }) > -1;
+                };
+
+                /**
                  * Sets the specialSlot's corresponding item to null (removes it from the player's "inventory")
                  * @param item - String, Item.{ITEM}
                  */
                 Player.prototype.removeItem = function (item) {
-                    this.specialSlots[item] = null;
+                    // Don't want to add garbage properties if whatever's passed in doesn't exist within the map
+                    if (this._doesItemExist(item)) {
+                        this.specialSlots[item] = null;
+                    }
                 };
 
                 /**
@@ -111,8 +138,12 @@
                  * @see Item
                  */
                 Player.prototype._addItem = function (item) {
-                    this.specialSlots[item.type] = item;
-                    return true;
+                    // Don't want to add garbage properties if whatever's passed in doesn't exist within the map
+                    if (this._doesItemExist(item.type)) {
+                        this.specialSlots[item.type] = item;
+                        return true;
+                    }
+                    return false;
                 };
 
                 /**
@@ -145,36 +176,54 @@
                     }
                 };
 
+                /**
+                 * Given a directional Vector, sets the curSprite.x to the corresponding facing sprite
+                 * @param direction - Vector matching a Global direction vector
+                 * @private
+                 *
+                 * @see Vector
+                 */
                 Player.prototype._setCurSpriteParams = function (direction) {
-                    if (direction === Globals.DOWN) {
+                    if (Globals.DOWN.compare(direction)) {
                         this.curSprite.x = 0;
                     }
-                    else if (direction === Globals.LEFT) {
+                    else if (Globals.LEFT.compare(direction)) {
                         this.curSprite.x = this.curSprite.w;
                     }
-                    else if (direction === Globals.UP) {
+                    else if (Globals.UP.compare(direction)) {
                         this.curSprite.x = this.curSprite.w * 2;
                     }
-                    else if (direction === Globals.RIGHT) {
+                    else if (Globals.RIGHT.compare(direction)) {
                         this.curSprite.x = this.curSprite.w * 3;
                     }
                 };
 
+                /**
+                 * Given a sprite image, sets the activeSpriteSheet to the image object and plays the player's deathSound
+                 * @param deathSprite - Image object
+                 * @private
+                 */
                 Player.prototype._killPlayer = function (deathSprite) {
-                    var tmp = new Image();
-                    tmp.src = deathSprite;
-                    this._setCurSpriteParams(DOWN);
-                    this.activeSpriteSheet = tmp;
-                    this.status = DEAD;
+                    this._setCurSpriteParams(Globals.DOWN);
+                    this.activeSpriteSheet = deathSprite;
+                    this.status = Globals.DEAD;
                     this.deathSound.play(0.8);
                 };
 
+                /**
+                 * If the activeSpriteSheet is currently the waterSprites, resets it to the normalSprites
+                 * @private
+                 */
                 Player.prototype._resetSprite = function () {
                     if (this.activeSpriteSheet === this.waterSprites) {
                         this.activeSpriteSheet = this.normalSprites;
                     }
                 };
 
+                /**
+                 *
+                 * @param tile
+                 */
                 Player.prototype.handleTile = function (tile) {
                     this._resetSprite();
                     if (tile.getType() === Tile.EXIT) {
@@ -214,8 +263,8 @@
                 Player.prototype.renderItems = function (context) {
                     for (var x = 0; x < 8; x++) {
                         DrawUtils.drawImage(ctx, x * Globals.TILE_SIZE, 0, this.itemsBack);
-                        if (this.specialSlots[this.ssKeys[x]] !== null) {
-                            this.specialSlots[this.ssKeys[x]].render(context, x * Globals.TILE_SIZE, 0);
+                        if (this.specialSlots[this.specialSlotsKeys[x]] !== null) {
+                            this.specialSlots[this.specialSlotsKeys[x]].render(context, x * Globals.TILE_SIZE, 0);
                         }
                     }
                 };
