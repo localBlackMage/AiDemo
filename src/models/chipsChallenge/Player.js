@@ -112,8 +112,8 @@
                  *
                  * @see Item
                  */
-                Player.prototype._doesItemExist = function(item) {
-                    return _.findIndex(this.specialSlotsKeys, function(key){
+                Player.prototype._doesItemExist = function (item) {
+                    return _.findIndex(this.specialSlotsKeys, function (key) {
                             return key === item;
                         }) > -1;
                 };
@@ -221,33 +221,86 @@
                 };
 
                 /**
+                 * Sets the player's status to Globals.COMPLETE
+                 * @param tile - Tile object
+                 * @private
                  *
-                 * @param tile
+                 * @see Tile
+                 */
+                Player.prototype._handle_EXIT = function (tile) {
+                    this.status = Globals.COMPLETE;
+                };
+
+                /**
+                 * Given a Tile object, calls tile.setType and sets it to Tile.EMPTY
+                 * @param tile - Tile Object
+                 * @private
+                 *
+                 * @see Tile
+                 */
+                Player.prototype._handle_WATER_BLOCK = function (tile) {
+                    tile.setType(Tile.EMPTY);
+                };
+
+                /**
+                 * If the player does not have FLIPPERS, kills the player, else sets the activeSpriteSheet to waterSprites
+                 * @param tile - Tile Object
+                 * @private
+                 *
+                 * @see Tile
+                 */
+                Player.prototype._handle_WATER = function (tile) {
+                    if (!this.specialSlots.FLIPPERS) {
+                        this._killPlayer(Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.WATER_DEATH_SPRITE));
+                    }
+                    else {
+                        this.activeSpriteSheet = this.waterSprites;
+                    }
+                };
+
+                /**
+                 * If the player does not have FIRE_BOOTS, kills the player, else does nothing
+                 * @param tile - Tile Object
+                 * @private
+                 *
+                 * @see Tile
+                 */
+                Player.prototype._handle_FIRE = function (tile) {
+                    if (!this.specialSlots.FIRE_BOOTS) {
+                        this._killPlayer(Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.FIRE_DEATH_SPRITE));
+                    }
+                };
+
+                /**
+                 * If the player does not have ICE_SKATES, moves the player another tile forward in the direction
+                 * they're facing, else does nothing
+                 * @param tile - Tile object
+                 * @private
+                 *
+                 * @see Tile
+                 */
+                Player.prototype._handle_ICE = function (tile) {
+                    if (!this.specialSlots.ICE_SKATES) {
+
+                    }
+                };
+
+                /**
+                 * Given a Tile object, calls resetSprite, attempts to pick up an item from the tile, and attempts
+                 * to call a _handle_{TILE.TYPE} function
+                 * @param tile - Tile object
+                 *
+                 * @see Tile
                  */
                 Player.prototype.handleTile = function (tile) {
                     this._resetSprite();
-                    if (tile.getType() === Tile.EXIT) {
-                        this.status = Globals.COMPLETE;
-                    }
+
                     if (this.pickUp(tile.getItem())) {
                         tile.removeItem();
                     }
-                    if (tile.getType() === Tile.WATER_BLOCK) {
-                        tile.setType(Tile.EMPTY);
-                    }
-                    else if (tile.getType() === Tile.WATER) {
-                        if (this.specialSlots.FLIPPERS === null) {
-                            this._killPlayer(Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.WATER_DEATH_SPRITE));
-                        }
-                        else {
-                            this.activeSpriteSheet = this.waterSprites;
-                        }
-                    }
-                    else if (tile.getType() === Tile.FIRE && this.specialSlots.FIRE_BOOTS === null) {
-                        this._killPlayer(Utils.generateImageFromURLObject(Player.PLAYER_IMAGES, Player.FIRE_DEATH_SPRITE));
-                    }
-                    else if (tile.getType() === Tile.ICE && this.specialSlots.ICE_SKATES === null) {
 
+                    if (_.isFunction(this["_handle_" + tile.getType()])) {
+                        this["_handle_" + tile.getType()](tile);
                     }
                 };
 
@@ -262,8 +315,8 @@
                  */
                 Player.prototype.renderItems = function (context) {
                     for (var x = 0; x < 8; x++) {
-                        DrawUtils.drawImage(ctx, x * Globals.TILE_SIZE, 0, this.itemsBack);
-                        if (this.specialSlots[this.specialSlotsKeys[x]] !== null) {
+                        DrawUtils.drawImage(context, x * Globals.TILE_SIZE, 0, this.itemsBack);
+                        if (this.specialSlots[this.specialSlotsKeys[x]]) {
                             this.specialSlots[this.specialSlotsKeys[x]].render(context, x * Globals.TILE_SIZE, 0);
                         }
                     }

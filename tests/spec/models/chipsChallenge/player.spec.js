@@ -284,11 +284,238 @@ describe("Player Model", function () {
         expect(player.activeSpriteSheet).toBe(player.normalSprites);
     });
 
-    it("", function () {
-        var player = new Player(defaultPlayer);
+    describe("should handle a tile", function() {
+        it("if it is an EXIT", function () {
+            var player = new Player(defaultPlayer);
+            player.status = Globals.ALIVE;
+
+            player._handle_EXIT({});
+
+            expect(player.status).toBe(Globals.COMPLETE);
+        });
+
+        it("if it is a WATER_BLOCK", function () {
+            var player = new Player(defaultPlayer);
+            var tile = {
+                setType: function(type){}
+            };
+
+            spyOn(tile, 'setType').and.callFake(function(type){
+                expect(type).toBe(Tile.EMPTY);
+            });
+
+            player._handle_WATER_BLOCK(tile);
+
+            expect(tile.setType).toHaveBeenCalled();
+        });
+
+        describe("if it is a WATER", function () {
+            it("and the player does not have FLIPPERS, it should kill the player", function () {
+                var player = new Player(defaultPlayer),
+                    image = {};
+
+                spyOn(Utils, 'generateImageFromURLObject').and.callFake(function(images, which){
+                    expect(images).toBe(Player.PLAYER_IMAGES);
+                    expect(which).toBe(Player.WATER_DEATH_SPRITE);
+                    return image;
+                });
+                spyOn(player, '_killPlayer').and.callFake(function(img){
+                    expect(img).toBe(image);
+                });
+
+                player.specialSlots.FLIPPERS = null;
+
+                player._handle_WATER({});
+
+                expect(Utils.generateImageFromURLObject).toHaveBeenCalled();
+                expect(player._killPlayer).toHaveBeenCalled();
+            });
+
+            it("and the player does have FLIPPERS, it should set the activeSpriteSheet to the waterSprites", function () {
+                var player = new Player(defaultPlayer);
+
+                player.activeSpriteSheet = "";
+                player.specialSlots.FLIPPERS = {};
+
+                player._handle_WATER({});
+
+                expect(player.activeSpriteSheet).toBe(player.waterSprites);
+            });
+        });
+
+        describe("if it is a FIRE", function () {
+            it("and the player does not have FIRE_BOOTS, it should kill the player", function () {
+                var player = new Player(defaultPlayer),
+                    image = {};
+
+                spyOn(Utils, 'generateImageFromURLObject').and.callFake(function(images, which){
+                    expect(images).toBe(Player.PLAYER_IMAGES);
+                    expect(which).toBe(Player.FIRE_DEATH_SPRITE);
+                    return image;
+                });
+                spyOn(player, '_killPlayer').and.callFake(function(img){
+                    expect(img).toBe(image);
+                });
+
+                player.specialSlots.FIRE_BOOTS = null;
+
+                player._handle_FIRE({});
+
+                expect(Utils.generateImageFromURLObject).toHaveBeenCalled();
+                expect(player._killPlayer).toHaveBeenCalled();
+            });
+
+            it("and the player does have FIRE_BOOTS, it should not do anything", function () {
+                var player = new Player(defaultPlayer);
+
+                spyOn(player, '_killPlayer').and.callThrough();
+
+                player.specialSlots.FIRE_BOOTS = {};
+
+                player._handle_FIRE({});
+
+                expect(player._killPlayer).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("if it is a ICE", function () {
+            it("and the player does not have ICE_SKATES, it should move the player another block in the direction they're currently facing", function () {
+                var player = new Player(defaultPlayer);
+
+                player.specialSlots.ICE_SKATES = null;
+
+                player._handle_ICE({});
+            });
+
+            it("and the player does have ICE_SKATES, it should not do anything", function () {
+                var player = new Player(defaultPlayer);
+
+                spyOn(player, '_killPlayer').and.callThrough();
+
+                player.specialSlots.ICE_SKATES = {};
+
+                player._handle_ICE({});
+            });
+        });
+
+        it("should call _resetSprite and pickUp", function () {
+            var player = new Player(defaultPlayer),
+                tileItem = {},
+                tile = {
+                    getItem: function(){
+                        return tileItem;
+                    },
+                    getType: function(){
+                        return Tile.EMPTY;
+                    }
+                };
+
+            spyOn(player, '_resetSprite').and.callThrough();
+            spyOn(tile, 'getItem').and.callThrough();
+            spyOn(player, 'pickUp').and.callFake(function(item){
+                expect(item).toBe(tileItem);
+                return false;
+            });
+            spyOn(tile, 'getType').and.callThrough();
+            spyOn(_, 'isFunction').and.callFake(function(fn){
+                expect(fn).not.toBeDefined();
+                return false;
+            });
+
+            player.handleTile(tile);
+
+            expect(player._resetSprite).toHaveBeenCalled();
+            expect(tile.getItem).toHaveBeenCalled();
+            expect(player.pickUp).toHaveBeenCalled();
+            expect(tile.getType).toHaveBeenCalled();
+            expect(_.isFunction).toHaveBeenCalled();
+        });
+
+        it("should call _resetSprite, pickUp then tile.removeItem, and a _handle_{TILE.TYPE} function", function () {
+            var player = new Player(defaultPlayer),
+                tileItem = {},
+                tile = {
+                    getItem: function(){
+                        return tileItem;
+                    },
+                    removeItem: function(){},
+                    getType: function(){
+                        return Tile.EXIT;
+                    }
+                };
+
+            spyOn(player, '_resetSprite').and.callThrough();
+            spyOn(tile, 'getItem').and.callThrough();
+            spyOn(player, 'pickUp').and.callFake(function(item){
+                expect(item).toBe(tileItem);
+                return true;
+            });
+            spyOn(tile, 'removeItem').and.callThrough();
+            spyOn(tile, 'getType').and.callThrough();
+            spyOn(_, 'isFunction').and.callFake(function(fn){
+                expect(fn).toBeDefined();
+                return true;
+            });
+            spyOn(player, '_handle_EXIT').and.callThrough();
+
+            player.handleTile(tile);
+
+            expect(player._resetSprite).toHaveBeenCalled();
+            expect(tile.getItem).toHaveBeenCalled();
+            expect(player.pickUp).toHaveBeenCalled();
+            expect(tile.removeItem).toHaveBeenCalled();
+            expect(tile.getType).toHaveBeenCalled();
+            expect(_.isFunction).toHaveBeenCalled();
+            expect(player._handle_EXIT).toHaveBeenCalled();
+        });
     });
 
-    it("", function () {
-        var player = new Player(defaultPlayer);
+    it("should render the item background and call render for each specialSlot Item that exists", function () {
+        var player = new Player(defaultPlayer),
+            context = {};
+
+        player.specialSlots.FLIPPERS = {
+            render: function(ctx, x, y){}
+        };
+
+        spyOn(DrawUtils, "drawImage").and.callFake(function(ctx, x, y, img) {
+            expect(ctx).toBe(context);
+            expect(x % Globals.TILE_SIZE).toBe(0);
+            expect(y).toBe(0);
+            expect(img).toBe(player.itemsBack);
+        });
+
+        spyOn(player.specialSlots.FLIPPERS, "render").and.callFake(function(ctx, x, y) {
+            expect(ctx).toBe(context);
+            expect(x).toBe(0);
+            expect(y).toBe(0);
+        });
+
+        player.renderItems(context);
+
+        expect(DrawUtils.drawImage.calls.count()).toBe(8);
+        expect(player.specialSlots.FLIPPERS.render).toHaveBeenCalled();
+    });
+
+    it("should call drawSprite", function () {
+        var player = new Player(defaultPlayer),
+            context = {};
+
+        spyOn(DrawUtils, "drawSprite").and.callFake(function(ctx, spriteSheet, spriteX, spriteY, spriteW, spriteH, screenX, screenY, drawW, drawH) {
+            expect(ctx).toBe(context);
+            expect(spriteSheet).toBe(player.activeSpriteSheet);
+            expect(spriteX).toBe(player.curSprite.x);
+            expect(spriteY).toBe(player.curSprite.y);
+            expect(spriteW).toBe(player.curSprite.w);
+            expect(spriteH).toBe(player.curSprite.h);
+            expect(screenX).toBe(player.screenPos.x);
+            expect(screenY).toBe(player.screenPos.y);
+            expect(drawW).toBe(player.curSprite.w);
+            expect(drawH).toBe(player.curSprite.h);
+        });
+
+        player.render(context);
+
+        expect(DrawUtils.drawSprite).toHaveBeenCalled();
     });
 });
