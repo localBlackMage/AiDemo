@@ -2,7 +2,7 @@
     'use strict';
 
     ng.module('aidemo.models.chip.sound', [])
-        .factory('Sound', [function () {
+        .factory('Sound', ['$document', function ($document) {
 
             /**
              * Class that loads a mp3 file and stores it for play later
@@ -17,10 +17,12 @@
                 }
                 this.soundFile = params.soundFile;
 
-                this.audioElement = ng.element('<audio />');//document.createElement("audio");
+                //this.audioElement = ng.element('<audio />');//document.createElement("audio");
+                this.audioElement = $document.createElement("audio");
                 this.audioElement.preload = "auto";
 
-                var src = ng.element('<source />');//document.createElement("source");
+                //var src = ng.element('<source />'); //document.createElement("source");
+                var src = $document.createElement("source");
                 src.src = this.soundFile + ".mp3";
                 this.audioElement.appendChild(src);
                 this.audioElement.load();
@@ -46,3 +48,4 @@
             return Sound;
         }]);
 })(angular);
+

@@ -3,6 +3,7 @@
 
     ng.module('aidemo.chip', [
         'ui.router',
+        'aidemo.service.gridService',
         'aidemo.service.mathUtils',
         'aidemo.service.drawUtils',
         'aidemo.models.vector',
@@ -11,8 +12,8 @@
         'aidemo.models.chip.item',
         'aidemo.models.chip.tile'
     ])
-        .controller("ChipController", ['MathUtils', 'DrawUtils', 'Vector', 'Globals', 'Player', 'Item', 'Tile',
-            function (MathUtils, DrawUtils, Vector, Globals, Player, Item, Tile) {
+        .controller("ChipController", ['$rootScope', '$scope', 'GridService', 'MathUtils', 'DrawUtils', 'Vector', 'Globals', 'Player', 'Item', 'Tile',
+            function ($rootScope, $scope, GridService, MathUtils, DrawUtils, Vector, Globals, Player, Item, Tile) {
                 var vm = this;
                 vm.BACK_COLOR = "#555555";
                 vm.GRID_COLOR = "#8EAEC9";
@@ -30,7 +31,7 @@
                 ];
 
                 // Private Methods
-                var handleChipDoor = function (dirTile) {
+                vm._handleChipDoor = function (dirTile) {
                     if (vm.gameStats.chipsRemaining !== 0) {
                         return false;
                     }
@@ -39,7 +40,7 @@
                         return true;
                     }
                 };
-                var handleDoor = function (dirTile) {
+                vm._handleDoor = function (dirTile) {
                     var key = dirTile.getObstacle().doorToKey();
                     if (vm.player.specialSlots[key] === null) {
                         return false;
@@ -50,13 +51,13 @@
                         return true;
                     }
                 };
-                var handlePushBlock = function (dirTile, nDirTile) {
+                vm._handlePushBlock = function (dirTile, nDirTile) {
                     if (nDirTile.getType() === Tile.WATER) {
                         dirTile.removeObstacle();
                         nDirTile.setType(Tile.WATER_BLOCK);
                         return true;
                     }
-                    else if (nDirTile.getType() === EMPTY &&
+                    else if (nDirTile.getType() === Tile.EMPTY &&
                         nDirTile.getItem() === null &&
                         nDirTile.getObstacle() === null) {
                         nDirTile.setObstacle(dirTile.getObstacle());
@@ -68,37 +69,37 @@
                     }
                 };
 
-                var handleObstacle = function (dirTile, direction) {
+                vm._handleObstacle = function (dirTile, direction) {
                     var nDirTile = dirTile.getNeighborTileInDirection(direction);
                     if (dirTile.getType() === BLOCK) {
                         return false;
                     }
                     if (dirTile.getObstacle() !== null) {
                         var obstacle = dirTile.getObstacle();
-                        if (obstacle.getType() === CHIPDOOR) {
-                            return handleChipDoor(dirTile);
+                        if (obstacle.getType() === Obstacle.CHIP_DOOR) {
+                            return vm._handleChipDoor(dirTile);
                         }
-                        if (obstacle.isDoor()) {
-                            return handleDoor(dirTile);
+                        if (obstacle.isColoredDoor()) {
+                            return vm._handleDoor(dirTile);
                         }
-                        if (obstacle.getType() === PUSHBLOCK) {
-                            return handlePushBlock(dirTile, nDirTile);
+                        if (obstacle.getType() === Obstacle.PUSH_BLOCK) {
+                            return vm._handlePushBlock(dirTile, nDirTile);
                         }
                     }
                     return true;
                 };
-                var bounds = function (x, y, lower, upper) {
+                vm._bounds = function (x, y, lower, upper) {
                     return ((x === lower && (y >= lower && y <= upper)) ||
                     (x === upper && (y >= lower && y <= upper)) ||
                     (y === lower && (x >= lower && x <= upper)) ||
                     (y === upper && (x >= lower && x <= upper)));
                 };
-                var withinBounds = function (x, y, lower, upper) {
+                vm._withinBounds = function (x, y, lower, upper) {
                     return (x > lower && x < upper && y > lower && y < upper);
                 };
-                var getType = function (inBounds) {
+                vm._getType = function (inBounds) {
                     if (!inBounds) {
-                        return Tile.EMPTY;
+                        return Tile.Tile.EMPTY;
                     }
                     if (MathUtils.getRandomNumber(0, 1) < 0.075) {
 
@@ -114,23 +115,23 @@
                             return Tile.WATER_BLOCK;
                         }
                         else {
-                            return Tile.EMPTY;
+                            return Tile.Tile.EMPTY;
                         }
                     }
                 };
-                var fillTile = function (x, y) {
+                vm._fillTile = function (x, y) {
                     var type, item = null;
 
-                    if (bounds(x, y, vm.world.lower, vm.world.upper)) {
+                    if (vm._bounds(x, y, vm.world.lower, vm.world.upper)) {
                         type = Tile.BLOCK;
                     }
                     else if (x === vm.world.upper - 1 && y === vm.world.upper - 1) {
                         type = Tile.EXIT;
                     }
                     else {
-                        var inBounds = withinBounds(x, y, vm.world.lower, vm.world.upper);
-                        type = getType(inBounds);
-                        if (type === Tile.EMPTY && inBounds) {
+                        var inBounds = vm._withinBounds(x, y, vm.world.lower, vm.world.upper);
+                        type = vm._getType(inBounds);
+                        if (type === Tile.Tile.EMPTY && inBounds) {
                             if (toBePlaced.length !== 0 && MathUtils.getRandomNumber(0, 1) < 0.1) {
                                 item = new Item({type: toBePlaced.pop()});
                             }
@@ -150,16 +151,8 @@
                 };
 
                 // Scope Fields
-                vm.canvas = $('#gameCanvas')[0];
-                vm.box = {
-                    width: vm.canvas.width,
-                    height: vm.canvas.height,
-                    center: new Vector ({x: vm.canvas.width / 2, y: vm.canvas.height / 2})
-                };
-                vm.ctx = vm.canvas.getContext('2d');
-
-
-                vm.itemCtx = $('#itemCanvas')[0].getContext('2d');
+                vm.box = {};
+                //vm.itemCtx = $('#itemCanvas')[0].getContext('2d'); // TODO: FIX
                 vm.gameStats = {
                     level: 1,
                     timeRemaining: 0,
@@ -171,17 +164,14 @@
                     tileSize: Globals.TILE_SIZE,
                     lower: 3, upper: 16
                 };
-                var sxy = vm.presetWorld.tileSize * 4,
-                    wxy = vm.presetWorld.tileSize * 4;
-                vm.player = new Chip({
-                    screenPos: new Vector({x: sxy, y: sxy}),
-                    worldPos: new Vector({x: wxy, y: wxy})
+                var screenXY = vm.presetWorld.tileSize * 4,
+                    worldXY = vm.presetWorld.tileSize * 4;
+                vm.player = new Player({
+                    screenPos: new Vector({x: screenXY, y: screenXY}),
+                    worldPos: new Vector({x: worldXY, y: worldXY})
                 });
 
-                // Scope Functions
-                vm.toHome = function () {
-                    NavService.NavToHome();
-                };
+                // Public Functions
 
                 $rootScope.$on('keypress', function (e, a, key) {
                     $scope.$apply(function () {
@@ -206,7 +196,7 @@
 
                         // DEBUG KEYS
                         if (keyEvent === 'p') {
-                            vm.world.grid[8][8].setObstacle(new Obstacle({type: PUSHBLOCK}));
+                            vm.world.grid[8][8].setObstacle(new Obstacle({type: Obstacle.PUSH_BLOCK}));
                         }
                     }
                 };
@@ -215,7 +205,7 @@
                     var dirIndex = direction.divNew(Globals.TILE_SIZE).addNew(vm.player.getTileIndex()),
                         dirTile = vm.world.grid[dirIndex.y][dirIndex.x];
 
-                    if (handleObstacle(dirTile, direction)) {
+                    if (vm._handleObstacle(dirTile, direction)) {
                         vm.player.move(direction);
                         vm.moveWorld(direction.mulNew(-1));
 
@@ -245,23 +235,23 @@
                     for (var y = 0; y < vm.world.x; y++) {
                         var arr = [];
                         for (var x = 0; x < vm.world.y; x++) {
-                            arr.push(fillTile(x, y));
+                            arr.push(vm._fillTile(x, y));
                         }
                         vm.world.grid.push(arr);
                     }
                     // DEBUG
                     var upper = vm.world.upper;
-                    vm.world.grid[upper - 1][upper - 3].setObstacle(new Obstacle({type: REDDOOR}));
-                    vm.world.grid[upper - 1][upper - 4].setObstacle(new Obstacle({type: BLUEDOOR}));
-                    vm.world.grid[upper - 1][upper - 5].setObstacle(new Obstacle({type: GREENDOOR}));
-                    vm.world.grid[upper - 1][upper - 6].setObstacle(new Obstacle({type: YELLOWDOOR}));
+                    vm.world.grid[upper - 1][upper - 3].setObstacle(new Obstacle({type: Obstacle.RED_DOOR}));
+                    vm.world.grid[upper - 1][upper - 4].setObstacle(new Obstacle({type: Obstacle.BLUE_DOOR}));
+                    vm.world.grid[upper - 1][upper - 5].setObstacle(new Obstacle({type: Obstacle.GREEN_DOOR}));
+                    vm.world.grid[upper - 1][upper - 6].setObstacle(new Obstacle({type: Obstacle.YELLOW_DOOR}));
 
-                    vm.world.grid[upper - 1][upper - 2].setObstacle(new Obstacle({type: CHIPDOOR}));
-                    vm.world.grid[upper - 2][upper - 2].setObstacle(new Obstacle({type: CHIPDOOR}));
-                    vm.world.grid[upper - 2][upper - 1].setObstacle(new Obstacle({type: CHIPDOOR}));
+                    vm.world.grid[upper - 1][upper - 2].setObstacle(new Obstacle({type: Obstacle.CHIP_DOOR}));
+                    vm.world.grid[upper - 2][upper - 2].setObstacle(new Obstacle({type: Obstacle.CHIP_DOOR}));
+                    vm.world.grid[upper - 2][upper - 1].setObstacle(new Obstacle({type: Obstacle.CHIP_DOOR}));
 
 
-                    fillNeighbors(vm.world.grid, true);
+                    GridService.fillNeighbors(vm.world.grid, true);
                 })();
             }
         ])

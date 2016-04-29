@@ -56,7 +56,8 @@ module.exports = function (config) {
         exclude: [
             SCRIPT_ROOT + 'models/Neuron.js',
             SCRIPT_ROOT + 'controllers/threeCtrl.js',
-            TEST_ROOT + 'models/neuron.spec.js'
+            TEST_ROOT + 'models/neuron.spec.js',
+            TEST_ROOT + 'models/chipsChallenge/!(sound).spec.js'
         ],
 
         // test results reporter to use

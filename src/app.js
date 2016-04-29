@@ -29,7 +29,7 @@
                 {state: 'app.flock', name: 'Swarming', inactive: false},
                 {state: 'app.ant', name: 'Ants', inactive: false},
                 {state: 'app.astar', name: 'A Star', inactive: false},
-                {state: 'app.chip', name: 'Chip\'s Challenge', inactive: true}
+                {state: 'app.chip', name: 'Chip\'s Challenge', inactive: false}
                 //{state: 'app.threejs', name: 'Three JS', inactive: true}
             ];
 
